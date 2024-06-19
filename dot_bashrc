@@ -1,0 +1,2 @@
+echo "test"
+export PATH="$PATH:$HOME/.local/bin"
