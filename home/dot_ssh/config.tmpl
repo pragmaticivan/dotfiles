@@ -12,13 +12,6 @@
 IgnoreUnknown AddKeysToAgent,UseKeychain
 
 Host *
-    {{ if ne .chezmoi.os "windows" -}}
-    # Accelerate connections by reusing existing connections to the same host.
-    ControlMaster auto
-    ControlPath ~/.ssh/controlmasters/%r@%h:%p
-    ControlPersist 5
-    {{- end }}
-
     # Allow storing passphrases in the macOS keychain.
     # See https://developer.apple.com/library/archive/technotes/tn2449/_index.html
     AddKeysToAgent yes
