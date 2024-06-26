@@ -1,0 +1,28 @@
+extends: default
+
+rules:
+
+  indentation:
+    level: error
+    indent-sequences: false
+
+  comments:
+    require-starting-space: false
+    min-spaces-from-content: 1
+
+  empty-lines:
+    max-start: 0
+    max-end: 1
+
+  quoted-strings:
+    quote-type: double
+    required: only-when-needed
+    allow-quoted-quotes: true
+
+  new-line-at-end-of-file: enable
+  empty-values: enable
+
+  comments-indentation: disable
+  document-start: disable
+  document-end: disable
+  line-length: disable

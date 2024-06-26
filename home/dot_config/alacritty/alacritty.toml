@@ -1,0 +1,87 @@
+[colors]
+[colors.bright]
+black = "#626880"
+blue = "#8caaee"
+cyan = "#81c8be"
+green = "#a6d189"
+magenta = "#f4b8e4"
+red = "#e78284"
+white = "#a5adce"
+yellow = "#e5c890"
+
+[colors.cursor]
+cursor = "#f2d5cf"
+text = "#303446"
+
+[colors.dim]
+black = "#51576d"
+blue = "#8caaee"
+cyan = "#81c8be"
+green = "#a6d189"
+magenta = "#f4b8e4"
+red = "#e78284"
+white = "#b5bfe2"
+yellow = "#e5c890"
+
+[colors.footer_bar]
+background = "#a5adce"
+foreground = "#303446"
+
+[colors.hints]
+[colors.hints.end]
+background = "#a5adce"
+foreground = "#303446"
+
+[colors.hints.start]
+background = "#e5c890"
+foreground = "#303446"
+
+[colors.normal]
+black = "#51576d"
+blue = "#8caaee"
+cyan = "#81c8be"
+green = "#a6d189"
+magenta = "#f4b8e4"
+red = "#e78284"
+white = "#b5bfe2"
+yellow = "#e5c890"
+
+[colors.primary]
+background = "#303446"
+bright_foreground = "#c6d0f5"
+dim_foreground = "#838ba7"
+foreground = "#c6d0f5"
+
+[colors.search]
+[colors.search.focused_match]
+background = "#a6d189"
+foreground = "#303446"
+
+[colors.search.matches]
+background = "#a5adce"
+foreground = "#303446"
+
+[colors.selection]
+background = "#f2d5cf"
+text = "#303446"
+
+[colors.vi_mode_cursor]
+cursor = "#babbf1"
+text = "#303446"
+
+[cursor]
+style = "Block"
+
+[font]
+size = 14
+[font.normal]
+family = "MesloLGS NF"
+style = "Regular"
+
+[window]
+opacity = 1.0
+option_as_alt = "Both"
+
+[window.padding]
+x = 24
+y = 24

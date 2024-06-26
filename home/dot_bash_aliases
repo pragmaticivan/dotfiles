@@ -1,0 +1,498 @@
+# -*-mode:bash-*- vim:ft=bash
+
+# ~/.bash_aliases
+# =============================================================================
+# Shell aliases sourced by `~/.bashrc` and `~/.zshrc`.
+#
+# OSTYPE values used:
+#     - darwin: macOS
+#     - cygwin: Cygwin POSIX-compatible environment for Windows
+#     - mingw: MinGW Minimalist GNU for Windows
+#     - msys: MinGW Lightweight shell and GNU utilities for Windows
+
+# shellcheck shell=bash
+
+# Redefine standard commands to improve their behavior
+# -----------------------------------------------------------------------------
+
+# # Starts calculator with math support.
+# alias bc='bc -l'
+
+# # Makes file commands verbose.
+# alias cp='cp -v';
+# alias mv='mv -v';
+
+# # Displays drives and space in human readable format.
+# alias df='df -h'
+
+# # Colorizes diff output, if possible.
+# if type 'colordiff' &> /dev/null; then
+#     alias diff='colordiff'
+# fi
+
+# # Prints disk usage per directory non-recursively, in human readable format.
+# alias du='du -h -d1'
+
+# # Colorizes the `grep` output.
+# alias grep='grep --color=auto'
+# alias egrep='egrep --color=auto'
+# alias fgrep='fgrep --color=auto'
+
+# # Colorizes listings.
+# if ls --color &> /dev/null; then
+#     # GNU `ls`
+#     colorflag='--color=auto'
+#     export LS_COLORS='no=00:fi=00:di=01;31:ln=01;36:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arj=01;31:*.taz=01;31:*.lzh=01;31:*.zip=01;31:*.z=01;31:*.Z=01;31:*.gz=01;31:*.bz2=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.jpg=01;35:*.jpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.avi=01;35:*.fli=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.ogg=01;35:*.mp3=01;35:*.wav=01;35:'
+# else
+#     # macOS `ls`
+#     colorflag='-G'
+#     export LSCOLORS='BxBxhxDxfxhxhxhxhxcxcx'
+# fi
+# if type 'dir' &> /dev/null; then
+#     alias dir='dir --color=auto'
+# fi
+# if type 'vdir' &> /dev/null; then
+#     alias vdir='vdir --color=auto'
+# fi
+
+# # Uses human sizes, classifications, and color output for `ls`.
+# alias ls='command ls -Fh ${colorflag}'
+
+# # Creates parent directories on demand.
+# alias mkdir='mkdir -pv'
+
+# # Makes `mount` command output pretty and with a human readable format.
+# alias mount='mount | column -t'
+
+# # Disables wrapping of long lines in Nano.
+# alias nano='nano -w';
+
+# # Stops ping after sending 4 ECHO_REQUEST packets.
+# alias ping='ping -c 4'
+
+# # Improves top with modern alternatives.
+# if type 'atop' &> /dev/null; then
+#     alias top='atop'
+# elif type 'htop' &> /dev/null; then
+#     alias top='htop'
+# elif type 'ntop' &> /dev/null; then
+#     if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#         alias top='ntop'
+#     fi
+# fi
+
+# # Enables simple aliases to be sudo'ed.
+# # See http://www.gnu.org/software/bash/manual/bashref.html#Aliases
+# alias sudo='sudo ';
+
+
+# # Easier navigation
+# # -----------------------------------------------------------------------------
+
+# # Nagivates to the last used directory.
+# alias cd-='cd -'
+
+# # Nagivates up a directory.
+# alias cd..='cd ..'
+# alias ..='cd ..'
+
+# # Nagivates up two directories.
+# alias ...='cd ../../../'
+
+# # Nagivates up three directories.
+# alias ....='cd ../../../../'
+
+# # Nagivates up four directories.
+# alias .....='cd ../../../../'
+# alias .4='cd ../../../../'
+
+# # Nagivates up five directories.
+# alias .5='cd ../../../../..'
+
+
+# # Directory browsing
+# # -----------------------------------------------------------------------------
+
+# # Lists visible files in long format.
+# alias l='ls -l'
+
+# # Lists all files in long format, excluding `.` and `..`.
+# alias ll='ls -lA'
+
+# # Lists directories only, in long format.
+# alias lsd='ls -l | grep --color=never "^d"'
+
+# # Lists hidden files in long format.
+# alias lsh='ls -dlA .?*'
+
+
+# # File management
+# # -----------------------------------------------------------------------------
+
+# # Copies a file securely.
+# alias cpv='rsync -ah --info=progress2'
+
+# # Finds directories.
+# alias fd='find . -type d -name'
+
+# # Finds files.
+# alias ff='find . -type f -name'
+
+
+# # General aliases
+# # -----------------------------------------------------------------------------
+
+# # Clears the console screen.
+# alias c='clear'
+
+# # Searches history.
+# alias h='history_search' # see file `functions`
+# alias hs='history_session_search' # see file `functions`
+
+# # Sets editors and defaults.
+# alias edit='vim'
+# alias svi='sudo vi'
+# alias vi=vim
+# alias vis='vim "+set si"'
+
+# # Reloas the shell.
+# alias reload='exec $SHELL -l'
+
+# # Reloads the configuration.
+# if [ -n "$ZSH_VERSION" ]; then
+#     alias resource='. $HOME/.zshrc'
+# else
+#     alias resource='. $HOME/.bash_profile'
+# fi
+
+
+# # Time
+# # -----------------------------------------------------------------------------
+
+# # Gets local/UTC date and time in ISO-8601 format `YYYY-MM-DDThh:mm:ss`.
+# alias now='date +"%Y-%m-%dT%H:%M:%S"'
+# alias unow='date -u +"%Y-%m-%dT%H:%M:%S"'
+
+# # Gets date in `YYYY-MM-DD` format`
+# alias nowdate='date +"%Y-%m-%d"'
+# alias unowdate='date -u +"%Y-%m-%d"'
+
+# # Gets time in `hh:mm:ss` format`
+# alias nowtime='date +"%T"'
+# alias unowtime='date -u +"%T"'
+
+# # Gets Unix time stamp`
+# alias timestamp='date -u +%s'
+
+# # Gets week number in ISO-8601 format `YYYY-Www`.
+# alias week='date +"%Y-W%V"'
+
+# # Gets weekday number.
+# alias weekday='date +"%u"'
+
+
+# # Networking
+# # -----------------------------------------------------------------------------
+
+# # Pings hostname(s) 30 times in quick succession.
+# if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias fastping='ping -n 30'
+# else
+#     alias fastping='ping -c 30 -i.2'
+# fi
+
+# # Flushes the DNS cache.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias flushdns='dscacheutil -flushcache; sudo killall -HUP mDNSResponder;echo DNS cache flushed'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias flushdns='ipconfig //flushdns'
+# else
+#     alias flushdns='sudo /etc/init.d/dns-clean restart && echo DNS cache flushed'
+# fi
+
+# # Gets all IP addresses.
+# alias ips="ifconfig -a | grep -o 'inet6\? \(addr:\)\?\s\?\(\(\([0-9]\+\.\)\{3\}[0-9]\+\)\|[a-fA-F0-9:]\+\)' | awk '{ sub(/inet6? (addr:)? ?/, \"\"); print }'"
+
+# # Gets local IP address.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias localip='ipconfig getifaddr en0'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     # shellcheck disable=SC2142
+#     alias localip="netstat -rn | grep -w '0.0.0.0' | awk '{ print \$4 }'"
+# else
+#     alias localip="ip route get 1 | awk '{print \$NF;exit}'"
+# fi
+
+# # Gets external IP address.
+# if command -v dig &> /dev/null; then
+#     alias publicip='dig +short myip.opendns.com @resolver1.opendns.com'
+# elif command -v curl > /dev/null; then
+#     alias publicip='curl --silent --compressed --max-time 5 --url "https://ipinfo.io/ip"'
+# else
+#     alias publicip='wget -qO- --compression=auto --timeout=5 "https://ipinfo.io/ip"'
+# fi
+
+# # Sends HTTP requests.
+# command -v lwp-request &> /dev/null && for method in GET HEAD POST PUT DELETE TRACE OPTIONS; do
+#     #shellcheck disable=SC2139
+#     alias $method="lwp-request -m '$method'"
+# done
+# unset method;
+
+
+# # Power management
+# # -----------------------------------------------------------------------------
+
+# # Locks the session.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias lock='pmset displaysleepnow'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias lock='rundll32.exe user32.dll,LockWorkStation'
+# elif command -v vlock &> /dev/null; then
+#     alias lock='vlock --all'
+# elif command -v gnome-screensaver-command &> /dev/null; then
+#     alias lock='gnome-screensaver-command --lock'
+# fi
+
+# # Hibernates the system.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias hibernate='pmset sleep now'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias hibernate='shutdown.exe /h'
+# else
+#     alias hibernate='systemctl suspend'
+# fi
+
+# # Restarts the system.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias reboot='osascript -e "tell application \"System Events\" to restart"'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias reboot='shutdown.exe /r'
+# else
+#     alias reboot='sudo /sbin/reboot'
+# fi
+
+# # Shuts down the system.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias poweroff='osascript -e "tell application \"System Events\" to shut down"'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias poweroff='shutdown.exe /s'
+# else
+#     alias poweroff='sudo /sbin/poweroff'
+# fi
+
+
+# # Sysadmin
+# # -----------------------------------------------------------------------------
+
+# # Lists drive mounts.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias mnt='mount | grep -E ^/dev | column -t'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias mnt='mount | sed "s/Program Files/Program-Files/i" | column -t'
+# else
+#     # shellcheck disable=SC2142
+#     alias mnt="mount | awk -F' ' '{ printf \"%s\t%s\n\",\$1,\$3; }' | column -t | egrep ^/dev/ | sort"
+# fi
+
+# # Prints each $PATH entry on a separate line.
+# alias path='echo -e ${PATH//:/\\n}'
+
+# # Displays information about the system.
+# for command in winfetch neofetch screenfetch; do
+#     if type $command &> /dev/null; then
+#         alias sysinfo='$command'
+#         break
+#     fi
+# done
+
+
+# # Applications
+# # -----------------------------------------------------------------------------
+
+# # Opens file/URL (in) browsers.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias browse='open'
+#     alias chrome='open -a Google\ Chrome'
+#     alias edge='open -a Microsoft\ Edge'
+#     alias firefox='open -a Firefox'
+#     alias opera='open -a Opera'
+#     alias safari='open -a Safari'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias browse='start'
+#     alias chrome='start chrome'
+#     alias edge='microsoft-edge'
+#     alias iexplore='start iexplore'
+#     alias firefox='start firefox'
+#     alias opera='start opera'
+#     #alias safari='start safari'
+# else
+#     alias browse='x-www-browser' #xdg-open
+#     alias chrome='chromium'
+#     #alias edge='microsoft-edge'
+#     #alias firefox='firefox'
+#     #alias opera='opera'
+#     #alias safari='safari'
+# fi
+
+# # Enters the Starship cross-shell prompt.
+# if [ -n "$ZSH_VERSION" ]; then
+#     # shellcheck disable=SC2034
+#     if typeset -f prompt_powerlevel9k_teardown > /dev/null; then
+#         alias ss='prompt_powerlevel9k_teardown && eval "$(starship init zsh)"'
+#     else
+#         alias ss='eval "$(starship init zsh)"'
+#     fi
+# else
+#     alias ss='eval "$(starship init bash)"'
+# fi
+
+# # Opens (in) Sublime Text.
+# # TODO: Add to path instead.
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     alias subl='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+#     alias st='/Applications/Sublime\ Text.app/Contents/SharedSupport/bin/subl'
+# elif [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias subl='/c/Program\ Files/Sublime\ Text\ 3/subl'
+#     alias st='/c/Program\ Files/Sublime\ Text\ 3/subl'
+# else
+#     alias subl='sublime_text'
+#     alias st='sublime_text'
+# fi
+
+
+# # Development
+# # -----------------------------------------------------------------------------
+
+# # Creates shortcuts for Docker.
+# alias dk='docker'
+# alias dco='docker-compose'
+
+# # Creates shortcut for Git.
+# alias g='git'
+
+# # Activates Python virtual environment `venv`.
+# alias va='if [ -d ./.venv ]; then \. ./.venv/bin/activate; elif [ -d ./venv ]; then \. ./venv/bin/activate; fi'
+
+# # Creates Python virtual environment `venv`.
+# alias ve='python3 -m venv ./.venv'
+
+
+# # macOS
+# # -----------------------------------------------------------------------------
+
+# if [[ "$OSTYPE" =~ ^darwin ]]; then
+#     # Toggles display of desktop icons.
+#     alias hidedesktop='defaults write com.apple.finder CreateDesktop -bool false && killall Finder'
+#     alias showdesktop='defaults write com.apple.finder CreateDesktop -bool true && killall Finder'
+
+#     # Toggles hidden files in Finder.
+#     alias hidefiles='defaults write com.apple.finder AppleShowAllFiles -bool false && killall Finder'
+#     alias showfiles='defaults write com.apple.finder AppleShowAllFiles -bool true && killall Finder'
+
+#     # Toggles Spotlight.
+#     alias spotoff='sudo mdutil -a -i off'
+#     alias spoton='sudo mdutil -a -i on'
+# fi
+
+
+# # Common paths
+# # -----------------------------------------------------------------------------
+
+# # Navigates to user paths.
+# alias dls='cd $HOME/Downloads'
+# alias docs='cd $HOME/Documents'
+# alias dt='cd $HOME/Desktop'
+
+
+# # Configuration paths
+# # -----------------------------------------------------------------------------
+
+# # Navigates to Chezmoi's local repo.
+# if command -v chezmoi > /dev/null; then
+#     if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#         # shellcheck disable=SC2046,SC2139
+#         # TODO verify
+#         alias chezmoiconf="cd $(chezmoi source-path | tr '\\/' '/' | tr -d ':' | awk '{print "/"$1}')"
+#     else
+#         alias chezmoiconf='cd $(chezmoi source-path)'
+#     fi
+# else
+#     alias chezmoiconf='cd $HOME/.local/share/chezmoi'
+# fi
+
+# # Navigates to Powershell's profile location.
+# if [[ "$OSTYPE" =~ ^(cygwin|mingw|msys) ]]; then
+#     alias powershellconf='cd $HOME/Documents/PowerShell'
+# else
+#     alias powershellconf='cd $HOME/.config/powershell'
+# fi
+
+# # Navigates to Sublime Text's local repo.
+# alias sublimeconf='cd $HOME/Library/Application\ Support/Sublime\ Text\ 3/Packages/User'
+
+
+# # Custom paths
+# # -----------------------------------------------------------------------------
+
+# # Navigates to custom paths.
+# alias archives='cd $HOME/Archives'
+# alias repos='cd $HOME/Code'
+
+
+# # Varia
+# # -----------------------------------------------------------------------------
+
+# # Pastes the contents of the clipboard.
+# if command -v pbpaste > /dev/null; then
+#     alias cbpaste='pbpaste'
+# elif command -v xclip > /dev/null; then
+#     alias cbpaste='xclip -i -selection clipboard -o'
+# elif command -v xsel > /dev/null; then
+#     alias cbpaste='xsel -bo'
+# elif command -v clipboard > /dev/null; then
+#     alias cbpaste='clipboard'
+# elif command -v powershell > /dev/null; then
+#     alias cbpaste='powershell -NoProfile -Command "Get-Clipboard"'
+# fi
+
+# # Calculates MD5 hashes.
+# if ! command -v md5sum > /dev/null; then
+#     if command -v md5 > /dev/null; then
+#         alias md5sum='md5 -r'
+#     else
+#         alias md5sum='openssl md5 -r'
+#     fi
+# fi
+
+# # Calculates SHA1 hashes.
+# if ! command -v sha1sum > /dev/null; then
+#     if command -v shasum > /dev/null; then
+#         alias sha1sum='shasum -a 1 -p'
+#     else
+#         alias sha1sum='openssl sha1 -r'
+#     fi
+# fi
+
+# # Calculates SHA256 hashes.
+# if ! command -v sha256sum > /dev/null; then
+#     if command -v shasum > /dev/null; then
+#         alias sha256sum='shasum -a 256 -p'
+#     else
+#         alias sha256sum='openssl sha256 -r'
+#     fi
+# fi
+
+# # Displays detailed weather and forecast.
+# if command -v curl > /dev/null; then
+#     alias forecast='curl --silent --compressed --max-time 10 --url "https://wttr.in?F"'
+# else
+#     alias forecast='wget -qO- --compression=auto --timeout=10 "https://wttr.in?F"'
+# fi
+
+# # Displays current weather.
+# if command -v curl > /dev/null; then
+#     alias weather='curl --silent --compressed --max-time 10 --url "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
+# else
+#     alias weather='wget -qO- --compression=auto --timeout=10 "https://wttr.in/?format=%l:+(%C)+%c++%t+\[%h,+%w\]"'
+# fi

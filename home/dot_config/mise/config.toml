@@ -1,0 +1,9 @@
+[settings]
+experimental = false
+verbose = false
+
+[tools]
+go = ["1.22"]
+nodejs = ["lts"]
+python = ["3.12"]
+ruby = ["3.3"]

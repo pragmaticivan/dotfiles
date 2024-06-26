@@ -1,0 +1,77 @@
+[advice]
+	addEmptyPathspec = false
+
+[alias]
+	co = "checkout"
+
+[apply]
+	whitespace = "nowarn"
+
+[color]
+	branch = "auto"
+	diff = "auto"
+	status = "auto"
+	ui = true
+
+[commit]
+	gpgSign = true
+
+[core]
+	autocrlf = "input"
+	compression = -1
+	editor = "nvim"
+	pager = "/nix/store/pj14f5hvh5lvaa7dizahs7x579rsqw6s-delta-0.17.0/bin/delta"
+	precomposeunicode = true
+	whitespace = "trailing-space,space-before-tab"
+
+[credential "https://gist.github.com"]
+	helper = "/nix/store/al0w11wik8xvjv311f9hdcni6lcbd22g-gh-2.48.0/bin/gh auth git-credential"
+
+[credential "https://github.com"]
+	helper = "/nix/store/al0w11wik8xvjv311f9hdcni6lcbd22g-gh-2.48.0/bin/gh auth git-credential"
+
+[format]
+	signOff = true
+
+[gpg]
+	format = "ssh"
+
+[gpg "ssh"]
+	allowedSignersFile = "~/.ssh/allowed_signers"
+
+[grep]
+	extendRegexp = true
+	lineNumber = true
+
+[help]
+	autocorrect = 1
+
+[init]
+	defaultBranch = "main"
+
+[interactive]
+	diffFilter = "/nix/store/pj14f5hvh5lvaa7dizahs7x579rsqw6s-delta-0.17.0/bin/delta --color-only"
+
+[lfs]
+	enable = true
+
+[log]
+	showSignature = false
+
+[pull]
+	ff = "only"
+
+[push]
+	autoSetupRemote = true
+	default = "simple"
+
+[rerere]
+	enabled = true
+
+[submodule]
+	fetchJobs = 4
+
+[user]
+	email = "301291+pragmaticivan@users.noreply.github.com"
+	name = "Ivan Santos"
+	signingKey = "~/.ssh/id_ed25519"

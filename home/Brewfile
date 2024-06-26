@@ -1,0 +1,70 @@
+# -*-mode:ruby-*- vim:ft=ruby
+
+# ~/.Brewfile
+# =============================================================================
+# Project dependencies installed using `brew bundle` or `~/dotfiles.sh`.
+#
+# See https://github.com/Homebrew/homebrew-bundle
+
+tap "homebrew/bundle"
+tap "homebrew/cask"
+tap "homebrew/core"
+
+# CASKS #
+
+# Development Tools
+cask "homebrew/cask/docker"                 # Docker
+cask "visual-studio-code"                   # Vscode
+
+# Communication Tools
+cask "discord"
+cask "notion"
+cask "slack"
+cask "telegram"
+cask "whatsapp"
+
+# Utility Tools
+cask "blackhole-2ch"
+cask "imageoptim"
+cask "sensei"
+cask "keka"
+cask "flameshot"
+# cask "little-snitch" #Wait until v6 is released
+cask "1password"
+
+# Entertainment Tools
+cask "iina"
+cask "whisky"
+
+# Productivity Tools
+cask "raycast"
+
+# Browsers
+cask "google-chrome"
+cask "firefox"
+
+# Fonts
+cask "font-fira-code-nerd-font"
+cask "font-fira-mono-nerd-font"
+
+# BREW #
+
+# General packages for development and system management
+brew "aspell"                              # Spell checker
+
+# Encryption and security tools
+
+
+# Media-related packages
+
+
+# Text and terminal utilities
+brew "jq"
+brew "zellij"
+brew "starship"
+brew "nvim"
+
+# Cross-shell prompt
+
+# Cloud Tools
+
