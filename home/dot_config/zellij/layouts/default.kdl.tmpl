@@ -2,7 +2,7 @@ layout {
       default_tab_template {
           children
           pane size=1 borderless=true {
-              plugin location="file:/nix/store/ivy2y46psslb9p5xi7qldfawrzwgqzn2-zjstatus-0.15.0/bin/zjstatus.wasm" {
+              plugin location="file:{{ .chezmoi.sourceDir }}/dot_config/zellij/layouts/zjstatus.wasm" {
                 format_left   "{mode} #[fg=#89B4FA,bold]{session}"
                 format_center "{tabs}"
                 format_right  "{command_git_branch} {datetime}"

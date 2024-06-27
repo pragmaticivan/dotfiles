@@ -11,24 +11,48 @@
 # shellcheck disable=SC2034
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Oh My Zsh!
+# Antidote
 # ---------------------------------------------------------------------------------------------------------------------
-# Path to your oh-my-zsh installation
-export ZSH="$HOME/.oh-my-zsh"
+# Path to your antidote installation
+export ANTIDOTE="$HOME/.antidote"
+# Init Antidote
+source $ANTIDOTE/antidote.zsh
+# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+antidote load
 
-# Disable automatic updates
-zstyle ':omz:update' mode disabled
+# ---------------------------------------------------------------------------------------------------------------------
+# fzf
+# ---------------------------------------------------------------------------------------------------------------------
+source <(fzf --zsh)
 
-# Specify cache dir outside of the Oh My Zsh installation
-ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/ohmyzsh"
+# ---------------------------------------------------------------------------------------------------------------------
+# Starship
+# ---------------------------------------------------------------------------------------------------------------------
+eval "$(starship init zsh)"
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Atuin
+# ---------------------------------------------------------------------------------------------------------------------
+eval "$(atuin init zsh)"
 
-# ...
+# ---------------------------------------------------------------------------------------------------------------------
+# zellij
+# ---------------------------------------------------------------------------------------------------------------------
+eval "$(zellij setup --generate-auto-start zsh)"
 
-# Init Oh My Zsh
-source $ZSH/oh-my-zsh.sh
+# ---------------------------------------------------------------------------------------------------------------------
+# zoxide
+# ---------------------------------------------------------------------------------------------------------------------
+eval "$(zoxide init zsh)"
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Mise
+# ---------------------------------------------------------------------------------------------------------------------
+eval "$(mise activate zsh)"
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Load Extras
+# ---------------------------------------------------------------------------------------------------------------------
 # Load .profile
 if [[ -r "${HOME}/.profile" ]]; then
   # Do not use emulate here, as pkgx errors with unsupported shell
@@ -46,111 +70,3 @@ if [[ -r "${HOME}/.bash_functions" ]]; then
   # zsh is closer than sh to bash
   emulate zsh -c "source '${HOME}/.bash_functions'"
 fi
-
-
-
-
-
-
-
-
-# OLD ONE
-
-
-# # Define variables for directories
-# export PATH=$HOME/.pnpm-packages/bin:$HOME/.pnpm-packages:$PATH
-# export PATH=$HOME/.npm-packages/bin:$HOME/bin:$PATH
-# export PATH=$HOME/.local/share/bin:$PATH
-
-# # Remove history data we don't want to see
-# export HISTIGNORE="pwd:ls:cd"
-
-# typeset -U path cdpath fpath manpath
-
-# for profile in ${(z)NIX_PROFILES}; do
-#   fpath+=($profile/share/zsh/site-functions $profile/share/zsh/$ZSH_VERSION/functions $profile/share/zsh/vendor-completions)
-# done
-
-# HELPDIR="/nix/store/s60s6bdwbb4nmfz7hzz4zkdixldpw16r-zsh-5.9/share/zsh/$ZSH_VERSION/help"
-
-
-
-
-# path+="$HOME/.zsh/plugins/formarks"
-# fpath+="$HOME/.zsh/plugins/formarks"
-
-# # Oh-My-Zsh/Prezto calls compinit during initialization,
-# # calling it twice causes slight start up slowdown
-# # as all $fpath entries will be traversed again.
-# autoload -U compinit && compinit
-# source /nix/store/j62n4cxp0nbl85xg17pgsrb38bv9ncqi-zsh-autosuggestions-0.7.0/share/zsh-autosuggestions/zsh-autosuggestions.zsh
-
-
-
-
-
-# if [[ -f "$HOME/.zsh/plugins/formarks/formarks.plugin.zsh" ]]; then
-#   source "$HOME/.zsh/plugins/formarks/formarks.plugin.zsh"
-# fi
-
-
-# # History options should be set in .zshrc and after oh-my-zsh sourcing.
-# # See https://github.com/nix-community/home-manager/issues/177.
-# HISTSIZE="10000"
-# SAVEHIST="10000"
-
-# HISTFILE="$HOME/.zsh_history"
-# mkdir -p "$(dirname "$HISTFILE")"
-
-# setopt HIST_FCNTL_LOCK
-# setopt HIST_IGNORE_DUPS
-# unsetopt HIST_IGNORE_ALL_DUPS
-# setopt HIST_IGNORE_SPACE
-# unsetopt HIST_EXPIRE_DUPS_FIRST
-# setopt SHARE_HISTORY
-# unsetopt EXTENDED_HISTORY
-# setopt autocd
-
-# eval "$(/nix/store/1pz87v8nbgnhzbyhqgd37lb07w1yy4my-zellij-0.40.0/bin/zellij setup --generate-auto-start zsh)"
-
-# eval "$(/nix/store/acy22qly0mq6322sr8r2kmm6vajnd0f6-zoxide-0.9.4/bin/zoxide init zsh )"
-
-# function ya() {
-#   local tmp="$(mktemp -t "yazi-cwd.XXXXX")"
-#   yazi "$@" --cwd-file="$tmp"
-#   if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-#     cd -- "$cwd"
-#   fi
-#   rm -f -- "$tmp"
-# }
-
-# if [[ $TERM != "dumb" ]]; then
-#   eval "$(/Users/pragmaticivan/.nix-profile/bin/starship init zsh)"
-# fi
-
-# eval "$(/nix/store/qdv1klklm5v7rm677rim9fmz69z6bm73-mise-2024.4.5/bin/mise activate zsh)"
-
-# eval "$(/nix/store/hgm0fkra60afaw2bfm66y9r337xghh5b-direnv-2.34.0/bin/direnv hook zsh)"
-
-# if [[ $options[zle] = on ]]; then
-#   eval "$(/nix/store/l5c6002cms6lqs5dhs2b152qf8vgcsl9-atuin-18.2.0/bin/atuin init zsh )"
-# fi
-
-
-# # Aliases
-# alias -- 'cl'='clear'
-# alias -- 'gp'='git push'
-# alias -- 'gpl'='git pull'
-# alias -- 'ip'='ip --color=auto'
-# alias -- 'jq'='gojq'
-# alias -- 'kubectl'='kubecolor'
-# alias -- 'la'='/nix/store/5jyp5ha48zbq9vv2nx6fc1wy6rf09xv2-lsd-1.1.2/bin/lsd -A'
-# alias -- 'll'='/nix/store/5jyp5ha48zbq9vv2nx6fc1wy6rf09xv2-lsd-1.1.2/bin/lsd -l'
-# alias -- 'lla'='/nix/store/5jyp5ha48zbq9vv2nx6fc1wy6rf09xv2-lsd-1.1.2/bin/lsd -lA'
-# alias -- 'llt'='/nix/store/5jyp5ha48zbq9vv2nx6fc1wy6rf09xv2-lsd-1.1.2/bin/lsd -l --tree'
-# alias -- 'ls'='/nix/store/5jyp5ha48zbq9vv2nx6fc1wy6rf09xv2-lsd-1.1.2/bin/lsd'
-# alias -- 'lt'='/nix/store/5jyp5ha48zbq9vv2nx6fc1wy6rf09xv2-lsd-1.1.2/bin/lsd --tree'
-# alias -- 'pj'='cd ${PROJECTS}'
-# alias -- 'vimdiff'='nvim -d'
-
-# # Named Directory Hashes

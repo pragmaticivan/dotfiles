@@ -15,6 +15,7 @@ tap "homebrew/core"
 # Development Tools
 cask "homebrew/cask/docker"                 # Docker
 cask "visual-studio-code"                   # Vscode
+cask "alacritty"
 
 # Communication Tools
 cask "discord"
@@ -63,8 +64,25 @@ brew "jq"
 brew "zellij"
 brew "starship"
 brew "nvim"
+brew "zsh"
+brew "antidote"
+brew "atuin"
+brew "zoxide"
+brew "mise"
+brew "fzf"
+brew "tealdeer"
+brew "lazygit"
+brew "lsd"
+brew "ripgrep"
+brew "fd"
+brew "yazi"
+brew "ffmpegthumbnailer"
+brew "unar"
+brew "poppler"
+
 
 # Cross-shell prompt
 
 # Cloud Tools
-
+brew "kubecolor"
+brew "kubectx"
