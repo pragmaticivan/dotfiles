@@ -21,6 +21,7 @@ alias llt='lsd -l --tree'
 alias ls='lsd'
 alias lt='lsd --tree'
 alias ip='ip --color=auto'
+alias reload!='exec "$SHELL" -l'
 
 # Kubernetes
 alias kubectl="kubecolor"
