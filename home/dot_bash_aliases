@@ -40,6 +40,7 @@ alias vimdiff='nvim -d'
 
 # Terminal
 alias htop='btop'
+alias cl='clear'
 
 # Easier navigation: .., ..., ...., .....
 alias ..="cd .."
