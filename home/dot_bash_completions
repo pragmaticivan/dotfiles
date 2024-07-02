@@ -1,0 +1,19 @@
+# -*-mode:bash-*- vim:ft=bash
+
+# ~/.bash_completions
+# =============================================================================
+# Shell completions sourced by `~/.bashrc` and `~/.zshrc`.
+
+# shellcheck shell=bash
+
+# General
+# -----------------------------------------------------------------------------
+autoload -U +X compinit && compinit
+
+# Minikube
+# -----------------------------------------------------------------------------
+source ~/.minikube-completion
+
+# Kubectl
+# -----------------------------------------------------------------------------
+source <(kubectl completion zsh)

@@ -79,10 +79,14 @@ brew "yazi"
 brew "ffmpegthumbnailer"
 brew "unar"
 brew "poppler"
-
+brew "golangci-lint"
+brew "bash-completion"
+brew "bat"
 
 # Cross-shell prompt
 
 # Cloud Tools
 brew "kubecolor"
 brew "kubectx"
+brew "minikube"
+
