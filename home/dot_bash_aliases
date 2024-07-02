@@ -37,3 +37,6 @@ alias gpl='git pull'
 # Code Editing
 alias pj='cd ${PROJECTS}'
 alias vimdiff='nvim -d'
+
+# Terminal
+alias htop='btop'

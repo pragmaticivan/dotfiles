@@ -85,6 +85,7 @@ brew "poppler"
 brew "golangci-lint"
 brew "bash-completion"
 brew "bat"
+brew "btop"
 
 # Cross-shell prompt
 
