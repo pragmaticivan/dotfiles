@@ -32,6 +32,7 @@ cask "keka"
 cask "flameshot"
 # cask "little-snitch" #Wait until v6 is released
 cask "1password"
+cask "netnewswire"
 
 # Entertainment Tools
 cask "iina"
@@ -47,6 +48,8 @@ cask "firefox"
 # Fonts
 cask "font-fira-code-nerd-font"
 cask "font-fira-mono-nerd-font"
+cask "font-meslo-for-powerline"
+cask "font-jetbrains-mono"
 
 # BREW #
 

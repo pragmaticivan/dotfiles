@@ -26,6 +26,7 @@ alias cat='bat'
 
 # Kubernetes
 alias kubectl="kubecolor"
+alias k='kubectl'
 alias kx='kubectx'
 alias kn='kubens'
 
