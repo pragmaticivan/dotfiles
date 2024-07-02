@@ -86,6 +86,7 @@ brew "golangci-lint"
 brew "bash-completion"
 brew "bat"
 brew "btop"
+brew "gh"
 
 # Cross-shell prompt
 
