@@ -51,7 +51,7 @@ eval "$(zoxide init zsh)"
 eval "$(mise activate zsh)"
 
 # ---------------------------------------------------------------------------------------------------------------------
-# Load Extras
+# Load Extras (Intentionally not using ZSH convention for now)
 # ---------------------------------------------------------------------------------------------------------------------
 # Load .profile
 if [[ -r "${HOME}/.profile" ]]; then
