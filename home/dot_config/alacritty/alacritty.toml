@@ -1,21 +1,27 @@
 import = [
     "~/.config/alacritty/catppuccin-macchiato.toml"
 ]
+
 live_config_reload = true
+window.opacity = 1.0
+# Required to work along Zellij in MacOs
+window.option_as_alt = "Both"
 
 [bell]
 animation = "EaseOutExpo"
 duration = 0
+
+[colors]
+draw_bold_text_with_bright_colors = true
+
+[debug]
+render_timer = false
 
 [env]
 TERM = "xterm-256color"
 
 [font]
 size = 15.0
-
-[font.glyph_offset]
-x = 0
-y = 0
 
 [font.normal]
 family = "MesloLGS NF"
@@ -25,10 +31,6 @@ family = "MesloLGS NF"
 
 [font.bold]
 family = "MesloLGS NF"
-
-[font.offset]
-x = 0
-y = 0
 
 [[mouse.bindings]]
 action = "PasteSelection"
@@ -41,21 +43,6 @@ semantic_escape_chars = ",│`|:\"' ()[]{}<>"
 [scrolling]
 history    = 10000
 multiplier = 4
-
-[window]
-decorations = "none"
-opacity = 0.97
-dynamic_padding = true
-dynamic_title = true
-startup_mode = "Maximized"
-
-[window.dimensions]
-columns = 240
-lines = 80
-
-[window.padding]
-x = 5
-y = 5
 
 [[hints.enabled]]
 command = "xdg-open"
@@ -106,6 +93,11 @@ mods = "None"
 #   `command` must be a map containing a `program` string, and `args` array of
 #     strings. For example:
 #     - { ... , command: { program: "alacritty", args: ["-e", "vttest"] } }
+
+[[keyboard.bindings]]
+action = "SpawnNewInstance"
+key = "N"
+mods = "Control"
 
 [[keyboard.bindings]]
 action = "ToggleViMode"

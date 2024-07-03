@@ -1,53 +1,44 @@
 layout {
-      default_tab_template {
-          children
-          pane size=1 borderless=true {
-              plugin location="file:{{ .chezmoi.sourceDir }}/dot_config/zellij/layouts/zjstatus.wasm" {
-                format_left   "{mode} #[fg=#89B4FA,bold]{session}"
+    default_tab_template {
+        children
+        pane size=1 borderless=true {
+            plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+                format_left  "{mode} #[fg=#8aadf4,bold]{session}"
                 format_center "{tabs}"
                 format_right  "{command_git_branch} {datetime}"
                 format_space  ""
 
                 border_enabled  "true"
                 border_char     "─"
-                border_format   "#[fg=#7dc4e4]{char}"
+                border_format   "#[fg=#6C7086]{char}"
                 border_position "top"
-
-                hide_frame_for_single_pane "true"
-
-                mode_normal  "#[bg=blue] "
-                mode_tmux    "#[bg=#ffc387] "
-
-                // formatting for inactive tabs
-                tab_normal              "#[fg=#7dc4e4] {index} :: {name} "
-                tab_normal_fullscreen   "#[fg=#7dc4e4] {index} :: {name} [] "
-                tab_normal_sync         "#[fg=#7dc4e4] {index} :: {name} <> "
-
-                // formatting for the current active tab
-                tab_active              "#[fg=#a6da95,bold,italic] {name} {floating_indicator}"
-                tab_active_fullscreen   "#[fg=#a6da95,bold,italic] {name} {fullscreen_indicator}"
-                tab_active_sync         "#[fg=#a6da95,bold,italic] {name} {sync_indicator}"
-
-                // separator between the tabs
-                tab_separator           "#[fg=#f5a97f,bg=#181825] | "
-
-                // format when renaming a tab
-                tab_rename              "#[fg=#ed8796,bg=#181825] {index} {name} {floating_indicator} "
-
-                // indicators
-                tab_sync_indicator       "<> "
-                tab_fullscreen_indicator "[] "
-                tab_floating_indicator   "⬚ "
 
                 command_git_branch_command     "git rev-parse --abbrev-ref HEAD"
                 command_git_branch_format      "#[fg=blue] {stdout} "
                 command_git_branch_interval    "10"
                 command_git_branch_rendermode  "static"
 
-                datetime        "#[fg=#b7bdf8,bold] {format} "
+                hide_frame_for_single_pane "false"
+
+                mode_normal        "#[bg=blue]  "
+                mode_locked        "#[bg=red]  "
+                mode_pane          "#[bg=green]  "
+                mode_tab           "#[bg=magenta]  "
+                mode_search        "#[bg=orange]  "
+                mode_session       "#[bg=yellow]  "
+                mode_tmux          "#[bg=cyan]  "
+
+                tab_normal   "#[fg=#6e738d] {name} "
+                tab_active   "#[fg=#939ab7,bold,italic] {name} "
+                tab_active_fullscreen   "#[fg=#939ab7,bold,italic] {name} []"
+
+                datetime        "#[fg=#939ab7,bold] {format} "
                 datetime_format "%A, %d %b %Y %H:%M"
-                datetime_timezone "America/Chicago"
-              }
-          }
-      }
-  }
+                datetime_timezone "Europe/Madrid"
+            }
+        }
+    }
+    tab name="terminal" {
+        pane size="90%"
+    }
+}

@@ -1,0 +1,51 @@
+layout {
+    tab name="shell"
+
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+                format_left  "#[fg=#89b4fa,bg=#22272e,bold]{mode} #[fg=#89b4fa,bg=#22272e,bold] {session} {tabs} "
+                format_right "#[fg=#ffffff,bg=#181825,bold] kubectx {command_kubernetes}"
+                format_space "#[bg=#22272e]"
+
+                border_enabled  "false"
+
+                hide_frame_for_single_pane "true"
+
+                mode_normal        "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_locked        "#[fg=#ffffff,bg=#22272e]󰌾"
+                mode_resize        "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_pane          "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_tab           "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_scroll        "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_enter_search  "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_search        "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_rename_tab    "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_rename_pane   "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_session       "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_move          "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_prompt        "#[fg=#000000,bg=#89B4FA] {name} "
+                mode_tmux          "#[fg=#000000,bg=#ffc387] {name} "
+
+                tab_normal              "#[fg=#6C7086,bg=#22272e] {index} {name} "
+                tab_normal_fullscreen   "#[fg=#6C7086,bg=#22272e] {index} {name} [] "
+                tab_normal_sync         "#[fg=#6C7086,bg=#22272e] {index} {name} <> "
+                tab_active              "#[fg=#ffffff,bg=#22272e,bold,italic] {index} {name} "
+                tab_active_fullscreen   "#[fg=#9399B2,bg=#22272e,bold,italic] {index} {name} [] "
+                tab_active_sync         "#[fg=#9399B2,bg=#22272e,bold,italic] {index} {name} <> "
+
+                command_kubernetes_command   "bash -c \"kubectl config current-context | rev | cut -d'/' -f1 | rev\""
+                command_kubernetes_format    "#[fg=white,bg=#22272e] {stdout} "
+                command_kubernetes_interval  "1"
+
+                datetime          "#[fg=#6C7086,bg=#22272e,bold] {format} "
+                datetime_format   "%A, %d %b %Y %H:%M"
+                datetime_timezone "America/Chicago"
+            }
+        }
+
+        pane split_direction="vertical" {
+            pane
+        }
+    }
+}

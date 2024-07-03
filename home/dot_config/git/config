@@ -1,3 +1,8 @@
+[user]
+	email = "301291+pragmaticivan@users.noreply.github.com"
+	name = "Ivan Santos"
+	signingKey = "~/.ssh/id_ed25519"
+
 [advice]
 	addEmptyPathspec = false
 
@@ -60,8 +65,3 @@
 
 [submodule]
 	fetchJobs = 4
-
-[user]
-	email = "301291+pragmaticivan@users.noreply.github.com"
-	name = "Ivan Santos"
-	signingKey = "~/.ssh/id_ed25519"

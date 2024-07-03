@@ -87,11 +87,12 @@ brew "bash-completion"
 brew "bat"
 brew "btop"
 brew "gh"
-
+brew "fd"
 # Cross-shell prompt
 
 # Cloud Tools
 brew "kubecolor"
 brew "kubectx"
 brew "minikube"
+brew "lazydocker"
 
