@@ -7,8 +7,7 @@
 # See https://github.com/Homebrew/homebrew-bundle
 
 tap "homebrew/bundle"
-tap "homebrew/cask"
-tap "homebrew/core"
+# tap "saulpw/vd"
 
 # CASKS #
 
@@ -88,6 +87,8 @@ brew "bat"
 brew "btop"
 brew "gh"
 brew "fd"
+# brew "visidata"
+
 # Cross-shell prompt
 
 # Cloud Tools
@@ -95,4 +96,3 @@ brew "kubecolor"
 brew "kubectx"
 brew "minikube"
 brew "lazydocker"
-
