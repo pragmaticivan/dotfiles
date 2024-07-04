@@ -1,0 +1,72 @@
+name: Ubuntu
+
+on:
+  push:
+    branches: [master]
+    paths-ignore:
+      - "README.md"
+      - "Makefile"
+      - "Dockerfile"
+      - "install/macos/**"
+      - ".chezmoiscripts/macos/**"
+      - "dot_tmux.conf.d/os/macos.conf"
+      - "tests/install/macos/**"
+
+  pull_request:
+    branches: [master]
+    paths-ignore:
+      - "README.md"
+      - "Makefile"
+      - "Dockerfile"
+      - "install/macos/**"
+      - ".chezmoiscripts/macos/**"
+      - "dot_tmux.conf.d/os/macos.conf"
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        system: [server, client]
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Setup dotfiles
+        env:
+          SYSTEM: ${{ matrix.system }}
+          DOTFILES_DEBUG: 1
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "${EVENT_NAME}" == "push" ]; then
+            BRANCH_NAME="${{ github.ref_name }}"
+          elif [ "${EVENT_NAME}" == "pull_request" ]; then
+            BRANCH_NAME="${{ github.head_ref }}"
+          fi
+          export BRANCH_NAME
+
+          URL="https://raw.githubusercontent.com/pragmaticivan/dotfiles/${BRANCH_NAME}/setup.sh"
+          echo "Download setup.sh from ${URL}"
+
+          printf '${SYSTEM}\n' | bash -c "$(wget -qO - $URL)"
+
+      - name: Install latest bats-core
+        run: |
+          tmp_dir=$(mktemp -d /tmp/bats-core-XXXXX)
+          git clone --depth 1 https://github.com/bats-core/bats-core.git "${tmp_dir}"
+          cd "${tmp_dir}"
+          sudo ./install.sh /usr/local
+          rm -rf "${tmp_dir}"
+
+      - name: Test file existence
+        env:
+          SYSTEM: ${{ matrix.system }}
+        run: |
+          cd $(chezmoi source-path)/../
+          bats tests/files/common.bats
+          bats --filter-tags common,ubuntu:${SYSTEM} \
+            --print-output-on-failure \
+            tests/files/ubuntu.bats
