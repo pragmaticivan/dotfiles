@@ -1,32 +1,52 @@
-FROM ubuntu:22.04
+ARG BASE_IMAGE=ubuntu:22.04
+
+# ========================================
+#  Base environment
+# ========================================
+
+FROM ${BASE_IMAGE} as base
+
+# Avoid the following error:
+# curl: (77) error setting certificate file: /etc/ssl/certs/ca-certificates.crt
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    ca-certificates
+
+# Install minimum requirements
+RUN apt-get install -y --no-install-recommends \
+    sudo \
+    git \
+    wget \
+    curl
 
 ARG USERNAME=pragmaticivan
 ARG USER_UID=1000
-ARG USER_GID=$USER_UID
+ARG USER_GID=${USER_UID}
 
+<<<<<<< Updated upstream
 ENV TZ=America/Chicago
+=======
+<<<<<<< Updated upstream
+ENV TZ=Asia/Tokyo
+>>>>>>> Stashed changes
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+=======
+RUN groupadd --gid ${USER_GID} ${USERNAME} \
+    && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} -G sudo -s /bin/bash \
+    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
+    && echo 'Defaults verifypw = any' >> /etc/sudoers
+USER ${USERNAME}
+>>>>>>> Stashed changes
 
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
-    curl \
-    git \
-    bats \
-    kcov \
-    sudo \
-    tzdata \
-    parallel \
-    build-essential \
-    ca-certificates
+WORKDIR /home/${USERNAME}
 
-RUN groupadd --gid $USER_GID $USERNAME \
-    && useradd --uid $USER_UID --gid $USER_GID -m $USERNAME -G sudo -s /bin/bash \
-    && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+FROM base as dev
 
-USER $USERNAME
-WORKDIR /home/$USERNAME/.local/share/chezmoi
-
+# Install chezmoi
 RUN sudo sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
 
-RUN mkdir -p ~/.local/share/fonts
-RUN mkdir -p /tmp
+# Install requirements for testing
+RUN sudo apt-get install -y --no-install-recommends \
+    bats \
+    kcov
+
+WORKDIR /home/${USERNAME}/.local/share/chezmoi
