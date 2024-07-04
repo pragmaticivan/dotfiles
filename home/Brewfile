@@ -22,6 +22,7 @@ cask "notion"
 cask "slack"
 cask "telegram"
 cask "whatsapp"
+cask "zoom"
 
 # Utility Tools
 cask "blackhole-2ch"
@@ -29,9 +30,16 @@ cask "imageoptim"
 cask "sensei"
 cask "keka"
 cask "flameshot"
-# cask "little-snitch" #Wait until v6 is released
+cask "hammerspoon"
+cask "little-snitch"
 cask "1password"
 cask "netnewswire"
+# cask "monodraw" - To evaluate
+# cask "bartender" - To evaluate
+mas "Affinity Photo 2: Image Editor", id: 1616822987
+mas "Affinity Designer 2", id: 1616831348
+mas "Amphetamine", id: 937984704
+mas "Deliveries: a package tracker", id: 290986013
 
 # Entertainment Tools
 cask "iina"
