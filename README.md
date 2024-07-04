@@ -1,4 +1,4 @@
-<img width="960" alt="dotfiles" src="https://github.com/pragmaticivan/dotfiles/assets/301291/9fcc289b-db01-4bf5-b165-5174e163fdf6">
+![dotfiles](https://github.com/pragmaticivan/dotfiles/assets/301291/291198e8-5175-4562-88a2-c885458cc003)
 
 
 ## Introduction
