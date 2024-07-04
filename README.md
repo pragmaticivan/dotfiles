@@ -16,3 +16,8 @@ Maintaining dotfiles for your computer is crucial for several reasons. Firstly, 
 ## License
 
 MIT License
+
+## Inspirations
+
+* https://github.com/shunk031/dotfiles
+* https://github.com/caarlos0/dotfiles

@@ -1,10 +1,10 @@
 FROM ubuntu:22.04
 
-ARG USERNAME=shunk031
+ARG USERNAME=pragmaticivan
 ARG USER_UID=1000
 ARG USER_GID=$USER_UID
 
-ENV TZ=Asia/Tokyo
+ENV TZ=America/Chicago
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN apt-get update && \
