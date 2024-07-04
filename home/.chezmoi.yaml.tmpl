@@ -1,0 +1,16 @@
+{{- $system := "" -}}
+{{- if hasKey . "system" -}}
+{{-   $system = .system -}}
+{{- /* Set client to the MacOS default system */ -}}
+{{- else if eq .chezmoi.os "darwin" -}}
+{{    $system = "client" -}}
+{{- else -}}
+{{-   $system = promptString "System (client or server)" -}}
+{{- end -}}
+
+data:
+  name: "Ivan Santos"
+  gitemail: "301291+pragmaticivan@users.noreply.github.com"
+  system: {{ $system | quote }}
+  editor: "nvim"
+  visualeditor: "code"

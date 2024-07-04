@@ -1,0 +1,55 @@
+name: MacOS
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "Makefile"
+      - "Dockerfile"
+      - "install/ubuntu/**"
+      - ".chezmoiscripts/ubuntu/**"
+      - "dot_tmux.conf.d/os/ubuntu.conf"
+      - "tests/install/ubuntu/**"
+
+  pull_request:
+    branches: [main]
+    paths-ignore:
+      - "README.md"
+      - "Makefile"
+      - "Dockerfile"
+      - "install/ubuntu/**"
+      - ".chezmoiscripts/ubuntu/**"
+      - "dot_tmux.conf.d/os/ubuntu.conf"
+      - "tests/install/ubuntu/**"
+
+jobs:
+  build:
+    runs-on: macos-14 # M1 Mac
+
+    steps:
+      - name: Setup dotfiles
+        env:
+          DOTFILES_DEBUG: 1
+          EVENT_NAME: ${{ github.event_name }}
+        run: |
+          if [ "${EVENT_NAME}" == "push" ]; then
+            BRANCH_NAME="${{ github.ref_name }}"
+          elif [ "${EVENT_NAME}" == "pull_request" ]; then
+            BRANCH_NAME="${{ github.head_ref }}"
+          fi
+          export BRANCH_NAME
+
+          URL="https://raw.githubusercontent.com/pragmaticivan/dotfiles/${BRANCH_NAME}/setup.sh"
+          echo "Download setup.sh from ${URL}"
+
+          bash -c "$(curl -fsLS $URL)"
+
+      - name: Test file existence
+        run: |
+          brew install bats-core
+
+          cd $(chezmoi source-path)/../
+          bats --print-output-on-failure \
+            tests/files/common.bats \
+            tests/files/macos.bats
