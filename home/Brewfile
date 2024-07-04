@@ -96,6 +96,7 @@ brew "btop"
 brew "gh"
 brew "fd"
 brew "bats-core"
+brew "chezmoi"
 # brew "visidata"
 
 # Cross-shell prompt
