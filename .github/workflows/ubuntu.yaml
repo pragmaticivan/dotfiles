@@ -2,7 +2,7 @@ name: Ubuntu
 
 on:
   push:
-    branches: [master]
+    branches: [main]
     paths-ignore:
       - "README.md"
       - "Makefile"
@@ -13,7 +13,7 @@ on:
       - "tests/install/macos/**"
 
   pull_request:
-    branches: [master]
+    branches: [main]
     paths-ignore:
       - "README.md"
       - "Makefile"
