@@ -1,5 +1,18 @@
 <img width="960" alt="dotfiles" src="https://github.com/pragmaticivan/dotfiles/assets/301291/9fcc289b-db01-4bf5-b165-5174e163fdf6">
 
-# pragmaticivan' dotfiles with chezmoi
+
+## Introduction
 
 Your dotfiles are how you personalize your system. These are mine.
+
+## Why
+
+Maintaining dotfiles for your computer is crucial for several reasons. Firstly, it ensures consistency across different machines, allowing you to replicate your preferred settings, shortcuts, and configurations effortlessly. This consistency saves time and frustration when transitioning between workstations or setting up a new system. Secondly, dotfiles serve as a personal backup of your customized environment. By version-controlling them with tools like Git, you not only safeguard against accidental changes but also enable easy restoration in case of system crashes or upgrades.
+
+## Install
+
+1. `$ sh -c "$(curl -fsLS get.chezmoi.io)" -- init --apply pragmaticivan`
+
+## License
+
+MIT License
