@@ -97,7 +97,7 @@ brew "gh"
 brew "fd"
 brew "bats-core"
 brew "chezmoi"
-# brew "visidata"
+# brew "visidata" - To evaluate
 
 # Cross-shell prompt
 
