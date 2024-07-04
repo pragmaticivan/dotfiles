@@ -6,7 +6,6 @@
         "${HOME}/.config/git/ignore"
         "${HOME}/.config/git/config"
         "${HOME}/.ssh/config"
-        "${HOME}/.vimrc"
     )
     for file in "${files_exists[@]}"; do
         echo "Checking ${file}"
