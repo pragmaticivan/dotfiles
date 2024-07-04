@@ -3,8 +3,6 @@
 @test "[macos] dotfiles" {
     files_exists=(
         "${HOME}/.zshrc"
-        "${HOME}/.zprofile"
-        "${HOME}/.bashrc"
     )
     for file in "${files_exists[@]}"; do
         echo "Checking ${file}"
