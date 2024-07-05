@@ -10,6 +10,7 @@
 tap "homebrew/bundle"
 
 # CASKS #
+cask "1password-cli"
 cask "1password"
 cask "alacritty"
 cask "blackhole-2ch"
@@ -50,7 +51,6 @@ cask "zoom"
 # mas "Deliveries: a package tracker", id: 290986013
 
 # BREW #
-brew "1password-cli"
 brew "antidote"
 brew "aspell"
 brew "atuin"
