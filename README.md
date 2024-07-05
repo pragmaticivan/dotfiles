@@ -32,6 +32,33 @@ The following is a minimal setup command to install chezmoi and my dotfiles from
 
 > sh -c "$(curl -fsLS get.chezmoi.io)" -- init pragmaticivan --apply
 
+## 🛠️ Update & Test 🧪
+
+Updating and testing the dotfiles follows [chezmoi's daily operations](https://www.chezmoi.io/user-guide/daily-operations/).
+To verify that the updated scripts work correctly, run the scripts on the actual local machine and on the docker container.
+
+### 🐳 Test on Docker Container
+
+Test the executation of the setup scripts on Ubuntu in its initial state.
+The following command will launch the test environment using Docker 🐳.
+
+```shell
+make docker-dev
+
+# docker run -it -v "$(pwd):/home/$(whoami)/.local/share/chezmoi" dotfiles /bin/bash --login
+# pragmaticivan@6f97d279cb51:~$
+```
+
+Run the [`chezmoi init --apply`](https://www.chezmoi.io/user-guide/setup/#use-a-hosted-repo-to-manage-your-dotfiles-across-multiple-machines) command to verify that the system is set up correctly.
+
+```shell
+pragmaticivan@5f93d270cb51:~$ chezmoi init --apply
+```
+
+### 🦇 Unit Test with [Bats](https://github.com/bats-core/bats-core) [![Unit test](https://github.com/pragmaticivan/dotfiles/actions/workflows/macos.yaml/badge.svg)](https://github.com/pragmaticivan/dotfiles/actions/workflows/macos.yaml)
+
+Test the shellscript for setup with [Bash Automated Testing System (bats)](https://github.com/bats-core/bats-core).
+The scripts for the unit test can be found under [`./tests`](https://github.com/pragmaticivan/dotfiles/tree/main/tests) directory.
 
 ## 👏 Acknowledgements
 
@@ -42,4 +69,4 @@ Inspiration and code was taken from many sources, including:
 
 ## 📝 License
 
-The code is available under the [MIT license](https://github.com/pragmaticivan/dotfiles/blob/master/LICENSE).
+The code is available under the [MIT license](https://github.com/pragmaticivan/dotfiles/blob/main/LICENSE).

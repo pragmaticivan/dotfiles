@@ -6,103 +6,79 @@
 #
 # See https://github.com/Homebrew/homebrew-bundle
 
+# Taps #
 tap "homebrew/bundle"
-# tap "saulpw/vd"
 
 # CASKS #
-
-# Development Tools
-cask "homebrew/cask/docker"                 # Docker
-cask "visual-studio-code"                   # Vscode
-cask "alacritty"
-
-# Communication Tools
-cask "discord"
-cask "notion"
-cask "slack"
-cask "telegram"
-cask "whatsapp"
-cask "zoom"
-
-# Utility Tools
-cask "blackhole-2ch"
-cask "imageoptim"
-cask "sensei"
-cask "keka"
-cask "flameshot"
-cask "hammerspoon"
-cask "little-snitch"
 cask "1password"
+cask "alacritty"
+cask "blackhole-2ch"
+cask "clocker"
+cask "discord"
+cask "firefox"
+cask "flameshot"
+cask "font-fira-code-nerd-font"
+cask "font-fira-mono-nerd-font"
+cask "font-jetbrains-mono"
+cask "font-meslo-for-powerline"
+cask "google-chrome"
+cask "hammerspoon"
+cask "homebrew/cask/docker"
+cask "iina"
+cask "imageoptim"
+cask "keka"
+cask "little-snitch"
 cask "netnewswire"
+cask "notion"
+cask "raycast"
+cask "sensei"
+cask "slack"
+cask "spotify"
+cask "telegram"
+cask "transmission"
+cask "visual-studio-code"
+cask "whatsapp"
+cask "whisky"
+cask "zoom"
 # cask "monodraw" - To evaluate
 # cask "bartender" - To evaluate
+
+# MAS #
 # mas "Affinity Photo 2: Image Editor", id: 1616822987
 # mas "Affinity Designer 2", id: 1616831348
 # mas "Amphetamine", id: 937984704
 # mas "Deliveries: a package tracker", id: 290986013
 
-# Entertainment Tools
-cask "iina"
-cask "whisky"
-
-# Productivity Tools
-cask "raycast"
-
-# Browsers
-cask "google-chrome"
-cask "firefox"
-
-# Fonts
-cask "font-fira-code-nerd-font"
-cask "font-fira-mono-nerd-font"
-cask "font-meslo-for-powerline"
-cask "font-jetbrains-mono"
-
 # BREW #
-
-# General packages for development and system management
-brew "aspell"                              # Spell checker
-
-# Encryption and security tools
-
-
-# Media-related packages
-
-
-# Text and terminal utilities
-brew "jq"
-brew "zellij"
-brew "starship"
-brew "nvim"
-brew "zsh"
+brew "1password-cli"
 brew "antidote"
+brew "aspell"
 brew "atuin"
-brew "zoxide"
-brew "mise"
-brew "fzf"
-brew "tealdeer"
-brew "lazygit"
-brew "lsd"
-brew "ripgrep"
-brew "fd"
-brew "yazi"
-brew "ffmpegthumbnailer"
-brew "unar"
-brew "poppler"
-brew "golangci-lint"
 brew "bash-completion"
 brew "bat"
-brew "btop"
-brew "gh"
-brew "fd"
 brew "bats-core"
+brew "btop"
 brew "chezmoi"
-# brew "visidata" - To evaluate
-
-# Cross-shell prompt
-
-# Cloud Tools
+brew "fd"
+brew "ffmpegthumbnailer"
+brew "fzf"
+brew "gh"
+brew "golangci-lint"
+brew "jq"
 brew "kubecolor"
 brew "kubectx"
-brew "minikube"
 brew "lazydocker"
+brew "lazygit"
+brew "lsd"
+brew "minikube"
+brew "mise"
+brew "nvim"
+brew "poppler"
+brew "ripgrep"
+brew "starship"
+brew "tealdeer"
+brew "unar"
+brew "yazi"
+brew "zellij"
+brew "zoxide"
+brew "zsh"

@@ -1,5 +1,5 @@
 DOCKER_IMAGE_NAME=dotfiles
-DOCKER_PLATFORM=linux/amd64
+DOCKER_PLATFORM=linux/arm64
 #
 # Docker
 #
@@ -24,8 +24,8 @@ docker-build-dev:
 		--platform $(DOCKER_PLATFORM) . \
 		--build-arg USERNAME="$$(whoami)"
 
-.PHONY: docker-run-dev
-docker-run-dev: docker-build-dev
+.PHONY: docker-dev
+docker-dev: docker-build-dev
 	docker run --rm -it \
 		-v "$$(pwd):/home/$$(whoami)/.local/share/chezmoi" \
 		--platform $(DOCKER_PLATFORM) $(DOCKER_IMAGE_NAME) \

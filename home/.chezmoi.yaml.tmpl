@@ -1,3 +1,8 @@
+{{- $gitemail := "301291+pragmaticivan@users.noreply.github.com" -}}
+{{- $name := "Ivan Santos" -}}
+{{- $editor := "Ivan Santos" -}}
+{{- $visual_editor := "Ivan Santos" -}}
+
 {{- $system := "" -}}
 {{- if hasKey . "system" -}}
 {{-   $system = .system -}}
@@ -8,9 +13,12 @@
 {{-   $system = promptString "System (client or server)" -}}
 {{- end -}}
 
+sourceDir: {{ .chezmoi.sourceDir }}
+
+---
 data:
-  name: "Ivan Santos"
-  gitemail: "301291+pragmaticivan@users.noreply.github.com"
   system: {{ $system | quote }}
-  editor: "nvim"
-  visualeditor: "code"
+  name: {{ $name | quote }}
+  gitemail: {{ $gitemail | quote }}
+  editor: {{ $editor | quote }}
+  visualeditor: {{ $visual_editor | quote }}

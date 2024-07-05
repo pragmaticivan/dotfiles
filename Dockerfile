@@ -22,20 +22,11 @@ ARG USERNAME=pragmaticivan
 ARG USER_UID=1000
 ARG USER_GID=${USER_UID}
 
-<<<<<<< Updated upstream
-ENV TZ=America/Chicago
-=======
-<<<<<<< Updated upstream
-ENV TZ=Asia/Tokyo
->>>>>>> Stashed changes
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
-=======
 RUN groupadd --gid ${USER_GID} ${USERNAME} \
     && useradd --uid ${USER_UID} --gid ${USER_GID} -m ${USERNAME} -G sudo -s /bin/bash \
     && echo '%sudo ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers \
     && echo 'Defaults verifypw = any' >> /etc/sudoers
 USER ${USERNAME}
->>>>>>> Stashed changes
 
 WORKDIR /home/${USERNAME}
 
