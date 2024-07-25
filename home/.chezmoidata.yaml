@@ -2,3 +2,7 @@ name: "Ivan Santos"
 gitemail: "301291+pragmaticivan@users.noreply.github.com"
 editor: "nvim"
 visualeditor: "code"
+mise_plugins:
+- "poetry"
+- "https://github.com/asdf-community/asdf-hashicorp"
+- "https://github.com/looztra/asdf-terraform-docs"

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+# vim: set syntax=bash:
+
+echo "Installing mise plugins"
+
+{{ range $plugin := .mise_plugins }}
+if mise plugins --core | grep -wq {{ $plugin }}; then
+  echo "Plugin {{ $plugin }} is core, skipping"
+else
+  if mise plugins | grep -wq {{ $plugin }}; then
+    echo "Plugin {{ $plugin }} is already installed, skipping"
+  else
+    mise plugin install {{ $plugin }} -y || true
+  fi
+fi
+{{ end }}
