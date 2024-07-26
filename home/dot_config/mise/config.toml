@@ -1,6 +1,7 @@
 [settings]
 experimental = false
 verbose = false
+legacy_version_file_disable_tools = ["terraform"]
 
 [tools]
 go = ["1.22"]
