@@ -8,6 +8,7 @@
 
 # General
 # -----------------------------------------------------------------------------
+fpath+=~/.zfunc
 autoload -U +X compinit && compinit
 
 # Minikube
