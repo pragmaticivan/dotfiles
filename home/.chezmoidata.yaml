@@ -6,3 +6,4 @@ mise_plugins:
 - "poetry"
 - "https://github.com/asdf-community/asdf-hashicorp"
 - "https://github.com/looztra/asdf-terraform-docs"
+- "https://github.com/luizm/asdf-shellcheck"
