@@ -4,7 +4,7 @@ verbose = false
 legacy_version_file_disable_tools = ["terraform"]
 
 [tools]
-go = ["1.22"]
+go = ["1.23"]
 nodejs = ["lts"]
 python = ["3.12"]
 ruby = ["3.3"]
