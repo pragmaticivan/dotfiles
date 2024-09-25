@@ -118,3 +118,8 @@
 
     # Include extra configuration (if any).
     path = .gitconfig_local
+
+{{ if eq .tty "true" -}}
+[url "git@github.com:"]
+    insteadOf = https://github.com/
+{{ end -}}

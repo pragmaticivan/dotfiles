@@ -1,3 +1,16 @@
+# -*-mode:conf-toml-*- vim:ft=toml
+
+# ~/.local/share/chezmoi/.chezmoi.toml.tmpl
+# =============================================================================
+# Used to customize configuration when doing a `chezmoi init`.
+#
+# This template file will trigger prompts to fill-in machine-specific
+# templateable values. The resulting file is then created at
+# `~/.config/chezmoi/chezmoi.toml`
+# See https://www.chezmoi.io/docs/how-to/
+#
+# {{- /* This file supports Go's text/template language. */}}
+
 {{- $gitemail := "301291+pragmaticivan@users.noreply.github.com" -}}
 {{- $name := "Ivan Santos" -}}
 {{- $editor := "Ivan Santos" -}}
@@ -13,6 +26,13 @@
 {{-   $system = promptString "System (client or server)" -}}
 {{- end -}}
 
+{{- $tty := "" -}}
+{{- if stdinIsATTY -}}
+{{-   $tty = "true" -}}
+{{- else -}}
+{{-   $tty = "false" -}}
+{{- end -}}
+
 sourceDir: {{ .chezmoi.sourceDir }}
 
 ---
@@ -22,3 +42,4 @@ data:
   gitemail: {{ $gitemail | quote }}
   editor: {{ $editor | quote }}
   visualeditor: {{ $visual_editor | quote }}
+  tty: {{ $tty | quote }}
