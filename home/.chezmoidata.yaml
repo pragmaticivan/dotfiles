@@ -1,5 +1,11 @@
+name: "Ivan Santos"
+gitemail: "301291+pragmaticivan@users.noreply.github.com"
+editor: "nvim"
+visualeditor: "code -w"
 mise_plugins:
 - "poetry"
 - "https://github.com/asdf-community/asdf-hashicorp"
 - "https://github.com/looztra/asdf-terraform-docs"
 - "https://github.com/luizm/asdf-shellcheck"
+- "https://github.com/rfrancis/asdf-gradle"
+- "https://github.com/asdf-community/asdf-kotlin"
