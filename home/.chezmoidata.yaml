@@ -9,3 +9,4 @@ mise_plugins:
 - "https://github.com/luizm/asdf-shellcheck"
 - "https://github.com/rfrancis/asdf-gradle"
 - "https://github.com/asdf-community/asdf-kotlin"
+- "https://github.com/asdf-community/asdf-uv"
