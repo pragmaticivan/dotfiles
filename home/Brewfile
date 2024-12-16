@@ -8,40 +8,45 @@
 
 # Taps #
 tap "homebrew/bundle"
+tap "FelixKratz/formulae"
 
 # CASKS #
 cask "1password-cli"
 cask "1password"
 cask "alacritty"
-cask "blackhole-2ch"
 cask "brave-browser"
 cask "clocker"
 cask "discord"
 cask "firefox"
-cask "flameshot"
+cask "flameshot" # Powerful yet simple to use screenshot software. - https://flameshot.org/ - TODO: find better tool
 cask "font-fira-code-nerd-font"
 cask "font-fira-mono-nerd-font"
 cask "font-jetbrains-mono"
 cask "font-meslo-for-powerline"
+cask "font-hack-nerd-font"
 cask "google-chrome"
-cask "hammerspoon"
-cask "homebrew/cask/docker"
-cask "iina"
-cask "imageoptim"
-cask "keka"
-cask "little-snitch"
-cask "netnewswire"
+cask "homebrew/cask/docker" # Docker Desktop - https://www.docker.com/products/docker-desktop
+cask "iina" # The modern media player for macOS. - https://iina.io/
+cask "imageoptim" # Removes bloated metadata. Saves disk space & bandwidth by compressing images without losing quality. - https://imageoptim.com/mac
+cask "keka" # The macOS file archiver - https://www.keka.io/en/
+cask "little-snitch" # Protect your privacy. Keep an eye on Internet connections from all applications as to expose the hidden connections. - https://www.obdev.at/products/littlesnitch/index.html
+cask "netnewswire" # NetNewsWire is a free and open-source RSS reader for macOS. - https://ranchero.com/netnewswire/
 cask "notion"
-cask "raycast"
-cask "sensei"
-cask "slack"
-cask "spotify"
+cask "raycast" # Your shortcut to everything. - https://raycast.com/
+cask "slack" # Slack is where work happens. - https://slack.com/
 cask "telegram"
 cask "transmission"
 cask "visual-studio-code"
 cask "whatsapp"
-cask "whisky"
-cask "zoom"
+cask "whisky" # Run Modern Windows Games on macOS - https://getwhisky.app/
+cask "lunar" # Intelligent adaptive brightness for your external display. - https://lunar.fyi/
+cask "wireshark" # The world’s foremost and widely-used network protocol analyzer. - https://www.wireshark.org/
+cask "sf-symbols"
+cask "font-sf-mono"
+cask "font-sf-pro"
+
+# Trial for paid fee
+cask "sensei" # Maximise your Mac performance. - https://cindori.com/sensei
 # cask "monodraw" - To evaluate
 # cask "bartender" - To evaluate
 
@@ -88,3 +93,9 @@ brew "yazi"
 brew "zellij"
 brew "zoxide"
 brew "zsh"
+brew "sketchybar"
+brew "font-sf-pro"
+brew "lua"
+brew "switchaudio-osx"
+brew "nowplaying-cli"
+brew "borders"
