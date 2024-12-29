@@ -1,1 +1,11 @@
-theme = "/Applications/Ghostty.app/Contents/Resources/ghostty/themes/catppuccin-macchiato"
+# vi:ft=conf
+#
+# https://github.com/mitchellh/ghostty/blob/main/src/config/Config.zig
+#
+
+window-decoration = true
+window-theme = "dark"
+cursor-style = block
+clipboard-read = "allow"
+clipboard-paste-protection = false
+theme = "catppuccin-macchiato"
