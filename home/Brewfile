@@ -13,7 +13,6 @@ tap "FelixKratz/formulae"
 # CASKS #
 cask "1password-cli"
 cask "1password"
-cask "alacritty"
 cask "brave-browser"
 cask "clocker"
 cask "discord"

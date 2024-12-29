@@ -132,12 +132,6 @@
           "full_name": "font-fira-mono-nerd-font"
         }
       },
-      "alacritty": {
-        "version": "0.13.2",
-        "options": {
-          "full_name": "alacritty"
-        }
-      },
       "zoom": {
         "version": "6.1.1.36333",
         "options": {
