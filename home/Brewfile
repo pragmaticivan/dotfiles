@@ -43,6 +43,7 @@ cask "wireshark" # The world’s foremost and widely-used network protocol analy
 cask "sf-symbols"
 cask "font-sf-mono"
 cask "font-sf-pro"
+cask "ghostty"
 
 # Trial for paid fee
 cask "sensei" # Maximise your Mac performance. - https://cindori.com/sensei
