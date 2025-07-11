@@ -35,14 +35,34 @@ defaults:
         hidden: false
 repoPaths:
   :owner/:repo: ~/Code/:owner/:repo
+
 pager:
   diff: delta
+
 keybindings:
+  universal:
+    - name: lazygit
+      key: g
+      command: >
+        cd {{.RepoPath}} && lazygit
+
   prs:
-    - key: N
+    - name: add
+      key: A
       command: >
-        gh pr comment --repo {{.RepoName}} {{.PrNumber}} --body "@dependabot rebase"
-    - key: M
+        cd {{.RepoPath}} && git add -A && lazygit
+
+    - name: open in vscode
+      key: V
       command: >
-        gh pr review --repo {{.RepoName}} {{.PrNumber}} --approve &&
-        gh pr comment --repo {{.RepoName}} {{.PrNumber}} --body "@dependabot squash and merge"
+        cd {{.RepoPath}} && gh pr checkout {{.PrNumber}} && code .
+
+    - name: approve
+      key: v
+      command: >
+        gh pr review --repo {{.RepoName}} --approve --body "$(gum input --prompt='Approve Comment: ')" {{.PrNumber}}
+
+    - name: merge
+      key: m
+      command: >
+        gh pr merge --repo {{.RepoName}} {{.PrNumber}} --delete-branch
