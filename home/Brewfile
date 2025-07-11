@@ -2,99 +2,177 @@
 
 # ~/.Brewfile
 # =============================================================================
-# Project dependencies installed using `brew bundle` or `~/dotfiles.sh`.
+# Project dependencies installed using `brew bundle`.
 #
 # See https://github.com/Homebrew/homebrew-bundle
 
-# Taps #
-tap "homebrew/bundle"
-tap "FelixKratz/formulae"
-
-# CASKS #
-cask "1password-cli"
-cask "1password"
+# BROWSERS #
 cask "brave-browser"
-cask "clocker"
-cask "discord"
 cask "firefox"
-cask "flameshot" # Powerful yet simple to use screenshot software. - https://flameshot.org/ - TODO: find better tool
+cask "google-chrome"
+
+# COMMUNICATION #
+cask "discord"
+cask "slack"
+cask "whatsapp"
+
+# PRODUCTIVITY & ORGANIZATION #
+cask "clocker" # Menubar World Clock
+cask "notion"
+cask "raycast" # Your shortcut to everything. - https://raycast.com/
+cask "netnewswire" # NetNewsWire is a free and open-source RSS reader for macOS. - https://ranchero.com/netnewswire/
+cask "transmission"
+cask "visual-studio-code"
+
+# FONTS #
 cask "font-fira-code-nerd-font"
 cask "font-fira-mono-nerd-font"
 cask "font-jetbrains-mono"
 cask "font-meslo-for-powerline"
 cask "font-hack-nerd-font"
-cask "google-chrome"
-cask "homebrew/cask/docker" # Docker Desktop - https://www.docker.com/products/docker-desktop
-cask "iina" # The modern media player for macOS. - https://iina.io/
-cask "imageoptim" # Removes bloated metadata. Saves disk space & bandwidth by compressing images without losing quality. - https://imageoptim.com/mac
-cask "keka" # The macOS file archiver - https://www.keka.io/en/
-cask "little-snitch" # Protect your privacy. Keep an eye on Internet connections from all applications as to expose the hidden connections. - https://www.obdev.at/products/littlesnitch/index.html
-cask "netnewswire" # NetNewsWire is a free and open-source RSS reader for macOS. - https://ranchero.com/netnewswire/
-cask "notion"
-cask "raycast" # Your shortcut to everything. - https://raycast.com/
-cask "slack" # Slack is where work happens. - https://slack.com/
-cask "telegram"
-cask "transmission"
-cask "visual-studio-code"
-cask "whatsapp"
-cask "whisky" # Run Modern Windows Games on macOS - https://getwhisky.app/
-cask "lunar" # Intelligent adaptive brightness for your external display. - https://lunar.fyi/
-cask "wireshark" # The world’s foremost and widely-used network protocol analyzer. - https://www.wireshark.org/
-cask "sf-symbols"
 cask "font-sf-mono"
 cask "font-sf-pro"
-cask "ghostty"
 
-# Trial for paid fee
+# UTILITIES #
+cask "flameshot" # Powerful yet simple to use screenshot software. - https://flameshot.org/ - TODO: find better tool
+cask "imageoptim" # Removes bloated metadata. Saves disk space & bandwidth by compressing images without losing quality. - https://imageoptim.com/mac
+cask "keka" # The macOS file archiver - https://www.keka.io/en/
+cask "lunar" # Intelligent adaptive brightness for your external display. - https://lunar.fyi/
+cask "sf-symbols"
+cask "wireshark" # The world’s foremost and widely-used network protocol analyzer. - https://www.wireshark.org/
+
+# MEDIA #
+cask "iina" # The modern media player for macOS. - https://iina.io/
+
+# DEVELOPMENT #
+cask "docker-desktop" # Docker Desktop - https://www.docker.com/products/docker-desktop
+cask "ghostty"
+cask "alacritty"
+
+# SYSTEM TOOLS & SECURITY #
+cask "1password-cli"
+cask "1password"
+cask "little-snitch" # Protect your privacy. Keep an eye on Internet connections from all applications as to expose the hidden connections. - https://www.obdev.at/products/littlesnitch/index.html
+
+# GAMING & EMULATION #
+cask "whisky" # Run Modern Windows Games on macOS - https://getwhisky.app/
+
+# TRIAL / TO EVALUATE #
 cask "sensei" # Maximise your Mac performance. - https://cindori.com/sensei
 # cask "monodraw" - To evaluate
 # cask "bartender" - To evaluate
+
+# BREW #
+# SHELL & TERMINAL TOOLS #
+brew "antidote"
+brew "atuin"
+brew "bash-completion"
+brew "starship"
+brew "zsh"
+brew "zoxide"
+brew "fzf"
+brew "lsd"
+brew "btop"
+brew "yazi"
+brew "zellij"
+brew "bat"
+brew "tealdeer"
+
+# DEVELOPMENT TOOLS #
+brew "chezmoi"
+brew "gh"
+brew "golangci-lint"
+brew "lazygit"
+brew "lazydocker"
+brew "mise"
+brew "nvim"
+brew "ollama"
+brew "bats-core"
+brew "lua"
+
+# SYSTEM UTILITIES #
+brew "fastfetch"
+brew "fd"
+brew "ripgrep"
+brew "jq"
+brew "unar"
+brew "switchaudio-osx"
+brew "nowplaying-cli"
+brew "aspell"
+
+# NETWORKING & CLOUD #
+brew "kubecolor"
+brew "kubectx"
+brew "minikube"
+
+# PROGRAMMING LANGUAGES & RUNTIMES #
+brew "python"
+brew "pipx"
+
+# MEDIA & DOCUMENTS #
+brew "ffmpegthumbnailer"
+brew "poppler"
+
+# Review Externally Installed Apps
+# =============================================================================
+
+# CREATIVE & DESIGN #
+# Adobe Lightroom CC
+# Adobe Photoshop CC
+# Affinity Photo 2: Image Editor (MAS)
+# Affinity Designer 2 (MAS)
+# Magnet
+# Monodraw (see trial section above)
+
+# PRODUCTIVITY & ORGANIZATION #
+# Beeper Desktop
+# Goodnotes
+# Google Drive
+# Notion Calendar
+# Notion Web Clipper (Safari)
+# Things
+# Typefully
+# Deliveries: a package tracker (MAS)
+# Amphetamine (MAS)
+
+# COMMUNICATION #
+# Microsoft Outlook
+# Grammarly Desktop
+# Grammarly for Safari
+# Termius
+
+# UTILITIES #
+# CrossOver
+# CrossOver Preview
+# Cursor
+# Elgato Camera Hub
+# hammerspoon
+# Insta360 Link Controller
+# JSONPeep (safari)
+# Little Snitch
+# Snagit 2024
+# SoundSource
+# ScreenFlow
+# TNAS PC
+# WiFiman
+# Bartender (see trial section above)
+
+# MEDIA #
+# OBS
+# Spotify
+# Kindle
+
+# NETWORKING & SECURITY #
+# ProtonVPN
+
+# VIRTUALIZATION #
+# VMware Fusion
+
+# GAMING & REMOTE #
+# PS Remote Play
 
 # MAS #
 # mas "Affinity Photo 2: Image Editor", id: 1616822987
 # mas "Affinity Designer 2", id: 1616831348
 # mas "Amphetamine", id: 937984704
 # mas "Deliveries: a package tracker", id: 290986013
-
-# BREW #
-brew "antidote"
-brew "aspell"
-brew "atuin"
-brew "bash-completion"
-brew "bat"
-brew "bats-core"
-brew "btop"
-brew "chezmoi"
-brew "fastfetch"
-brew "fd"
-brew "ffmpegthumbnailer"
-brew "fzf"
-brew "gh"
-brew "golangci-lint"
-brew "gum"
-brew "jq"
-brew "kubecolor"
-brew "kubectx"
-brew "lazydocker"
-brew "lazygit"
-brew "lsd"
-brew "minikube"
-brew "mise"
-brew "nvim"
-brew "ollama"
-brew "pipx"
-brew "poppler"
-brew "python"
-brew "ripgrep"
-brew "starship"
-brew "tealdeer"
-brew "unar"
-brew "yazi"
-brew "zellij"
-brew "zoxide"
-brew "zsh"
-brew "sketchybar"
-brew "lua"
-brew "switchaudio-osx"
-brew "nowplaying-cli"
-brew "borders"
