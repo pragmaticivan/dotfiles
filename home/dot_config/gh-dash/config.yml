@@ -1,0 +1,48 @@
+---
+prSections:
+  - title: My Pull Requests
+    filters: is:open author:@me
+  - title: Needs My Review
+    filters: is:open review-requested:@me -author:app/dependabot
+  - title: pragmaticivan
+    filters: is:open user:pragmaticivan -author:app/dependabot
+  - title: pragmaticivan [bots]
+    filters: is:pr is:open user:pragmaticivan author:app/dependabot
+issuesSections:
+  - title: My Issues
+    filters: is:open author:@me
+  - title: Assigned
+    filters: is:open assignee:@me
+  - title: pragmaticivan
+    filters: is:open user:pragmaticivan
+defaults:
+  preview:
+    open: false
+    width: 80
+  prsLimit: 25
+  issuesLimit: 25
+  view: prs
+  layout:
+    prs:
+      repo:
+        grow: true
+        width: 25
+        hidden: false
+    issues:
+      repo:
+        grow: true
+        width: 25
+        hidden: false
+repoPaths:
+  :owner/:repo: ~/Code/:owner/:repo
+pager:
+  diff: delta
+keybindings:
+  prs:
+    - key: N
+      command: >
+        gh pr comment --repo {{.RepoName}} {{.PrNumber}} --body "@dependabot rebase"
+    - key: M
+      command: >
+        gh pr review --repo {{.RepoName}} {{.PrNumber}} --approve &&
+        gh pr comment --repo {{.RepoName}} {{.PrNumber}} --body "@dependabot squash and merge"
