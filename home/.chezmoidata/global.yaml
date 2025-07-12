@@ -2,6 +2,7 @@ name: "Ivan Santos"
 gitemail: "301291+pragmaticivan@users.noreply.github.com"
 editor: "nvim"
 visualeditor: "code -w"
+externalGitArgs: "clone.args = ['--depth', '1']\npull.args = ['--depth', '1']"
 
 # TODO: move to its own file
 mise_plugins:

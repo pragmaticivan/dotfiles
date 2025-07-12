@@ -1,0 +1,28 @@
+##########################################
+
+# ENVIRONMENT VARIABLES
+# TODO: Support ignored file
+# source "$HOME/.zshenv_private"
+export DISABLE_AUTO_UPDATE=true
+export CHROME_EXECUTABLE=$(which brave)
+
+##########################################
+
+# COMMON
+
+export NVIM_APPNAME='nvim'
+export EDITOR='nvim' # 'code --wait', 'vim'
+export VISUAL="$EDITOR"
+export PAGER='bat' # 'less', 'more', 'bat', no 'delta'!
+export GIT_PAGER='delta' # 'less', 'more', 'bat', 'delta'
+export BROWSER='brave' # 'google-chrome-stable'
+
+##########################################
+
+# ZOXIDE
+export ZOXIDE_CMD_OVERRIDE="cd"
+
+##########################################
+
+# CUSTOM
+export CATPPUCCIN_FLAVOR='{{ .catppuccinFlavor }}' # For those config can read env

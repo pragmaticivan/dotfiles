@@ -1,7 +1,19 @@
-[manager]
-show_hidden = false
+[mgr]
+show_hidden = true
 show_symlink = true
-sort_by = "natural"
-sort_dir_first = true
-sort_reverse = false
-sort_sensitive = false
+linemode = "size"
+
+[plugin]
+prepend_previewers = [
+  { name = "*.md", run = "glow" },
+]
+prepend_fetchers = [
+  { id = "git", name = "*", run = "git" },
+  { id = "git", name = "*/", run = "git" },
+]
+
+
+[opener]
+edit = [
+  { run = '$EDITOR "$@"', block = true, for = "unix" },
+]

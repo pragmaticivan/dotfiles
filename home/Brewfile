@@ -105,6 +105,7 @@ brew "aspell"
 brew "kubecolor"
 brew "kubectx"
 brew "minikube"
+brew "k9s"
 
 # PROGRAMMING LANGUAGES & RUNTIMES #
 brew "python"
