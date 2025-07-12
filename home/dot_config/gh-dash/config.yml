@@ -2,50 +2,69 @@
 prSections:
   - title: My Pull Requests
     filters: is:open author:@me
+    layout:
+      author:
+        hidden: true
+
   - title: Needs My Review
     filters: is:open review-requested:@me -author:app/dependabot
-  - title: pragmaticivan
-    filters: is:open user:pragmaticivan -author:app/dependabot
+    layout:
+      repo:
+        width: 6
+
+  - title: Commented
+    filters: commenter:@me
+
   - title: pragmaticivan [bots]
     filters: is:pr is:open user:pragmaticivan author:app/dependabot
+
+  - title: nestjs-otel
+    filters: "is:open repo:pragmaticivan/nestjs-otel"
+
+  - title: opentelemetry-lambda
+    filters: "is:open repo:open-telemetry/opentelemetry-lambda"
+
 issuesSections:
-  - title: My Issues
-    filters: is:open author:@me
+  - title: Creator
+    filters: author:@me
+
+  - title: Commented
+    filters: is:open commenter:@me
+
+  - title: opentelemetry-lambda
+    filters: is:open repo:open-telemetry/opentelemetry-lambda
+
   - title: Assigned
     filters: is:open assignee:@me
-  - title: pragmaticivan
-    filters: is:open user:pragmaticivan
+
+pager:
+  diff: diffnav
+
 defaults:
-  preview:
-    open: false
-    width: 80
-  prsLimit: 25
-  issuesLimit: 25
-  view: prs
+  view: repo
+  refetchIntervalMinutes: 10
   layout:
     prs:
-      repo:
-        grow: true
-        width: 25
+      repoName:
+        grow: true,
+        width: 10
         hidden: false
-    issues:
-      repo:
-        grow: true
-        width: 25
-        hidden: false
+      base:
+        hidden: true
+  preview:
+    open: true
+    width: 70
+  prsLimit: 20
+  issuesLimit: 20
+
 repoPaths:
   :owner/:repo: ~/Code/:owner/:repo
 
-pager:
-  diff: delta
-
 keybindings:
   universal:
-    - name: lazygit
-      key: g
+    - key: g
       command: >
         cd {{.RepoPath}} && lazygit
-
   prs:
     - name: add
       key: A
@@ -66,3 +85,24 @@ keybindings:
       key: m
       command: >
         gh pr merge --repo {{.RepoName}} {{.PrNumber}} --delete-branch
+
+theme:
+  ui:
+    sectionsShowCount: true
+    table:
+      compact: false
+  colors:
+    text:
+      primary: "#cad3f5"
+      secondary: "#b7bdf8"
+      inverted: "#181926"
+      faint: "#b8c0e0"
+      warning: "#eed49f"
+      success: "#a6da95"
+      error: "#ed8796"
+    background:
+      selected: "#363a4f"
+    border:
+      primary: "#b7bdf8"
+      secondary: "#494d64"
+      faint: "#363a4f"

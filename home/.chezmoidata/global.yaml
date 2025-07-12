@@ -2,6 +2,8 @@ name: "Ivan Santos"
 gitemail: "301291+pragmaticivan@users.noreply.github.com"
 editor: "nvim"
 visualeditor: "code -w"
+
+# TODO: move to its own file
 mise_plugins:
 - "poetry"
 - "https://github.com/asdf-community/asdf-hashicorp"

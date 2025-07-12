@@ -1,0 +1,13 @@
+{{ if eq .chezmoi.os "linux" "darwin" }}
+
+##########################################
+
+[".antidote"]
+type = "archive"
+url = "https://github.com/mattmc3/antidote/archive/refs/tags/v1.9.6.tar.gz"
+exact = true
+stripComponents = 1
+
+##########################################
+
+{{ end }}
