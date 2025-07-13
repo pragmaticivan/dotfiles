@@ -32,6 +32,7 @@ jobs:
         env:
           DOTFILES_DEBUG: 1
           EVENT_NAME: ${{ github.event_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if [ "${EVENT_NAME}" == "push" ]; then
             BRANCH_NAME="${{ github.ref_name }}"
