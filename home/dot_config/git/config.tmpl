@@ -1,7 +1,22 @@
+[include]
+  path = ~/.config/delta/catppuccin.gitconfig
+
 [user]
 	email = "301291+pragmaticivan@users.noreply.github.com"
 	name = "Ivan Santos"
 	signingKey = "~/.ssh/id_ed25519"
+
+[github]
+  user = pragmaticivan
+
+[core]
+	autocrlf = "input"
+	compression = -1
+	editor = "nvim"
+	precomposeunicode = true
+  pager = diffnav
+	whitespace = "trailing-space,space-before-tab"
+  excludesFile = ~/.config/git/ignore
 
 [advice]
 	addEmptyPathspec = false
@@ -20,13 +35,6 @@
 
 [commit]
 	gpgSign = true
-
-[core]
-	autocrlf = "input"
-	compression = -1
-	editor = "nvim"
-	precomposeunicode = true
-	whitespace = "trailing-space,space-before-tab"
 
 [format]
 	signOff = true
@@ -65,3 +73,6 @@
 
 [submodule]
 	fetchJobs = 4
+
+[interactive]
+  diffFilter = diffnav --color-only

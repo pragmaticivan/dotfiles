@@ -1,0 +1,61 @@
+# -*-mode:sh-*- vim:ft=shell-script
+
+# ~/.zshrc
+# =============================================================================
+# Executed by Z shell for interactive shells.
+#
+# See http://zsh.sourceforge.net/
+
+# shellcheck shell=bash
+# shellcheck source=/dev/null
+# shellcheck disable=SC2034
+
+# ---------------------------------------------------------------------------------------------------------------------
+# HELP
+# ---------------------------------------------------------------------------------------------------------------------
+# - https://unix.stackexchange.com/a/487889/612293 - .zshenv, .zprofile, .zshrc,...
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Antidote
+# ---------------------------------------------------------------------------------------------------------------------
+# Path to your antidote installation
+export ANTIDOTE="$HOME/.antidote"
+# Init Antidote
+source $ANTIDOTE/antidote.zsh
+# initialize plugins statically with ${ZDOTDIR:-~}/.zsh_plugins.txt
+antidote load
+
+# Files to be sourced from the autoload directory
+for file in ${ZDOTDIR}/autoload/*.zsh; do
+    source "$file"
+done
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Completions
+# ---------------------------------------------------------------------------------------------------------------------
+# Add completions directory to fpath if it doesn't already exist
+if [[ ! "$fpath" =~ .*"$ZDOTDIR/completions".* ]]; then
+  fpath=(${ZDOTDIR}/completions $fpath)
+fi
+autoload -Uz compinit && compinit
+
+# Enable case-insensitive completion
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+# Enable completions with sudo
+zstyle ':completion::complete:*' gain-privileges 1
+
+# ---------------------------------------------------------------------------------------------------------------------
+# Load Extras
+# ---------------------------------------------------------------------------------------------------------------------
+
+# Load bash aliases
+if [[ -r "${HOME}/.bash_aliases" ]]; then
+  # zsh is closer than sh to bash
+  emulate zsh -c "source '${HOME}/.bash_aliases'"
+fi
+
+# use .localrc for SUPER SECRET CRAP that you don't
+# want in your public, versioned repo.
+# shellcheck disable=SC1090
+[ -f ~/.localrc ] && . ~/.localrc

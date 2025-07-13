@@ -1,0 +1,6 @@
+pkgs:
+  archBased:
+    universal:
+      - "brave-bin"
+    laptop:
+      - "tlpui"

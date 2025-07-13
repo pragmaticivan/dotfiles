@@ -1,0 +1,19 @@
+{{ if eq .chezmoi.os "linux" "darwin" }}
+
+##########################################
+
+[".config/btop/themes"]
+type = "archive"
+url = "https://github.com/catppuccin/btop/archive/refs/heads/main.zip"
+stripComponents = 2
+include = ["btop-main/themes/catppuccin_*.theme"]
+
+[".config/ghostty/themes"]
+type = "archive"
+url = "https://github.com/catppuccin/ghostty/archive/refs/heads/main.zip"
+stripComponents = 2
+include = ["ghostty-main/themes/catppuccin-*.conf"]
+
+##########################################
+
+{{ end }}

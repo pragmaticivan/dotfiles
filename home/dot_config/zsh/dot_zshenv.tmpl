@@ -1,0 +1,83 @@
+##########################################
+
+# ENVIRONMENT VARIABLES
+# TODO: Support ignored file
+# source "$HOME/.zshenv_private"
+export DISABLE_AUTO_UPDATE=true
+export CHROME_EXECUTABLE=$(which brave)
+# Source rest of ZSH config files from ZDOTDIR
+# http://zsh.sourceforge.net/Intro/intro_3.html
+export XDG_CONFIG_HOME="$HOME/.config"
+export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+export PATH=$HOME/bin:$PATH
+export VISUAL="# {{ .visualeditor }}"
+export EDITOR="# {{ .editor }}"
+export BROWSER="open -a 'Safari'";
+export TERMINAL="ghostty";
+export PROJECTS="$HOME/Code";
+export HISTIGNORE="pwd:ls:cd"
+export LANG=en_US.UTF-8
+
+# Make brew installed binaries available before the rest of the script runs
+export PATH="/opt/homebrew/bin:${PATH}"
+
+############################################
+
+export HISTFILE=$HOME/.zsh_history
+
+##########################################
+
+# COMMON
+
+export NVIM_APPNAME='nvim'
+export EDITOR='nvim' # 'code --wait', 'vim'
+export VISUAL="$EDITOR"
+export PAGER='bat' # 'less', 'more', 'bat', no 'delta'!
+export GIT_PAGER='delta' # 'less', 'more', 'bat', 'delta'
+export BROWSER='brave' # 'google-chrome-stable'
+
+##########################################
+
+# ZOXIDE
+export ZOXIDE_CMD_OVERRIDE="cd"
+
+##########################################
+
+# CUSTOM
+export CATPPUCCIN_FLAVOR='{{ .catppuccinFlavor }}' # For those config can read env
+
+
+##########################################
+
+# FZF
+
+# https://github.com/catppuccin/fzf - not use background for transparent
+# NOTE: With border left option, it cannot show preview-label
+export FZF_DEFAULT_OPTS="
+--color fg+:#f9e2af
+--color fg:#cdd6f4
+--color header:#cba6f7
+--color hl+:#eba0ac
+--color hl:#f38ba8
+--color info:#89b4fa
+--color marker:#89b4fa
+--color pointer:#eba0ac
+--color prompt:#eba0ac
+--color spinner:#f5e0dc
+--color border:#b4befe
+--border
+--cycle
+--height ~100%
+--layout reverse
+--preview-window right,60%,border-left,wrap
+--bind alt-w:toggle-preview-wrap
+--bind ctrl-b:preview-page-up
+--bind ctrl-d:preview-half-page-down
+--bind ctrl-e:toggle-preview
+--bind ctrl-f:preview-page-down
+--bind ctrl-g:preview-top
+--bind ctrl-h:preview-bottom
+--bind ctrl-u:preview-half-page-up
+"
+# --bind one:accept # For accept if there's only 1
+export FZF_DEFAULT_COMMAND="rg --files --no-ignore-vcs --hidden --ignore-file $HOME/ripgrep/ignore"

@@ -1,4 +1,0 @@
-zsh-users/zsh-completions
-zsh-users/zsh-autosuggestions
-wfxr/formarks
-zsh-users/zsh-syntax-highlighting

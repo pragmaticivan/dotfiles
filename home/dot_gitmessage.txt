@@ -7,7 +7,7 @@
 ;   BREAKING CHANGE:
 ;   CLOSED ISSUES:
 
-; COMMIT GUIDELINES: Conventional Commits + AngularJS style -----------|
+; COMMIT GUIDELINES: Conventional Commits style -----------|
 ; Types:
 ;   - chore: change the tools and libraries
 ;   - ci: change the build process

@@ -66,6 +66,7 @@ Inspiration and code was taken from many sources, including:
 
 - [shunk031/dotfiles](https://github.com/shunk031/dotfiles).
 - [caarlos0/dotfiles](https://github.com/caarlos0/dotfiles).
+- [KevinNitroG/dotfiles](https://github.com/KevinNitroG/dotfiles).
 
 ## 📝 License
 

@@ -1,0 +1,11 @@
+# vim:ft=gitignore.chezmoitmpl
+
+##########################################
+
+{{ if ne .chezmoi.os "linux" }}
+.chezmoiscripts/linux/**
+{{ end }}
+
+{{ if ne .osId "darwin" }}
+.chezmoiscripts/darwin/**
+{{ end }}
