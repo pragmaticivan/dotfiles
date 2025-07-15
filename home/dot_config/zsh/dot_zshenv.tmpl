@@ -4,7 +4,6 @@
 # TODO: Support ignored file
 # source "$HOME/.zshenv_private"
 export DISABLE_AUTO_UPDATE=true
-export CHROME_EXECUTABLE=$(which brave)
 # Source rest of ZSH config files from ZDOTDIR
 # http://zsh.sourceforge.net/Intro/intro_3.html
 export XDG_CONFIG_HOME="$HOME/.config"
@@ -17,10 +16,8 @@ export TERMINAL="ghostty";
 export PROJECTS="$HOME/Code";
 export HISTIGNORE="pwd:ls:cd"
 export LANG=en_US.UTF-8
-export NVIM_APPNAME='nvim'
-export VISUAL="$EDITOR"
-export PAGER='bat' # 'less', 'more', 'bat', no 'delta'!
-export GIT_PAGER='delta' # 'less', 'more', 'bat', 'delta'
+export PAGER='diffnav' # 'less', 'more', 'bat', no 'delta'!
+export GIT_PAGER='diffnav' # 'less', 'more', 'bat', 'delta'
 
 # Make brew installed binaries available before the rest of the script runs
 export PATH="/opt/homebrew/bin:${PATH}"
