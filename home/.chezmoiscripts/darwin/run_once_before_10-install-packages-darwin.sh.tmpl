@@ -7,6 +7,13 @@
 # Disable quarantine for casks
 export HOMEBREW_CASK_OPTS=--no-quarantine
 
-brew bundle --file={{ .chezmoi.sourceDir }}/Brewfile
+# Determine install profile. Prefer env override, fallback to chezmoi data, default to "personal".
+export DOTFILES_PROFILE=${DOTFILES_PROFILE:-"{{ or .profile "personal" }}"}
+
+# Render the templated Brewfile and install from it
+TMP_BREWFILE="$(mktemp -t Brewfile.XXXXXX)"
+trap 'rm -f "$TMP_BREWFILE"' EXIT
+chezmoi execute-template < {{ .chezmoi.sourceDir }}/Brewfile > "$TMP_BREWFILE"
+brew bundle --file="$TMP_BREWFILE"
 
 {{ end -}}

@@ -1,3 +1,4 @@
+{{- /* Chezmoi-templated Brewfile. Uses DOTFILES_PROFILE env (personal/restricted). */ -}}
 # -*-mode:ruby-*- vim:ft=ruby
 
 # ~/.Brewfile
@@ -6,23 +7,33 @@
 #
 # See https://github.com/Homebrew/homebrew-bundle
 
+{{- $profile := (env "DOTFILES_PROFILE") -}}
+{{- if not $profile }}{{ $profile = "personal" }}{{ end -}}
+
 # BROWSERS #
-cask "brave-browser"
 cask "firefox"
 cask "google-chrome"
+{{- if eq $profile "personal" }}
+cask "brave-browser"
+{{- end }}
 
 # COMMUNICATION #
-cask "discord"
 cask "slack"
+{{- if eq $profile "personal" }}
+cask "discord"
 cask "whatsapp"
+{{- end }}
 
 # PRODUCTIVITY & ORGANIZATION #
+cask "raycast"
+cask "visual-studio-code"
+{{- if eq $profile "personal" }}
 cask "clocker" # Menubar World Clock
 cask "notion"
-cask "raycast" # Your shortcut to everything. - https://raycast.com/
-cask "netnewswire" # NetNewsWire is a free and open-source RSS reader for macOS. - https://ranchero.com/netnewswire/
+cask "netnewswire"
 cask "transmission"
-cask "visual-studio-code"
+{{- end }}
+
 
 # FONTS #
 cask "font-fira-code-nerd-font"
@@ -32,33 +43,43 @@ cask "font-meslo-for-powerline"
 cask "font-hack-nerd-font"
 cask "font-sf-mono"
 cask "font-sf-pro"
+cask "font-fira-code-nerd-font"
 
 # UTILITIES #
-cask "flameshot" # Powerful yet simple to use screenshot software. - https://flameshot.org/ - TODO: find better tool
-cask "imageoptim" # Removes bloated metadata. Saves disk space & bandwidth by compressing images without losing quality. - https://imageoptim.com/mac
-cask "keka" # The macOS file archiver - https://www.keka.io/en/
-cask "lunar" # Intelligent adaptive brightness for your external display. - https://lunar.fyi/
+cask "keka"
+cask "wireshark"
+cask "lunar"
 cask "sf-symbols"
-cask "wireshark" # The world’s foremost and widely-used network protocol analyzer. - https://www.wireshark.org/
+{{- if eq $profile "personal" }}
+cask "flameshot"
+cask "imageoptim"
+{{- end }}
 
 # MEDIA #
-cask "iina" # The modern media player for macOS. - https://iina.io/
+{{- if eq $profile "personal" }}
+cask "iina"
+{{- end }}
 
 # DEVELOPMENT #
-cask "docker-desktop" # Docker Desktop - https://www.docker.com/products/docker-desktop
+cask "docker-desktop"
 cask "ghostty"
 cask "alacritty"
 
 # SYSTEM TOOLS & SECURITY #
 cask "1password-cli"
 cask "1password"
-cask "little-snitch" # Protect your privacy. Keep an eye on Internet connections from all applications as to expose the hidden connections. - https://www.obdev.at/products/littlesnitch/index.html
+cask "little-snitch"
 
 # GAMING & EMULATION #
-cask "whisky" # Run Modern Windows Games on macOS - https://getwhisky.app/
+{{- if eq $profile "personal" }}
+cask "whisky"
+{{- end }}
+
 
 # TRIAL / TO EVALUATE #
-cask "sensei" # Maximise your Mac performance. - https://cindori.com/sensei
+{{- if eq $profile "personal" }}
+cask "sensei"
+{{- end }}
 # cask "monodraw" - To evaluate
 # cask "bartender" - To evaluate
 

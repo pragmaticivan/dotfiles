@@ -60,6 +60,29 @@ pragmaticivan@5f93d270cb51:~$ chezmoi init --apply
 Test the shellscript for setup with [Bash Automated Testing System (bats)](https://github.com/bats-core/bats-core).
 The scripts for the unit test can be found under [`./tests`](https://github.com/pragmaticivan/dotfiles/tree/main/tests) directory.
 
+### 🔀 macOS install profiles (personal vs restricted)
+
+On macOS, Homebrew apps are installed from a templated `Brewfile` that respects a profile:
+
+- personal: full set of apps (default)
+- restricted: minimal set for locked-down environments
+
+Select the profile via one of the following:
+
+1) Chezmoi data (persistent): edit `home/.chezmoidata/global.yaml`
+
+```
+profile: restricted
+```
+
+2) Environment variable (one-off override):
+
+```
+DOTFILES_PROFILE=restricted chezmoi apply
+```
+
+The install script exports `DOTFILES_PROFILE` (env override wins, then chezmoi data; default is `personal`). The `Brewfile` gates heavier or personal-only apps (browsers, media, Ollama, Docker Desktop, etc.) under `personal`, while essential CLI tools remain for both.
+
 ## 👏 Acknowledgements
 
 Inspiration and code was taken from many sources, including:

@@ -13,3 +13,7 @@ mise_plugins:
 - "https://github.com/rfrancis/asdf-gradle"
 - "https://github.com/asdf-community/asdf-kotlin"
 - "https://github.com/asdf-community/asdf-uv"
+
+# Profile controls what to install on macOS via Brewfile.
+# Allowed values: personal, restricted
+profile: personal
