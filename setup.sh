@@ -180,7 +180,8 @@ function run_chezmoi() {
     fi
 
     # Add to PATH for installing the necessary binary files under `$HOME/.local/bin`.
-    export PATH="${PATH}:${HOME}/.local/bin"
+    # Also add ./bin to PATH so that scripts can find the temporary chezmoi binary.
+    export PATH="${PATH}:${HOME}/.local/bin:$(pwd)/bin"
 
     if [[ -n "${DOTFILES_GITHUB_PAT}" ]]; then
         export DOTFILES_GITHUB_PAT
