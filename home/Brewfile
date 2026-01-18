@@ -121,6 +121,7 @@ brew "unar"
 brew "switchaudio-osx"
 brew "nowplaying-cli"
 brew "aspell"
+brew "mole"
 
 # NETWORKING & CLOUD #
 brew "kubecolor"
