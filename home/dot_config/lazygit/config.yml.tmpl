@@ -9,11 +9,11 @@ gui:
   nerdFontsVersion: '3'
   border: rounded
   mouseEvents: true
-  # use catppuccin macchiato yellow - https://github.com/catppuccin/lazygit/blob/main/themes/macchiato/yellow.yml
+  # use catppuccin macchiato yellow - https://github.com/catppuccin/lazygit/blob/main/themes/macchiato/lavender.yml
   theme:
     activeBorderColor:
       # - '{{ index $palette .catppuccinAccentColor }}'
-      - '{{ index $palette.yellow }}'
+      - '{{ index $palette.lavender }}'
       - bold
     inactiveBorderColor:
       - '{{ $palette.subtext0 }}'
@@ -25,13 +25,13 @@ gui:
       - '{{ $palette.surface1 }}'
     cherryPickedCommitFgColor:
       # - '{{ index $palette .catppuccinAccentColor }}'
-      - '{{ $palette.yellow }}'
+      - '{{ $palette.lavender }}'
     unstagedChangesColor:
       - '{{ $palette.red }}'
     defaultFgColor:
       - '{{ $palette.text }}'
     searchingActiveBorderColor:
-      - '{{ $palette.yellow }}'
+      - '{{ $palette.lavender }}'
   authorColors:
     '*': '{{ $palette.lavender }}'
 git:
