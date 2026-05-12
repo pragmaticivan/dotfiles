@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+set -eu
+
+echo "activate.sh"
+echo "--------------------------------"
+echo "Welcome to ${USER:-$(whoami)} dotfiles!!"
+echo "sourceDir is {{ .chezmoi.sourceDir }}"
+echo "user is $(whoami)"
+echo "OS info ..."
+uname -mars
+echo "SHELL is $SHELL"
+echo "--------------------------------"

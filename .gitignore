@@ -1,3 +1,4 @@
 # Chezmoi has ensured to ignore those encrypted files, but just for sure
 home/.zsh_history
 home/.zshenv_private
+.claude/settings.local.json
