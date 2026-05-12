@@ -64,6 +64,8 @@ cask "iina"
 cask "docker-desktop"
 cask "ghostty"
 cask "alacritty"
+cask "claude-code"
+brew "copilot-cli"
 
 # SYSTEM TOOLS & SECURITY #
 cask "1password-cli"
@@ -111,6 +113,7 @@ brew "nvim"
 brew "ollama"
 brew "bats-core"
 brew "lua"
+brew "cargo-binstall"
 
 # SYSTEM UTILITIES #
 brew "fastfetch"

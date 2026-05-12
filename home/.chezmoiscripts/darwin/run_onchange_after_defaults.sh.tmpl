@@ -1,0 +1,209 @@
+#!/usr/bin/env bash
+set -eu
+
+user_setup() {
+    scutil --set ComputerName "northblue"
+    scutil --set LocalHostName "northblue"
+    scutil --set HostName "northblue"
+    scutil --set UserName "pragmaticivan"
+    whoami
+}
+
+system_setup() {
+    # (on Automatically restart if the machine freezes)
+    sudo systemsetup -setrestartfreeze on
+    # Do not sleep
+    sudo systemsetup -setcomputersleep Off
+    # Set timezone
+    sudo systemsetup -settimezone "America/Chicago"
+}
+
+app_setup() {
+    # Enable automatic software updates
+    defaults write com.apple.commerce AutoUpdate -bool true
+    # Enable WebKit developer tools
+    defaults write com.apple.appstore WebKitDeveloperExtras -bool true
+    # Enable debug menu
+    defaults write com.apple.appstore ShowDebugMenu -bool true
+    # Enable automatic update check
+    defaults write com.apple.SoftwareUpdate AutomaticCheckEnabled -bool true
+    # Check for application updates daily
+    defaults write com.apple.SoftwareUpdate ScheduleFrequency -int 1
+    # Download application updates in the background
+    defaults write com.apple.SoftwareUpdate AutomaticDownload -int 1
+    # Install system data files and security updates
+    defaults write com.apple.SoftwareUpdate CriticalUpdateInstall -int 1
+    # Disable automatic restart for applications that require a restart
+    defaults write com.apple.commerce AutoUpdateRestartRequired -bool false
+}
+
+interface_setup() {
+    # Speed up key repeat
+    defaults write -g KeyRepeat -int 1
+    # Enable key repeat on hold
+    defaults write -g ApplePressAndHoldEnabled -bool false
+    # Speed up mouse movement
+    defaults write "Apple Global Domain" com.apple.mouse.scaling 4.0
+    # Speed up trackpad movement
+    defaults write "Apple Global Domain" com.apple.trackpad.scaling 1.0
+
+    # Enable Tap to click
+    defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+
+    # Enable four-finger swipe to move between full-screen applications
+    defaults write com.apple.AppleMultitouchTrackpad.plist TrackpadFourFingerVertSwipeGesture -int 2 && \
+    defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad.plist TrackpadFourFingerVertSwipeGesture -int 2
+}
+
+dock_setup() {
+    # Auto-hide the Dock
+    defaults write com.apple.dock autohide -bool true
+    # Speed up Dock animation
+    defaults write com.apple.dock autohide-time-modifier -float 0.13
+    # Disable delay before Dock appears
+    defaults write com.apple.dock autohide-delay -float 0.01
+    # Disable launch animation for apps in Dock
+    defaults write com.apple.dock launchanim -bool false
+    # Automatically hide or show the Dock
+    defaults write com.apple.dock autohide -bool true
+    # Wipe all app icons from the Dock (Finder and Trash are not removed)
+    defaults write com.apple.dock persistent-apps -array
+    # Dock Size
+    defaults write com.apple.dock tilesize -int 50
+    # Dock magnification
+    defaults write com.apple.dock magnification -bool true
+    # Dock magnification size
+    defaults write com.apple.dock largesize -int 78
+    # Minimize windows into application icon
+    defaults write com.apple.dock minimize-to-application -bool true
+    # Do not show recent apps in Dock
+    defaults write com.apple.dock show-recents -bool false
+    # Position Dock on the left side of the screen
+    defaults write com.apple.dock orientation -string "left"
+}
+
+window_setup() {
+    # Show the ~/Library directory (hidden by default)
+    chflags nohidden ~/Library
+    # Enable light mode
+    sudo defaults delete /Library/Preferences/.GlobalPreferences AppleInterfaceTheme 2>/dev/null || true
+    # Show OS, hostname, and IP when clicking the clock icon
+    sudo defaults write /Library/Preferences/com.apple.loginwindow AdminHostInfo HostName
+    # Disable crash reports
+    defaults write com.apple.CrashReporter DialogType -string "none"
+    # Disable dialog when running unverified applications
+    defaults write com.apple.LaunchServices LSQuarantine -bool false
+    # Disable warning dialog when opening downloaded files
+    defaults write com.apple.LaunchServices LSQuarantine -bool false
+    # Disable dialog when running unverified applications
+    defaults write com.apple.LaunchServices LSQuarantine -bool false
+    # Speed up dialog display and window resize
+    defaults write -g NSWindowResizeTime -float 0.001
+    # Save dialog default display style -> true (always open with detailed info)
+    defaults write -g NSNavPanelExpandedStateForSaveMode -bool true
+    # Set accent color to multicolor
+    defaults write -g AppleAccentColor -int -1
+    # Disable window open/close animations
+    defaults write -g NSAutomaticWindowAnimationsEnabled -bool false
+    # Always show scroll bars
+    defaults write -g AppleShowScrollBars -string "Always"
+    # Speed up window resize
+    defaults write -g NSWindowResizeTime -float 0.001
+    # Disable Quick Look window animation
+    defaults write -g QLPanelAnimationDuration -float 0
+    # Use TextEdit in plain text mode
+    defaults write com.apple.TextEdit RichText -int 0
+    # Use only UTF-8 in Terminal
+    defaults write com.apple.terminal StringEncodings -array 4
+    # Save screenshots as jpg
+    defaults write com.apple.screencapture type jpg
+    # Do not create .DS_Store files on network disks
+    defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+    # Date display settings, show day of week
+    defaults write com.apple.menuextra.clock 'DateFormat' -string 'EEE H:mm'
+    # Improve sound quality for Bluetooth headphones/headsets
+    defaults write com.apple.BluetoothAudioAgent "Apple Bitpool Min (editable)" -int 40
+}
+
+finder_setup() {
+    # Show all file extensions
+    defaults write NSGlobalDomain AppleShowAllExtensions -bool true
+    # Enable spring loading for directories
+    defaults write NSGlobalDomain com.apple.springing.enabled -bool true
+    # Remove spring loading delay
+    defaults write NSGlobalDomain com.apple.springing.delay -float 0
+    # Open home folder by default in new windows
+    defaults write com.apple.finder NewWindowTarget -string "PfDe"
+    defaults write com.apple.finder NewWindowTargetPath -string "file://${HOME}/"
+    # Always show hidden files in Finder
+    defaults write com.apple.finder AppleShowAllFiles -bool true
+    # Show full path in Finder title bar
+    defaults write com.apple.finder _FXShowPosixPathInTitle -bool true
+    # Search current directory by default
+    defaults write com.apple.finder FXDefaultSearchScope -string "SCcf"
+    # Disable warning when changing file extensions
+    defaults write com.apple.finder FXEnableExtensionChangeWarning -bool false
+    # Show tab bar
+    defaults write com.apple.finder ShowTabView -bool true
+    # Show path bar
+    defaults write com.apple.finder ShowPathbar -bool true
+    # Show status bar
+    defaults write com.apple.finder ShowStatusBar -bool true
+    # Disable animation when opening info windows in Finder
+    defaults write com.apple.finder DisableAllAnimations -bool true
+    # Disable warning before emptying Trash
+    defaults write com.apple.finder WarnOnEmptyTrash -bool false
+    # Set shortcut key for "New Folder"
+    defaults write com.apple.Finder NSUserKeyEquivalents -dict-add "新規フォルダ" -string "^k"
+    # Set shortcut key for "Move Item Here"
+    defaults write com.apple.Finder NSUserKeyEquivalents -dict-add "ここに項目を移動" -string "@^v"
+    # Set shortcut key for "Move to Trash"
+    defaults write com.apple.Finder NSUserKeyEquivalents -dict-add "ゴミ箱に入れる" -string "^d"
+    # Set shortcut key for "Get Info"
+    defaults write com.apple.Finder NSUserKeyEquivalents -dict-add "情報を見る" -string "^l"
+}
+
+search_setup() {
+    # Disable Spotlight search display
+    defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 64 "<dict><key>enabled</key><false/><key>value</key><dict><key>parameters</key><array><integer>65535</integer><integer>49</integer><integer>1048576</integer></array><key>type</key><string>standard</string></dict></dict>"
+    # Disable Finder search window display
+    defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 65 "<dict><key>enabled</key><false/><key>value</key><dict><key>parameters</key><array><integer>65535</integer><integer>49</integer><integer>1572864</integer></array><key>type</key><string>standard</string></dict></dict>"
+    # Verify that Spotlight search and Finder search window are disabled (check 64 and 65)
+    # defaults read com.apple.symbolichotkeys AppleSymbolicHotKeys | grep -E '64|65'
+}
+
+restart() {
+    echo 'Rebooting to reflect settings'
+    # Restart affected applications
+    for app in \
+        "Activity Monitor" \
+        "Address Book" \
+        "Calendar" \
+        "Contacts" \
+        "Dock" \
+        "Finder" \
+        "Mail" \
+        "Messages" \
+        "Photos" \
+        "Safari" \
+        "Terminal" \
+        "SystemUIServer"; do
+        killall "${app}" > /dev/null 2>&1 || echo "${app} was not running."
+    done
+}
+
+echo "defaults.sh"
+echo "--------------------------------"
+# user_setup
+system_setup
+app_setup
+interface_setup
+window_setup
+dock_setup
+finder_setup
+search_setup
+restart
+
+echo "--------------------------------"
+echo "macOS setup complete."
+echo "--------------------------------"
