@@ -1,8 +1,0 @@
-{
-  "permissions": {
-    "allow": [
-      "Skill(context7)",
-      "Bash(bash /Users/pragmaticivan/.local/share/chezmoi/home/dot_claude/hooks/executable_statusline.sh)"
-    ]
-  }
-}
