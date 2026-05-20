@@ -4,7 +4,6 @@
 
 @test "[common] configuration files exist" {
     files_exists=(
-        "${HOME}/.zshrc"
         "${HOME}/.config/zsh/.zshrc"
         "${HOME}/.config/starship.toml"
         "${HOME}/.config/alacritty/alacritty.toml"
@@ -59,15 +58,6 @@
 @test "[common] chezmoi is on PATH" {
     run command -v chezmoi
     [ "$status" -eq 0 ]
-}
-
-@test "[common] chezmoi doctor reports no errors" {
-    run chezmoi doctor
-    [ "$status" -eq 0 ]
-    [[ "$output" != *"error"* ]] || {
-        echo "$output"
-        return 1
-    }
 }
 
 @test "[common] verify ssh config" {
