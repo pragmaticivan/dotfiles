@@ -53,8 +53,8 @@ install_brew_packages() {
 
     brew --version
 
-    if [ -f "${HOME}/.Brewfile" ]; then
-        brew bundle --global || echo "brew bundle failed."
+    if [ -f "${HOME}/Brewfile" ]; then
+        brew bundle --file="${HOME}/Brewfile" || echo "brew bundle failed."
     else
         echo "Brewfile not found, skipping brew bundle."
     fi
