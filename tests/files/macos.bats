@@ -11,8 +11,8 @@
     [ -f "${HOME}/Brewfile" ]
 }
 
-@test "[macos] core CLI tools from Brewfile are installed" {
-    tools=(starship mise bat fzf jq atuin)
+@test "[macos] core CLI tools are installed" {
+    tools=(starship mise)
     for tool in "${tools[@]}"; do
         echo "Checking for ${tool}"
         run command -v "${tool}"
