@@ -6,26 +6,19 @@ on:
     paths-ignore:
       - "README.md"
       - "Makefile"
-      - "Dockerfile"
       - "install/macos/**"
-      - ".chezmoiscripts/macos/**"
-      - "dot_tmux.conf.d/os/macos.conf"
-      - "tests/install/macos/**"
+      - "home/.chezmoiscripts/darwin/**"
 
   pull_request:
     branches: [main]
     paths-ignore:
       - "README.md"
       - "Makefile"
-      - "Dockerfile"
       - "install/macos/**"
-      - ".chezmoiscripts/macos/**"
-      - "dot_tmux.conf.d/os/macos.conf"
+      - "home/.chezmoiscripts/darwin/**"
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 jobs:
   build:
@@ -67,6 +60,6 @@ jobs:
         run: |
           cd $(chezmoi source-path)/../
           bats tests/files/common.bats
-          bats --filter-tags common,ubuntu:${SYSTEM} \
+          bats --filter-tags ubuntu,ubuntu:${SYSTEM} \
             --print-output-on-failure \
             tests/files/ubuntu.bats

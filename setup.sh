@@ -29,7 +29,7 @@ declare -r BRANCH_NAME="${BRANCH_NAME:-main}"
 declare -r DOTFILES_GITHUB_PAT="${DOTFILES_GITHUB_PAT:-}"
 
 function is_ci() {
-    "${CI:-false}"
+    [ "${CI:-false}" = "true" ]
 }
 
 function is_tty() {
@@ -181,7 +181,8 @@ function run_chezmoi() {
 
     # Add to PATH for installing the necessary binary files under `$HOME/.local/bin`.
     # Also add ./bin to PATH so that scripts can find the temporary chezmoi binary.
-    export PATH="${PATH}:${HOME}/.local/bin:$(pwd)/bin"
+    PATH="${PATH}:${HOME}/.local/bin:$(pwd)/bin"
+    export PATH
 
     if [[ -n "${DOTFILES_GITHUB_PAT}" ]]; then
         export DOTFILES_GITHUB_PAT
@@ -212,42 +213,11 @@ function get_system_from_chezmoi() {
     echo "${system}"
 }
 
-function restart_shell_system() {
-    local system
-    system=$(get_system_from_chezmoi)
-
-    # exec shell as login shell (to reload the .zprofile or .profile)
-    if [ "${system}" == "client" ]; then
-        /bin/zsh --login
-
-    elif [ "${system}" == "server" ]; then
-        /bin/bash --login
-
-    else
-        echo "Invalid system: ${system}; expected \`client\` or \`server\`" >&2
-        exit 1
-    fi
-}
-
-function restart_shell() {
-    # Restart shell if specified "bash -c $(curl -L {URL})"
-    # not restart:
-    #   curl -L {URL} | bash
-    if [ -p /dev/stdin ]; then
-        echo "Now continue with Rebooting your shell"
-    else
-        echo "Restarting your shell..."
-        restart_shell_system
-    fi
-}
-
 function main() {
     echo "$DOTFILES_LOGO"
 
     initialize_os_env
     initialize_dotfiles
-
-    # restart_shell # Disabled because the at_exit function does not work properly.
 }
 
 main

@@ -43,7 +43,6 @@ cask "font-meslo-for-powerline"
 cask "font-hack-nerd-font"
 cask "font-sf-mono"
 cask "font-sf-pro"
-cask "font-fira-code-nerd-font"
 
 # UTILITIES #
 cask "keka"
@@ -66,6 +65,7 @@ cask "ghostty"
 cask "alacritty"
 cask "claude-code"
 brew "copilot-cli"
+cask "gcloud-cli"
 
 # SYSTEM TOOLS & SECURITY #
 cask "1password-cli"
