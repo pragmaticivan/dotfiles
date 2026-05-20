@@ -4,7 +4,6 @@
 
 @test "[common] configuration files exist" {
     files_exists=(
-        "${HOME}/.zshrc"
         "${HOME}/.config/zsh/.zshrc"
         "${HOME}/.config/starship.toml"
         "${HOME}/.config/alacritty/alacritty.toml"
@@ -56,6 +55,33 @@
     [ "$status" -eq 0 ]
 }
 
+@test "[common] chezmoi is on PATH" {
+    run command -v chezmoi
+    [ "$status" -eq 0 ]
+}
+
 @test "[common] verify ssh config" {
     [ -f "${HOME}/.ssh/config" ]
+}
+
+@test "[common] agent skills are individually symlinked" {
+    [ -d "${HOME}/.agents/skills" ]
+
+    for parent in "${HOME}/.claude/skills" "${HOME}/.copilot/skills"; do
+        echo "Checking skills directory ${parent}"
+        [ -d "${parent}" ]
+        [ ! -L "${parent}" ]
+
+        link_count=0
+        shopt -s nullglob
+        for entry in "${parent}"/*; do
+            [ -L "${entry}" ] || continue
+            [ -e "${entry}" ]
+            link_count=$((link_count + 1))
+        done
+        shopt -u nullglob
+
+        echo "Found ${link_count} skill symlinks in ${parent}"
+        [ "${link_count}" -gt 0 ]
+    done
 }

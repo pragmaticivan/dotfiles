@@ -19,6 +19,7 @@ pkgs:
       - "ripgrep" # yazi requirements
       - "yq" # mise requirements
       - "zoxide" # yazi requirements
+      - "zsh"
 
     oneScriptInstall:
       - "https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh"
