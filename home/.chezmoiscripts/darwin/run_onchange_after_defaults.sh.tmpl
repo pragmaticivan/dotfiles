@@ -48,7 +48,10 @@ interface_setup() {
     defaults write "Apple Global Domain" com.apple.trackpad.scaling 1.0
 
     # Enable Tap to click
+    defaults write -g com.apple.mouse.tapBehavior -int 1
+    defaults -currentHost write -g com.apple.mouse.tapBehavior -int 1
     defaults write com.apple.AppleMultitouchTrackpad Clicking -bool true
+    defaults write com.apple.driver.AppleBluetoothMultitouch.trackpad Clicking -bool true
 
     # Enable four-finger swipe to move between full-screen applications
     defaults write com.apple.AppleMultitouchTrackpad.plist TrackpadFourFingerVertSwipeGesture -int 2 && \
