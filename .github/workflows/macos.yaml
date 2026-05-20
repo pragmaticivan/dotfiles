@@ -47,6 +47,7 @@ jobs:
 
       - name: Test file existence
         run: |
+          eval "$(/opt/homebrew/bin/brew shellenv)"
           cd $(chezmoi source-path)/../
           bats --print-output-on-failure \
             tests/files/common.bats \
