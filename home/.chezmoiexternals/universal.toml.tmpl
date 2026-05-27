@@ -1,19 +1,23 @@
 [".config/bat/themes"]
 type = "archive"
-url = "https://github.com/catppuccin/bat/archive/refs/heads/main.zip"
+# pin: latest main (no tags)
+url = "https://github.com/catppuccin/bat/archive/6810349b28055dce54076712fc05fc68da4b8ec0.tar.gz"
 stripComponents = 2
-include = ["bat-main/themes/Catppuccin *.tmTheme"]
+include = ["*/themes/Catppuccin *.tmTheme"]
 
 [".config/alacritty/themes"]
 type = "archive"
-url = "https://github.com/catppuccin/alacritty/archive/refs/heads/main.zip"
+# pin: latest main (only non-semver tag "yaml" available)
+url = "https://github.com/catppuccin/alacritty/archive/f6cb5a5c2b404cdaceaff193b9c52317f62c62f7.tar.gz"
 stripComponents = 1
-include = ["alacritty-main/catppuccin-*.toml"]
+include = ["*/catppuccin-*.toml"]
 
 [".config/k9s/skins/catppuccin-{{ .catppuccinFlavor }}{{ if .transparent }}-transparent{{ end }}.yaml"]
 type = "file"
-url = "https://raw.githubusercontent.com/catppuccin/k9s/refs/heads/main/dist/catppuccin-{{ .catppuccinFlavor }}{{ if .transparent }}-transparent{{ end }}.yaml"
+# pin: latest main (no tags)
+url = "https://raw.githubusercontent.com/catppuccin/k9s/fdbec82284744a1fc2eb3e2d24cb92ef87ffb8b4/dist/catppuccin-{{ .catppuccinFlavor }}{{ if .transparent }}-transparent{{ end }}.yaml"
 
 [".config/delta/catppuccin.gitconfig"]
 type = "file"
-url = "https://raw.githubusercontent.com/catppuccin/delta/refs/heads/main/catppuccin.gitconfig"
+# pin: latest main (no tags)
+url = "https://raw.githubusercontent.com/catppuccin/delta/74b47a345638a2f19b3e5bdb9d7e4984066f9ac7/catppuccin.gitconfig"

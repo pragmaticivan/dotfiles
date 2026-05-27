@@ -1,43 +1,58 @@
 [".config/yazi/theme.toml"]
 type = "file"
-url = "https://raw.githubusercontent.com/catppuccin/yazi/refs/heads/main/themes/{{ .catppuccinFlavor }}/catppuccin-{{ .catppuccinFlavor }}-{{ .catppuccinAccentColor }}.toml"
+# pin: catppuccin/yazi latest main (no tags)
+url = "https://raw.githubusercontent.com/catppuccin/yazi/41f24ed142e34109a9a65a5dfe58c1b4eb6d2fd9/themes/{{ .catppuccinFlavor }}/catppuccin-{{ .catppuccinFlavor }}-{{ .catppuccinAccentColor }}.toml"
 
 [".config/yazi/Catppuccin-{{ .catppuccinFlavor }}.tmTheme"]
 type = "file"
-url = "https://raw.githubusercontent.com/catppuccin/bat/main/themes/Catppuccin%20{{ .catppuccinFlavorTitle }}.tmTheme"
+# pin: catppuccin/bat latest main (no tags)
+url = "https://raw.githubusercontent.com/catppuccin/bat/6810349b28055dce54076712fc05fc68da4b8ec0/themes/Catppuccin%20{{ .catppuccinFlavorTitle }}.tmTheme"
 
 [".config/yazi/plugins/toggle-view.yazi"]
-type = "git-repo"
-url = "https://github.com/dawsers/toggle-view.yazi"
-{{ .externalGitArgs }}
+type = "archive"
+# pin: dawsers/toggle-view.yazi latest master (no tags)
+url = "https://github.com/dawsers/toggle-view.yazi/archive/9ae57f904d616f4462e829521ec1ad10727ec7ed.tar.gz"
+exact = true
+stripComponents = 1
 
 [".config/yazi/plugins/glow.yazi"]
-type = "git-repo"
-url = "https://github.com/Reledia/glow.yazi"
-{{ .externalGitArgs }}
+type = "archive"
+# pin: Reledia/glow.yazi latest main (no tags)
+url = "https://github.com/Reledia/glow.yazi/archive/bd3eaa58c065eaf216a8d22d64c62d8e0e9277e9.tar.gz"
+exact = true
+stripComponents = 1
 
 [".config/yazi/plugins/eza-preview.yazi"]
-type = "git-repo"
-url = "https://github.com/sharklasers996/eza-preview.yazi"
-{{ .externalGitArgs }}
+type = "archive"
+# pin: sharklasers996/eza-preview.yazi latest master (no tags)
+url = "https://github.com/sharklasers996/eza-preview.yazi/archive/7ca4c2558e17bef98cacf568f10ec065a1e5fb9b.tar.gz"
+exact = true
+stripComponents = 1
 
 [".config/yazi/plugins/relative-motions.yazi"]
-type = "git-repo"
-url = "https://github.com/dedukun/relative-motions.yazi"
-{{ .externalGitArgs }}
+type = "archive"
+# pin: dedukun/relative-motions.yazi latest main (no tags)
+url = "https://github.com/dedukun/relative-motions.yazi/archive/a603d9ea924dfc0610bcf9d3129e7cba605d4501.tar.gz"
+exact = true
+stripComponents = 1
 
 [".config/yazi/plugins/compress.yazi"]
-type = "git-repo"
-url = "https://github.com/KKV9/compress.yazi"
-{{ .externalGitArgs }}
+type = "archive"
+# pin: tag Main
+url = "https://github.com/KKV9/compress.yazi/archive/1b74b86357c8124611aefe8f3007ff851f1f16e6.tar.gz"
+exact = true
+stripComponents = 1
 
 [".config/yazi/plugins/what-size.yazi"]
-type = "git-repo"
-url = "https://github.com/pirafrank/what-size.yazi"
-{{ .externalGitArgs }}
+type = "archive"
+# pin: pirafrank/what-size.yazi latest main (no tags)
+url = "https://github.com/pirafrank/what-size.yazi/archive/179ebf69c9c3ade40cacc0f25e9557a43427c6ca.tar.gz"
+exact = true
+stripComponents = 1
 
 [".config/yazi/plugins"]
 type = "archive"
-url = "https://github.com/yazi-rs/plugins/archive/refs/heads/main.zip"
+# pin: yazi-rs/plugins latest main (no tags)
+url = "https://github.com/yazi-rs/plugins/archive/be524fb140206cc59b3e51037ba6148935263975.tar.gz"
 stripComponents = 1
 include = ["*/git.yazi/**", "*/max-preview.yazi/**"]

@@ -91,6 +91,7 @@ layout {
     }
 
     default_tab_template {
+<<<<<<< Updated upstream
         pane size=2 borderless=true {
             plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
                 format_left   "{mode}#[bg=#181926] {tabs}"
@@ -152,4 +153,45 @@ layout {
         }
         children
     }
+=======
+        children
+
+        pane size=1 borderless=true {
+            plugin location="file:~/.config/zellij/plugins/zjstatus.wasm" {
+            format_left  "#[fg=#89b4fa,bold] {mode} {tabs}"
+            format_right "{command_ryzen}{command_nvidia}"
+
+            mode_locked "#[fg=#f38ba8,bold]  {name} "
+            mode_normal "#[fg=#a6e3a1,bold]  {name} "
+            mode_resize "#[fg=#fab387,bold] 󰩨 {name} "
+            mode_scroll "#[fg=#f5c2e7,bold]  {name} "
+            mode_pane   "#[fg=#b4befe,bold]  {name} "
+            mode_tab    "#[fg=#f9e2af,bold] 󰓩 {name} "
+            mode_default_to_mode "resize"
+
+            tab_normal "#[bg=#585b70,fg=#000000] #[bg=#585b70,fg=#000000,bold]󰓪 {name} {sync_indicator}{fullscreen_indicator}{floating_indicator} #[bg=#000000,fg=#585b70]"
+            tab_active "#[bg=#cba6f7,fg=#000000] #[bg=#cba6f7,fg=#000000,bold]󰓩 {name} {sync_indicator}{fullscreen_indicator}{floating_indicator} #[bg=#000000,fg=#cba6f7]"
+
+            tab_sync_indicator       " "
+            tab_fullscreen_indicator "□ "
+            tab_floating_indicator   "󰉈 "
+
+            // display everything about nvidia
+            command_nvidia_command  "/home/antrax/dotfiles/bin/nvidia.py"
+            command_nvidia_format   "#[bg=#a6e3a1,fg=#000000] #[bg=#a6e3a1,fg=#000000,bold]{stdout}#[bg=#000000,fg=#a6e3a1] "
+            command_nvidia_interval "1"
+            command_nvidia_rendermode "static"
+
+            // display everything about my ryzen cpu
+            command_ryzen_command  "/home/antrax/dotfiles/bin/ryzen.py"
+            command_ryzen_format   "#[bg=#fab387,fg=#000000] #[bg=#fab387,fg=#000000,bold]{stdout}#[bg=#000000,fg=#fab387] "
+            command_ryzen_interval "2"
+            command_ryzen_rendermode "static"
+
+          }
+
+        }
+    }
+
+>>>>>>> Stashed changes
 }
