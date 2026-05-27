@@ -318,11 +318,7 @@ theme "catppuccin-macchiato"
 //   - true (default)
 //   - false
 //
-<<<<<<< Updated upstream
 // mouse_mode false
-=======
-mouse_mode true
->>>>>>> Stashed changes
 
 // Toggle having pane frames around the panes
 // Options:
@@ -449,11 +445,7 @@ mouse_mode true
 // (Requires restart)
 // Default: true (if the host terminal supports it)
 //
-<<<<<<< Updated upstream
 // support_kitty_keyboard_protocol false
-=======
-support_kitty_keyboard_protocol false
->>>>>>> Stashed changes
 
 // Whether to stack panes when resizing beyond a certain size
 // Default: true
