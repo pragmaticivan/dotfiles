@@ -1,8 +1,10 @@
+{{ $profile := or (env "DOTFILES_PROFILE") .profile "personal" }}
+
 [include]
   path = ~/.config/delta/catppuccin.gitconfig
 
 [user]
-	email = "301291+pragmaticivan@users.noreply.github.com"
+	email = {{ if eq $profile "restricted" }}"286433352+ivan-santos-eq@users.noreply.github.com"{{ else }}"301291+pragmaticivan@users.noreply.github.com"{{ end }}
 	name = "Ivan Santos"
 	signingKey = "~/.ssh/id_ed25519"
 

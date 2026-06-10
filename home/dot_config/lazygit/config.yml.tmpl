@@ -36,9 +36,9 @@ gui:
     '*': '{{ $palette.lavender }}'
 git:
   parseEmoji: true
-  paging:
-    pager: delta --paging=never
-    colorArg: always
+  pagers:
+    - pager: delta --paging=never
+      colorArg: always
 customCommands:
   - key: 'E'
     context: 'files'

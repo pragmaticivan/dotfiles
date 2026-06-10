@@ -16,6 +16,12 @@
 #     https://github.com/mathiasbynens/dotfiles
 #     https://git-scm.com/docs/git-config/
 
+{{ $profile := or (env "DOTFILES_PROFILE") .profile "personal" }}
+{{ $gitEmail := .gitemail }}
+{{ if eq $profile "restricted" }}
+{{   $gitEmail = "286433352+ivan-santos-eq@users.noreply.github.com" }}
+{{ end }}
+
 [apply]
     # Detect whitespace errors when applying a patch.
     whitespace = fix
@@ -107,7 +113,7 @@
 
 [user]
     # Specify the email address of the author/committer.
-    email = "{{ .gitemail }}"
+    email = "{{ $gitEmail }}"
 
     # Specify the username of the author/committer.
     name = "{{ .name }}"

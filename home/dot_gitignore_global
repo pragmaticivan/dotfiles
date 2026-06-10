@@ -106,3 +106,6 @@ result-*
 # custom
 coverage.txt
 
+###
+# Claude
+**/.claude/settings.local.json

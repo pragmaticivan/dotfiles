@@ -7,8 +7,7 @@
 #
 # See https://github.com/Homebrew/homebrew-bundle
 
-{{- $profile := (env "DOTFILES_PROFILE") -}}
-{{- if not $profile }}{{ $profile = "personal" }}{{ end -}}
+{{- $profile := or (env "DOTFILES_PROFILE") .profile "personal" -}}
 
 # BROWSERS #
 cask "firefox"

@@ -36,11 +36,19 @@ if [ -z "$script" ]; then
 		"$(dirname ${funcsourcetrace[1]%:*})"/git-completion.bash
 		"$HOME/.local/share/bash-completion/completions/git"
 		"$bash_completion/git"
+		"/opt/homebrew/share/bash-completion/completions/git"
+		"/usr/local/share/bash-completion/completions/git"
+		"/opt/homebrew/etc/bash_completion.d/git-completion.bash"
+		"/usr/local/etc/bash_completion.d/git-completion.bash"
 		'/etc/bash_completion.d/git' # old debian
 		)
 	for e in $locations; do
 		test -f $e && script="$e" && break
 	done
+fi
+
+if [ -z "$script" ] || [ ! -f "$script" ]; then
+	return 1
 fi
 
 local old_complete="$functions[complete]"
