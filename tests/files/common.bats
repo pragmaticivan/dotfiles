@@ -17,7 +17,7 @@
         "${HOME}/.config/mise/config.toml"
         "${HOME}/.config/nvim/init.lua"
         "${HOME}/.config/yazi/yazi.toml"
-        "${HOME}/.config/zellij/config.kdl"
+        "${HOME}/.config/herdr/config.toml"
     )
 
     for file in "${files_exists[@]}"; do
@@ -39,7 +39,7 @@
         "${HOME}/.config/mise"
         "${HOME}/.config/nvim"
         "${HOME}/.config/yazi"
-        "${HOME}/.config/zellij"
+        "${HOME}/.config/herdr"
         "${HOME}/.config/zsh"
     )
 
