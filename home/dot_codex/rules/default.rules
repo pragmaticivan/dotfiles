@@ -1,0 +1,142 @@
+# Codex command policy mirroring ~/.claude/settings.json.
+#
+# Commands not listed here still run inside the selected permission profile.
+# These rules only decide whether a command may escape that sandbox.
+
+# Privilege escalation and destructive system administration are forbidden.
+forbidden_commands = [
+    ["sudo"],
+    ["su"],
+    ["doas"],
+    ["pkexec"],
+    ["runas"],
+    ["mkfs"],
+    ["diskutil", "eraseDisk"],
+    ["dd"],
+    ["shred"],
+    ["launchctl"],
+    ["systemctl"],
+    ["service"],
+    ["crontab"],
+    ["at"],
+    ["chown"],
+    ["visudo"],
+    ["passwd"],
+]
+
+for command in forbidden_commands:
+    prefix_rule(
+        pattern = command,
+        decision = "forbidden",
+        justification = "This command is blocked by the global Codex safety policy.",
+    )
+
+# Direct network, remote-access, cloud, and infrastructure clients are blocked.
+forbidden_network_commands = [
+    ["curl"],
+    ["wget"],
+    ["nc"],
+    ["ncat"],
+    ["netcat"],
+    ["ssh"],
+    ["scp"],
+    ["sftp"],
+    ["rsync"],
+    ["ngrok"],
+    ["cloudflared"],
+    ["aws"],
+    ["gcloud"],
+    ["az"],
+    ["gsutil"],
+    ["terraform"],
+    ["pulumi"],
+    ["kubectl"],
+    ["helm"],
+]
+
+for command in forbidden_network_commands:
+    prefix_rule(
+        pattern = command,
+        decision = "forbidden",
+        justification = "Direct network and infrastructure clients are disabled; use an approved scoped tool instead.",
+    )
+
+# Global package installation is forbidden.
+forbidden_install_commands = [
+    ["npm", "install", "-g"],
+    ["npm", "i", "-g"],
+    ["pip", "install"],
+    ["pip3", "install"],
+    ["brew", "install"],
+    ["apt-get", "install"],
+    ["apt", "install"],
+    ["yum", "install"],
+    ["dnf", "install"],
+]
+
+for command in forbidden_install_commands:
+    prefix_rule(
+        pattern = command,
+        decision = "forbidden",
+        justification = "Global package installation is disabled; use the project's declared dependency workflow.",
+    )
+
+# Preserve the Claude policy's hard stops for the most dangerous rm/chmod forms.
+forbidden_destructive_commands = [
+    ["rm", "-rf", "/"],
+    ["rm", "-fr", "/"],
+    ["rm", "-rf", "/*"],
+    ["rm", "-fr", "/*"],
+    ["rm", "-rf", "~"],
+    ["rm", "-fr", "~"],
+    ["rm", "-rf", "~*"],
+    ["rm", "-fr", "~*"],
+    ["chmod", "777"],
+]
+
+for command in forbidden_destructive_commands:
+    prefix_rule(
+        pattern = command,
+        decision = "forbidden",
+        justification = "This destructive command form is never allowed by the global policy.",
+    )
+
+# Sensitive or externally mutating operations always require confirmation.
+prompt_commands = [
+    ["git", "push"],
+    ["git", "rebase"],
+    ["git", "reset", "--hard"],
+    ["git", "clean", "-fd"],
+    ["git", "tag"],
+    ["git", "stash", "drop"],
+    ["rm"],
+    ["chmod"],
+    ["make", "deploy"],
+    ["make", "release"],
+    ["npm", "run", "deploy"],
+    ["npm", "run", "release"],
+    ["npx"],
+    ["docker", "rm"],
+    ["docker", "rmi"],
+    ["docker", "system", "prune"],
+    ["docker-compose", "down"],
+    ["psql"],
+    ["mysql"],
+    ["mongosh"],
+    ["redis-cli"],
+    ["sqlite3"],
+]
+
+for command in prompt_commands:
+    prefix_rule(
+        pattern = command,
+        decision = "prompt",
+        justification = "This operation can mutate external or difficult-to-recover state.",
+    )
+
+# Git fetch is the one networked command explicitly allowed by the Claude policy.
+prefix_rule(
+    pattern = ["git", "fetch"],
+    decision = "allow",
+    justification = "Fetching remote refs is read-only and explicitly allowed by the global policy.",
+)

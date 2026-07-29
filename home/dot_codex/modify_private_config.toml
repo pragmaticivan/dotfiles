@@ -1,0 +1,91 @@
+#!/bin/sh
+set -eu
+
+# Codex updates config.toml itself when plugins, marketplaces, models, and
+# desktop integrations change. Merge the managed policy into that live state
+# instead of replacing the whole file and discarding those settings.
+if ! command -v yq >/dev/null 2>&1; then
+    echo "yq is required to merge the managed Codex configuration" >&2
+    exit 1
+fi
+
+overlay_file=$(mktemp "${TMPDIR:-/tmp}/codex-config.XXXXXX")
+trap 'rm -f "$overlay_file"' EXIT HUP INT TERM
+
+cat >"$overlay_file" <<'EOF'
+# Match the default Claude Code posture: work freely in the current project,
+# request approval for elevated actions, and keep network access disabled.
+approval_policy = "on-request"
+default_permissions = "project-workspace"
+web_search = "disabled"
+allow_login_shell = true
+
+[permissions.project-workspace]
+description = "Workspace editing with secret files and network access denied."
+extends = ":workspace"
+
+[permissions.project-workspace.filesystem]
+glob_scan_max_depth = 8
+"~/.ssh" = "deny"
+"~/.aws" = "deny"
+"~/.config/gcloud" = "deny"
+"~/.kube" = "deny"
+"~/.netrc" = "deny"
+"~/.npmrc" = "deny"
+"~/.pypirc" = "deny"
+"~/vault-token" = "deny"
+
+[permissions.project-workspace.filesystem.":workspace_roots"]
+".env" = "deny"
+".env.*" = "deny"
+"**/.env" = "deny"
+"**/.env.*" = "deny"
+"secrets/**" = "deny"
+"**/secrets/**" = "deny"
+"**/*.pem" = "deny"
+"**/*.key" = "deny"
+"**/*.p12" = "deny"
+"**/*.pfx" = "deny"
+"**/*.cer" = "deny"
+"**/*.crt" = "deny"
+"**/id_rsa" = "deny"
+"**/id_ed25519" = "deny"
+"**/vault-token" = "deny"
+"**/.netrc" = "deny"
+"**/.npmrc" = "deny"
+"**/.pypirc" = "deny"
+
+[permissions.project-workspace.network]
+enabled = false
+
+[shell_environment_policy]
+inherit = "all"
+ignore_default_excludes = false
+
+[apps._default]
+default_tools_approval_mode = "writes"
+destructive_enabled = false
+open_world_enabled = false
+
+[analytics]
+enabled = false
+
+[feedback]
+enabled = false
+
+[features]
+multi_agent = true
+
+[agents]
+max_threads = 4
+
+[tui]
+notifications = true
+notification_condition = "unfocused"
+EOF
+
+yq eval-all \
+    --input-format toml \
+    --output-format toml \
+    '. as $item ireduce ({}; . * $item) | del(.sandbox_mode, .sandbox_workspace_write)' \
+    - "$overlay_file"
