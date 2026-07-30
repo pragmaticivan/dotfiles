@@ -1,0 +1,67 @@
+{{- $palette := index .catppuccin.palettes .catppuccinFlavor }}
+{{- $accent := index $palette .catppuccinAccentColor }}
+# https://herdr.dev/docs/configuration/
+
+onboarding = false
+
+[terminal]
+shell_mode = "auto"
+new_cwd = "follow"
+
+[theme]
+name = {{ if eq .catppuccinFlavor "latte" }}"catppuccin-latte"{{ else }}"catppuccin"{{ end }}
+auto_switch = true
+light_name = "catppuccin-latte"
+dark_name = "catppuccin"
+
+[theme.custom]
+accent = {{ $accent | quote }}
+panel_bg = {{ $palette.mantle | quote }}
+surface0 = {{ $palette.surface0 | quote }}
+surface1 = {{ $palette.surface1 | quote }}
+surface_dim = {{ $palette.crust | quote }}
+overlay0 = {{ $palette.overlay0 | quote }}
+overlay1 = {{ $palette.overlay1 | quote }}
+text = {{ $palette.text | quote }}
+subtext0 = {{ $palette.subtext0 | quote }}
+mauve = {{ $palette.mauve | quote }}
+green = {{ $palette.green | quote }}
+yellow = {{ $palette.yellow | quote }}
+red = {{ $palette.red | quote }}
+blue = {{ $palette.blue | quote }}
+teal = {{ $palette.teal | quote }}
+peach = {{ $palette.peach | quote }}
+
+# Prefix keeps tmux/zellij muscle memory; ctrl+alt chords work without the prefix.
+[keys]
+prefix = "ctrl+b"
+focus_pane_left = ["prefix+h", "ctrl+alt+h"]
+focus_pane_down = ["prefix+j", "ctrl+alt+j"]
+focus_pane_up = ["prefix+k", "ctrl+alt+k"]
+focus_pane_right = ["prefix+l", "ctrl+alt+l"]
+previous_tab = ["prefix+p", "ctrl+alt+["]
+next_tab = ["prefix+n", "ctrl+alt+]"]
+new_tab = ["prefix+c", "ctrl+alt+c"]
+split_vertical = ["prefix+v", "ctrl+alt+d"]
+split_horizontal = ["prefix+minus", "ctrl+alt+shift+d"]
+zoom = ["prefix+z", "ctrl+alt+z"]
+switch_tab = "prefix+1..9"
+switch_workspace = "prefix+shift+1..9"
+focus_agent = "prefix+alt+1..9"
+
+[[keys.command]]
+key = "prefix+alt+g"
+type = "popup"
+command = "lazygit"
+description = "run lazygit"
+width = "90%"
+height = "90%"
+
+[ui]
+accent = {{ $accent | quote }}
+
+[ui.toast]
+delivery = "herdr"
+
+[ui.toast.herdr]
+position = "bottom-right"
