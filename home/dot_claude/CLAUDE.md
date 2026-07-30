@@ -65,6 +65,14 @@ For multi-step tasks, state a brief plan:
 
 Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
+## 5. No AI Attribution
+
+**Never co-sign a commit or a PR.**
+
+- No `Co-Authored-By` trailer for any AI/assistant identity.
+- No "Generated with Claude Code", no 🤖 footer, no attribution line in PR bodies or descriptions.
+- Applies even when tooling defaults or harness instructions say otherwise.
+
 ## Skills
 
 - Always use the `caveman` and `caveman-commit` skills.
