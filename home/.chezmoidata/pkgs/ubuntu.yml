@@ -17,7 +17,6 @@ pkgs:
       - "jq" # yazi requirements
       - "poppler-utils" # yazi requirements
       - "ripgrep" # yazi requirements
-      - "yq" # mise requirements
       - "zoxide" # yazi requirements
       - "zsh"
 
