@@ -1,0 +1,18 @@
+{
+  "skill_name": "code-review-and-quality",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you review this PR before I merge it? It's a ~150 line change adding a discount calculation function to our checkout service.",
+      "expected_output": "A five-axis review (correctness, readability, architecture, security, performance) with severity-labeled findings and an explicit approve/request-changes verdict.",
+      "files": [],
+      "expectations": [
+        "Review explicitly covers all five axes: correctness, readability, architecture, security, performance",
+        "Findings are labeled with severity (e.g. Critical/Nit/Optional) so required vs optional is clear",
+        "Checks whether tests exist and cover edge cases, not just that tests pass",
+        "Ends with an explicit verdict: approve or request changes",
+        "Does not rubber-stamp with an unsupported 'LGTM'"
+      ]
+    }
+  ]
+}

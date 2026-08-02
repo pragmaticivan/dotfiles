@@ -1,0 +1,17 @@
+{
+  "skill_name": "rigorous-coding",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Add a function to our billing service that applies a percentage discount to an order total.",
+      "expected_output": "Stated assumptions before coding, edge-case handling beyond the happy path, a minimal surgical implementation, and verification evidence rather than an unverified correctness claim.",
+      "files": [],
+      "expectations": [
+        "States assumptions (e.g. discount range, rounding behavior) before writing code",
+        "Considers edge cases beyond the happy path (e.g. 0%, 100%, negative or invalid input)",
+        "Does not add speculative options or config not requested",
+        "Verifies the implementation (e.g. runs it or shows evidence) rather than merely asserting correctness"
+      ]
+    }
+  ]
+}
