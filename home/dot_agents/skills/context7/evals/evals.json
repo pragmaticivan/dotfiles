@@ -1,0 +1,17 @@
+{
+  "skill_name": "context7",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you show me how to set up middleware-based authentication in Next.js? I want to see the current official pattern, not something outdated.",
+      "expected_output": "An answer grounded in documentation fetched via scripts/context7.py, citing the official Next.js middleware pattern rather than answering purely from training memory.",
+      "files": [],
+      "expectations": [
+        "Invokes scripts/context7.py (search and/or docs command) rather than answering purely from memory",
+        "Uses the correct library ID format for Next.js (/vercel/next.js)",
+        "References documentation content returned by the script in the final answer",
+        "Mentions version-specific handling if a version is relevant to the answer"
+      ]
+    }
+  ]
+}

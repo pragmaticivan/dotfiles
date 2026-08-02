@@ -1,0 +1,17 @@
+{
+  "skill_name": "shopify-content",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to add an FAQ page to our Shopify store and publish a blog post announcing our summer sale. We already have an Admin API token set up.",
+      "expected_output": "Use of the GraphQL Admin API (pageCreate / articleCreate) with SEO fields and semantic HTML, plus a verification query and admin/live URLs.",
+      "files": [],
+      "expectations": [
+        "Uses the GraphQL Admin API (pageCreate / articleCreate) rather than legacy REST endpoints",
+        "Includes SEO title/description fields on the created content",
+        "Uses semantic HTML in the page/article body (h2-h6, p, ul/ol) without inline styles",
+        "Verifies the created content with a follow-up query and gives the admin/live URLs"
+      ]
+    }
+  ]
+}

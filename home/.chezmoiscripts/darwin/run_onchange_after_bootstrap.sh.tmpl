@@ -54,6 +54,12 @@ install_brew_packages() {
 
     brew --version
 
+    # copilot-cli ships from the third-party aws/tap; Homebrew now refuses to
+    # load formulae from untrusted taps, which aborts the whole `brew bundle`
+    # run (including every formula after it, e.g. starship) unless trusted.
+    brew tap aws/tap >/dev/null 2>&1 || true
+    brew trust aws/tap || echo "brew trust aws/tap failed."
+
     if [ -f "${HOME}/Brewfile" ]; then
         brew bundle --file="${HOME}/Brewfile" || echo "brew bundle failed."
     else

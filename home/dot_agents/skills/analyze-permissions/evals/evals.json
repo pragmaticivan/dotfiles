@@ -1,0 +1,18 @@
+{
+  "skill_name": "analyze-permissions",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/analyze-permissions — I've been approving a bunch of stuff in this repo's settings.local.json, can you check if any of it should be promoted to global patterns?",
+      "expected_output": "A structured markdown report (Settings Overview, Already Covered, Blocked by Global Deny, Suggested New Patterns, Uncategorized) with no files modified, since the default action is analyze.",
+      "files": [],
+      "expectations": [
+        "Resolves the chezmoi source path via `chezmoi source-path` rather than hardcoding ~/.claude/settings.json",
+        "Reads both the chezmoi source settings.json and the project's settings.local.json",
+        "Checks candidate patterns against the global deny list before suggesting them as allow patterns",
+        "Output follows the report structure with sections: Settings Overview, Already Covered, Blocked by Global Deny, Suggested New Patterns, Uncategorized",
+        "Does not modify any files, since the default action is analyze, not apply"
+      ]
+    }
+  ]
+}

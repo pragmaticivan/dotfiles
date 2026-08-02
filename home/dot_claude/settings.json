@@ -60,7 +60,8 @@
   "cleanupPeriodDays": 14,
   "enabledPlugins": {
     "caveman@caveman": true,
-    "compound-engineering@compound-engineering-plugin": true
+    "compound-engineering@compound-engineering-plugin": true,
+    "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "caveman": {
@@ -78,7 +79,7 @@
   },
   "permissions": {
     "disableBypassPermissionsMode": "disable",
-    "defaultMode": "default",
+    "defaultMode": "auto",
     "deny": [
       "Bash(sudo:*)",
       "Bash(su:*)",
@@ -149,8 +150,7 @@
       "Bash(apt-get install:*)",
       "Bash(apt install:*)",
       "Bash(yum install:*)",
-      "Bash(dnf install:*)",
-      "WebSearch"
+      "Bash(dnf install:*)"
     ],
     "ask": [
       "Bash(git push:*)",
@@ -175,8 +175,7 @@
       "Bash(mysql:*)",
       "Bash(mongosh:*)",
       "Bash(redis-cli:*)",
-      "Bash(sqlite3:*)",
-      "WebFetch"
+      "Bash(sqlite3:*)"
     ],
     "allow": [
       "Read(**)",
@@ -304,7 +303,15 @@
       "Bash(timeout:*)",
       "Bash(sleep:*)",
       "Bash(true:*)",
-      "Bash(false:*)"
+      "Bash(false:*)",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "Fetch(*)",
+      "Read(/tmp/**)",
+      "Read(~/.claude/**)",
+      "Bash(~/.claude/skills/*:*)",
+      "Bash(brew info:*)",
+      "Bash(brew list:*)"
     ]
   }
 }

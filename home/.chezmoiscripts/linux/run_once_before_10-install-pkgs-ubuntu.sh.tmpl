@@ -39,6 +39,26 @@ sudo apt install {{ .pkgs.ubuntu.pkgs | quoteList | join " " }}
 
 ##########################################
 
+echo 'INSTALLING YQ...'
+
+# Ubuntu's apt package "yq" is the unrelated Python/jq-wrapper (kislyuk/yq),
+# not the Go binary (mikefarah/yq) our TOML tooling needs. Install the real
+# one directly so `yq eval-all --input-format toml ...` works.
+if ! yq --version 2>/dev/null | grep -q mikefarah; then
+  case "$(uname -m)" in
+  x86_64) YQ_ARCH=amd64 ;;
+  aarch64 | arm64) YQ_ARCH=arm64 ;;
+  *)
+    echo "unsupported architecture for yq: $(uname -m)" >&2
+    exit 1
+    ;;
+  esac
+  sudo curl -sSfL -o /usr/local/bin/yq "https://github.com/mikefarah/yq/releases/latest/download/yq_linux_${YQ_ARCH}"
+  sudo chmod +x /usr/local/bin/yq
+fi
+
+##########################################
+
 {{ if .pkgs.ubuntu.repositories }}
 echo 'INSTALLING PACKAGES VIA ONE SCRIPT INSTALL...'
 {{ range $script := .pkgs.ubuntu.oneScriptInstall }}

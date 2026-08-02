@@ -1,0 +1,17 @@
+{
+  "skill_name": "test-driven-development",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "There's a bug where completing a task doesn't update the completedAt timestamp. Can you fix it?",
+      "expected_output": "A failing reproduction test written and confirmed to fail before the fix, followed by the minimal fix, then a passing rerun (Prove-It Pattern).",
+      "files": [],
+      "expectations": [
+        "Writes a test that reproduces the bug before writing the fix (Prove-It Pattern)",
+        "Confirms the reproduction test fails before the fix is applied",
+        "Implements the minimal fix needed to make the test pass",
+        "Reruns the test (and ideally the full suite) after the fix to confirm it passes and nothing else broke"
+      ]
+    }
+  ]
+}

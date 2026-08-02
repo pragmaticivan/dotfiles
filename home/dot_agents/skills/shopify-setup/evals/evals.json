@@ -1,0 +1,18 @@
+{
+  "skill_name": "shopify-setup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I want to connect Claude to our Shopify store so it can manage products. We haven't set up any API access yet.",
+      "expected_output": "A walkthrough that installs the CLI, authenticates, creates a custom app with the correct Admin API scopes, stores the token securely, and verifies the connection.",
+      "files": [],
+      "expectations": [
+        "Guides creating a custom app with an Admin API access token, not just a CLI session token",
+        "Lists specific Admin API scopes needed (e.g. read_products, write_products, read_content, write_content)",
+        "Instructs storing the access token in .dev.vars (or equivalent) and ensuring it's gitignored, not committed",
+        "Verifies the connection with a test GraphQL query against the Admin API",
+        "Uses an explicit dated API version rather than 'unstable'"
+      ]
+    }
+  ]
+}
