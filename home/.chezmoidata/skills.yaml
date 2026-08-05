@@ -1,0 +1,9 @@
+# Lockfile for third-party agent skills.
+# Canonical copy lands in ~/.agents/skills/<name>, symlinked into each agent dir.
+# Bump `sha` and run `chezmoi apply --refresh-externals` to update.
+# Removing an entry: delete it here and add the paths to .chezmoiremove.
+external_skills:
+  gh-stack:
+    repo: github/gh-stack
+    sha: 14fc42ed9b6c376a53b2f999f138d3bd26dac546
+    path: skills/gh-stack
