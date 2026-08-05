@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+{{ range $name, $s := .external_skills -}}
+# pin: {{ $s.repo }}@{{ $s.sha }}
+{{ end -}}
+skills=(
+{{ range $name, $_ := .external_skills }}  "{{ $name }}"
+{{ end }})
+
+if [ ${#skills[@]} -eq 0 ]; then
+  exit 0
+fi
+
+canonical="$HOME/.agents/skills"
+
+for name in "${skills[@]}"; do
+  if [ ! -d "$canonical/$name" ]; then
+    echo "external skill '$name' missing from $canonical — check its path in .chezmoidata/skills.yaml" >&2
+    exit 1
+  fi
+  for agent_dir in "$HOME/.claude/skills" "$HOME/.copilot/skills"; do
+    mkdir -p "$agent_dir"
+    ln -sfn "$canonical/$name" "$agent_dir/$name"
+  done
+done

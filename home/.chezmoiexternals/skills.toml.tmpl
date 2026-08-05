@@ -1,0 +1,9 @@
+# Generated from .chezmoidata/skills.yaml — edit that file, not this one.
+{{ range $name, $s := .external_skills }}
+[".agents/skills/{{ $name }}"]
+type = "archive"
+# pin: {{ $s.repo }}@{{ $s.sha }}
+url = "https://github.com/{{ $s.repo }}/archive/{{ $s.sha }}.tar.gz"
+include = ["*/{{ $s.path }}/**"]
+stripComponents = {{ add 1 (len (splitList "/" $s.path)) }}
+{{ end }}

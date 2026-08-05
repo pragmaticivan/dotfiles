@@ -6,6 +6,7 @@
 .chezmoiscripts/linux/**
 {{ end }}
 
-{{ if ne .osId "darwin" }}
+{{ if ne .chezmoi.os "darwin" }}
 .chezmoiscripts/darwin/**
+Brewfile
 {{ end }}
