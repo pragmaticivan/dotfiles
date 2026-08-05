@@ -13,10 +13,10 @@
 
 {{/* Default static values */}}
 
-{{ $gpgId := "TBD" }}
-{{ $agePubKey := "TBD" }}
-{{ $sshId := "TBD" }}
-
+{{ $profiles := list
+     "personal"
+     "restricted"
+}}
 {{ $themes := list
      "dark"
      "light"
@@ -53,10 +53,32 @@
 {{ $catppuccinLightFlavour := "latte" }}
 {{ $catppuccinDarkFlavour := "mocha" }}
 {{ $catppuccinAccentColor := "lavender" }}
-{{ $useHyde := false }}
 {{ $isLaptop := false }}
 {{ $shell = "zsh" }}
-{{ $tty := false }}
+
+{{/* Seed every prompted value from the config already on this machine, so that
+     re-running `chezmoi init` (even with --no-tty) preserves earlier answers
+     instead of silently resetting them to the defaults above. */}}
+{{- if hasKey . "terminalFontSize" }}{{ $terminalFontSize = .terminalFontSize }}{{ end }}
+{{- if hasKey . "theme" }}{{ $theme = .theme }}{{ end }}
+{{- if hasKey . "catppuccinLightFlavour" }}{{ $catppuccinLightFlavour = .catppuccinLightFlavour }}{{ end }}
+{{- if hasKey . "catppuccinDarkFlavour" }}{{ $catppuccinDarkFlavour = .catppuccinDarkFlavour }}{{ end }}
+{{- if hasKey . "catppuccinAccentColor" }}{{ $catppuccinAccentColor = .catppuccinAccentColor }}{{ end }}
+{{- if hasKey . "isLaptop" }}{{ $isLaptop = .isLaptop }}{{ end }}
+
+{{/* Install profile. Env var wins, otherwise the value already stored in
+     ~/.config/chezmoi/chezmoi.toml is kept, otherwise prompt (default personal).
+     Captured at `chezmoi init` so every later `chezmoi apply` stays on it. */}}
+{{ $profile := "personal" }}
+{{- if hasKey . "profile" }}{{ $profile = .profile }}{{ end }}
+{{- if env "DOTFILES_PROFILE" }}
+{{-   $profile = env "DOTFILES_PROFILE" }}
+{{- else if stdinIsATTY }}
+{{-   $profile = promptChoiceOnce . "profile" "Install profile" $profiles $profile }}
+{{- end }}
+{{- if not (has $profile $profiles) }}
+{{-   fail (printf "unknown profile %q, expected one of %s" $profile ($profiles | join ", ")) }}
+{{- end }}
 
 {{/* Pre auto */}}
 
@@ -68,22 +90,22 @@
 {{/* Prompts */}}
 
 {{ if stdinIsATTY }}
-  {{ $terminalFontSize = promptInt "Enter terminal font size" 13 }}
-  {{ $theme = promptChoice "Theme" $themes "dark" }}
-  {{ $catppuccinLightFlavour = promptChoice "Catppuccin flavor for light mode" $catppuccinFlavors "latte" }}
-  {{ $catppuccinDarkFlavour = promptChoice "Catppuccin flavor for dark mode" $catppuccinFlavors "mocha" }}
-  {{ $catppuccinAccentColor = promptChoice "Catppuccin accent color" $catppuccinAccentColors "lavender" }}
-  {{ if eq $osId "linux-arch" "linux-endeavouros" }}
-    {{ $useHyde = promptBool "Use Hyde" true }}
-  {{ end }}
+  {{ $terminalFontSize = promptIntOnce . "terminalFontSize" "Enter terminal font size" $terminalFontSize }}
+  {{ $theme = promptChoiceOnce . "theme" "Theme" $themes $theme }}
+  {{ $catppuccinLightFlavour = promptChoiceOnce . "catppuccinLightFlavour" "Catppuccin flavor for light mode" $catppuccinFlavors $catppuccinLightFlavour }}
+  {{ $catppuccinDarkFlavour = promptChoiceOnce . "catppuccinDarkFlavour" "Catppuccin flavor for dark mode" $catppuccinFlavors $catppuccinDarkFlavour }}
+  {{ $catppuccinAccentColor = promptChoiceOnce . "catppuccinAccentColor" "Catppuccin accent color" $catppuccinAccentColors $catppuccinAccentColor }}
 {{ end }}
 
-{{- $tty := "" -}}
-{{- if stdinIsATTY -}}
-{{-   $tty = true -}}
-{{- else -}}
-{{-   $tty = false -}}
-{{- end -}}
+{{/* Whether this machine is used interactively; gates the GitHub SSH rewrite in
+     ~/.gitconfig. Decided on first init (false in CI or a piped setup.sh) and
+     kept afterwards, so a later non-interactive init cannot silently drop it. */}}
+{{ $tty := false }}
+{{- if hasKey . "tty" }}
+{{-   $tty = .tty }}
+{{- else if stdinIsATTY }}
+{{-   $tty = true }}
+{{- end }}
 
 
 {{/* Semi prompts or auto */}}
@@ -112,7 +134,6 @@
 
 {{ $transparent := ne $opacity "1" }}
 
-encryption = "age" # or gpg
 mode = "file" # file, symlink
 progress = true
 
@@ -126,24 +147,14 @@ catppuccinDarkFlavour = {{ $catppuccinDarkFlavour | quote }}
 catppuccinFlavor = {{ $catppuccinFlavor | quote }}
 catppuccinFlavorTitle = {{ $catppuccinFlavor | title | quote }}
 catppuccinAccentColor = {{ $catppuccinAccentColor | quote }}
-gpgId = {{ $gpgId | quote }}
-sshId = {{ $sshId | quote }}
 osId = {{ $osId | quote }}
-useHyde = {{ $useHyde }}
+profile = {{ $profile | quote }}
 isLaptop = {{ $isLaptop }}
 tty = {{ $tty }}
 
 [data.catppuccin]
 accentColors = [ {{ $catppuccinAccentColors | quoteList | join ", " }} ]
 flavors = [ {{ $catppuccinFlavors | quoteList | join ", " }} ]
-
-[age]
-identity = "~/.age-key.txt"
-recipient = {{ $agePubKey | quote }}
-
-[gpg]
-recipient = {{ $gpgId | quote }}
-args = ["--quiet"]
 
 [git]
 autoAdd = true # Add changes to the source state after any change

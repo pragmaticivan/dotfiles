@@ -67,21 +67,23 @@ On macOS, Homebrew apps are installed from a templated `Brewfile` that respects 
 - personal: full set of apps (default)
 - restricted: minimal set for locked-down environments
 
-Select the profile via one of the following:
-
-1) Chezmoi data (persistent): edit `home/.chezmoidata/global.yaml`
+The profile is stored per machine in `~/.config/chezmoi/chezmoi.toml`, captured at `chezmoi init`. Set it once:
 
 ```
-profile: restricted
+DOTFILES_PROFILE=restricted chezmoi init --apply   # or answer the "Install profile" prompt
 ```
 
-2) Environment variable (one-off override):
+Every later `chezmoi apply` keeps that profile. To check: `chezmoi data | jq .profile`.
+
+The env var also works as a one-off override on any command:
 
 ```
 DOTFILES_PROFILE=restricted chezmoi apply
 ```
 
-The install script exports `DOTFILES_PROFILE` (env override wins, then chezmoi data; default is `personal`). The `Brewfile` gates heavier or personal-only apps (browsers, media, Ollama, Docker Desktop, etc.) under `personal`, while essential CLI tools remain for both.
+Be aware that a one-off override leaves the affected files differing from the stored target state, so the next plain `chezmoi apply` reverts them. Prefer changing the stored value (re-run `chezmoi init`, or edit `profile` in `~/.config/chezmoi/chezmoi.toml`).
+
+Profile-aware targets are `Brewfile` (personal-only casks: extra browsers, chat apps, media, games) and `.gitconfig` (commit email). Note that `brew bundle` never uninstalls, so switching to `restricted` stops installing personal apps but does not remove ones already present.
 
 ## 👏 Acknowledgements
 
