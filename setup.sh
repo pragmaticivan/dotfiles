@@ -207,12 +207,6 @@ function initialize_dotfiles() {
     run_chezmoi
 }
 
-function get_system_from_chezmoi() {
-    local system
-    system=$(chezmoi data | jq -r '.system')
-    echo "${system}"
-}
-
 function main() {
     echo "$DOTFILES_LOGO"
 
