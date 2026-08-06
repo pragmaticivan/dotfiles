@@ -2,7 +2,11 @@
 
 # ~/.gitconfig
 # =============================================================================
-# User-specific Git configuration file.
+# The only global Git configuration file.
+#
+# Git also reads ~/.config/git/config, and ~/.gitconfig wins on each key that
+# occurs in the two files. A second file makes the effective value hard to see,
+# so this file holds all the values. Do not add ~/.config/git/config again.
 #
 # See https://git-scm.com/docs/git-config
 #
@@ -19,16 +23,30 @@
 {{ $profile := or (env "DOTFILES_PROFILE") .profile "personal" }}
 {{ $gitEmail := .gitemail }}
 {{ if eq $profile "restricted" }}
-{{   $gitEmail = "286433352+ivan-santos-eq@users.noreply.github.com" }}
+{{   $gitEmail = .gitemailRestricted }}
 {{ end }}
+
+[advice]
+    addEmptyPathspec = false
+
+[alias]
+    co = "checkout"
 
 [apply]
     # Detect whitespace errors when applying a patch.
     whitespace = fix
 
+[color]
+    branch = "auto"
+    diff = "auto"
+    status = "auto"
+    ui = true
+
 [commit]
     # Specify template file for new commit messages.
     template = ~/.gitmessage.txt
+
+    gpgSign = true
 
 [core]
     # Disable line endings output conversion.
@@ -37,8 +55,14 @@
     # Set comment character to something that allows mentioning issue numbers.
     commentChar = ";"
 
+    compression = -1
+    editor = "nvim"
+
     # Store global exclusions into a custom file.
     excludesfile = ~/.gitignore_global
+
+    pager = delta
+    precomposeunicode = true
 
     # Make `git rebase` safer on macOS.
     # See http://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
@@ -47,6 +71,13 @@
     # Speed up commands involving untracked files such as `git status`.
     # See https://git-scm.com/docs/git-update-index#_untracked_cache
     untrackedCache = true
+
+    whitespace = "trailing-space,space-before-tab"
+
+[delta]
+    features = catppuccin-{{ .catppuccinFlavor }}
+    side-by-side = false
+    line-numbers = true
 
 [diff]
     # List submodules commits in the range.
@@ -80,9 +111,37 @@
     # Turn a content that by itself is unusable into a usable content.
     required = true
 
+[format]
+    signOff = true
+
+[github]
+    user = pragmaticivan
+
+[gpg]
+    format = "ssh"
+
+[gpg "ssh"]
+    allowedSignersFile = "~/.ssh/allowed_signers"
+
+[grep]
+    extendRegexp = true
+    lineNumber = true
+
 [help]
     # Correct and execute mistyped commands.
     autocorrect = 1
+
+[init]
+    defaultBranch = "main"
+
+[interactive]
+    diffFilter = delta --color-only
+
+[lfs]
+    enable = true
+
+[log]
+    showSignature = false
 
 [merge]
     # Include summaries of merged commits in newly created merge commit messages.
@@ -103,13 +162,26 @@
     # Use the exit code of the merge command to determine the success status.
     trustExitCode = true
 
+[pull]
+    ff = "only"
+
+[push]
+    autoSetupRemote = true
+    default = "simple"
+
 [rebase]
     # Create a temporary stash entry before the operation begins.
     autostash = true
 
+[rerere]
+    enabled = true
+
 [status]
     # Enable submodule summary of commits.
     submoduleSummary = true
+
+[submodule]
+    fetchJobs = 4
 
 [user]
     # Specify the email address of the author/committer.
@@ -118,7 +190,12 @@
     # Specify the username of the author/committer.
     name = "{{ .name }}"
 
+    signingKey = "~/.ssh/id_ed25519"
+
 [include]
+    # Include the delta theme.
+    path = ~/.config/delta/catppuccin.gitconfig
+
     # Include aliases.
     path = .gitconfig_aliases
 

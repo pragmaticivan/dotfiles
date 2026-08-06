@@ -1,5 +1,8 @@
 name: "Ivan Santos"
+# gitemail is the personal profile. gitemailRestricted is the work profile.
+# ~/.gitconfig is the only file that reads them.
 gitemail: "301291+pragmaticivan@users.noreply.github.com"
+gitemailRestricted: "286433352+ivan-santos-eq@users.noreply.github.com"
 editor: "nvim"
 visualeditor: "code -w"
 externalGitArgs: "clone.args = ['--depth', '1']\npull.args = ['--depth', '1']"
