@@ -62,6 +62,7 @@
     ]
   },
   "cleanupPeriodDays": 14,
+  "skipWorkflowUsageWarning": true,
   "enabledPlugins": {
     "compound-engineering@compound-engineering-plugin": true,
     "skill-creator@claude-plugins-official": true
@@ -176,6 +177,12 @@
     ],
     "allow": [
       "Read(**)",
+      "Write(/tmp/**)",
+      "Edit(/tmp/**)",
+      "Bash(rm /tmp/:*)",
+      "Bash(rm -f /tmp/:*)",
+      "Bash(rm -r /tmp/:*)",
+      "Bash(rm -fr /tmp/:*)",
       "Bash(grep:*)",
       "Bash(rg:*)",
       "Bash(ag:*)",
