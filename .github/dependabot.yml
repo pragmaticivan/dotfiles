@@ -4,3 +4,10 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
+
+  # The Dockerfile base image. Dependabot cannot read the pinned SHAs in
+  # .chezmoiexternals or .chezmoidata/skills.yaml, so update-pins.yaml does those.
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "monthly"

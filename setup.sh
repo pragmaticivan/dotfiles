@@ -28,6 +28,11 @@ declare -r DOTFILES_REPO_URL="https://github.com/pragmaticivan/dotfiles"
 declare -r BRANCH_NAME="${BRANCH_NAME:-main}"
 declare -r DOTFILES_GITHUB_PAT="${DOTFILES_GITHUB_PAT:-}"
 
+# Set DOTFILES_SOURCE to a local checkout to test that working tree instead of
+# the remote branch. CI sets it so a pull request tests its own diff, which the
+# remote clone cannot do for a fork.
+declare -r DOTFILES_SOURCE="${DOTFILES_SOURCE:-}"
+
 function is_ci() {
     [ "${CI:-false}" = "true" ]
 }
@@ -166,11 +171,19 @@ function run_chezmoi() {
     # run `chezmoi init` to setup the source directory,
     # generate the config file, and optionally update the destination directory
     # to match the target state.
-    "${chezmoi_cmd}" init "${DOTFILES_REPO_URL}" \
-        --force \
-        --branch "${BRANCH_NAME}" \
-        --use-builtin-git true \
-        ${no_tty_option}
+    if [ -n "${DOTFILES_SOURCE}" ]; then
+        echo "Using the local source directory ${DOTFILES_SOURCE}"
+        "${chezmoi_cmd}" init \
+            --force \
+            --source "${DOTFILES_SOURCE}" \
+            ${no_tty_option}
+    else
+        "${chezmoi_cmd}" init "${DOTFILES_REPO_URL}" \
+            --force \
+            --branch "${BRANCH_NAME}" \
+            --use-builtin-git true \
+            ${no_tty_option}
+    fi
 
     # the `age` command requires a tty, but there is no tty in the github actions.
     # Therefore, it is currently difficult to decrypt the files encrypted with `age` in this workflow.
@@ -190,7 +203,11 @@ function run_chezmoi() {
 
     # run `chezmoi apply` to ensure that target... are in the target state,
     # updating them if necessary.
-    "${chezmoi_cmd}" apply ${no_tty_option}
+    if [ -n "${DOTFILES_SOURCE}" ]; then
+        "${chezmoi_cmd}" apply --source "${DOTFILES_SOURCE}" ${no_tty_option}
+    else
+        "${chezmoi_cmd}" apply ${no_tty_option}
+    fi
 
     # purge the binary of the chezmoi cmd
     rm -fv "${chezmoi_cmd}"
