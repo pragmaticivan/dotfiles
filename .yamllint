@@ -1,0 +1,38 @@
+# yamllint rules for this repository's own YAML: the CI workflows and the
+# chezmoi data files.
+#
+# home/dot_config/yamllint/config is a different file for a different job. That
+# one is the global config that ships to ~/.config/yamllint/config for ad-hoc
+# work. This one matches the style the repository already uses, so the lint gate
+# finds real defects instead of asking for a reformat of every data file.
+extends: default
+
+rules:
+  # .chezmoidata/pkgs/*.yml indents its sequences and .chezmoidata/global.yaml
+  # does not, so demand consistency inside one file and not across the repository.
+  indentation:
+    level: error
+    indent-sequences: consistent
+
+  # The package lists quote each name on purpose, for one readable style.
+  quoted-strings: disable
+
+  comments:
+    require-starting-space: false
+    min-spaces-from-content: 1
+
+  empty-lines:
+    max-start: 0
+    max-end: 1
+
+  # `on:` in a GitHub workflow is the truthy value "on", and it must stay.
+  truthy:
+    allowed-values: ["true", "false", "on"]
+
+  new-line-at-end-of-file: enable
+  empty-values: enable
+
+  comments-indentation: disable
+  document-start: disable
+  document-end: disable
+  line-length: disable
