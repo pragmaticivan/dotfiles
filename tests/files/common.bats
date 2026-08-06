@@ -71,6 +71,35 @@
     [ "$(git config --get core.excludesFile)" = "~/.gitignore_global" ]
 }
 
+@test "[common] commit signatures verify against allowed_signers" {
+    signers="${HOME}/.ssh/allowed_signers"
+    [ -f "${signers}" ]
+
+    # A machine with no signing key gets an empty file, and it cannot sign. CI
+    # is that machine, so skip before each assertion that needs a key.
+    if [ ! -s "${signers}" ]; then
+        skip "no signing key on this machine, so allowed_signers is empty"
+    fi
+
+    # gpg.ssh.allowedSignersFile must point at the file chezmoi writes, or
+    # `git log --show-signature` gives U and cannot name the signer.
+    [ "$(git config --get gpg.ssh.allowedSignersFile)" = "~/.ssh/allowed_signers" ]
+
+    # principals, namespaces, key type, key material.
+    run awk 'NF != 4 { exit 1 }' "${signers}"
+    [ "$status" -eq 0 ]
+    grep -q 'namespaces="git"' "${signers}"
+
+    # The commit address must be one of the principals, or git cannot match it.
+    grep -qF "$(git config --get user.email)" "${signers}"
+
+    # End to end: the last signed commit must verify as good.
+    cd "$(chezmoi source-path)"
+    run git log --format=%G? -1
+    echo "Signature status: ${output}"
+    [ "${output}" = "G" ]
+}
+
 @test "[common] chezmoi is on PATH" {
     run command -v chezmoi
     [ "$status" -eq 0 ]

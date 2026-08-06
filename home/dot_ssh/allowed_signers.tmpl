@@ -1,0 +1,20 @@
+{{- /* ~/.ssh/allowed_signers — the principals that may sign a git commit.
+
+`gpg.ssh.allowedSignersFile` in ~/.gitconfig points here. Without this file
+`git log --show-signature` gives U for each commit, because git cannot name the
+signer. The signature is correct, and only the local name check is absent.
+
+git matches the signer against the committer address, and the install profile
+decides that address, so the two addresses are both principals.
+
+`namespaces="git"` keeps the key to git signatures. A signature for a different
+namespace does not verify with this line.
+
+The key material is not in this repository. `output` reads the public key of
+this machine at each `chezmoi apply`, so each machine uses its own key. The file
+stays empty until the key is there. */ -}}
+{{- $pub := joinPath .chezmoi.homeDir ".ssh/id_ed25519.pub" -}}
+{{- if stat $pub -}}
+{{- $key := output "cat" $pub | trim | splitList " " -}}
+{{ .gitemail }},{{ .gitemailRestricted }} namespaces="git" {{ index $key 0 }} {{ index $key 1 }}
+{{- end }}
