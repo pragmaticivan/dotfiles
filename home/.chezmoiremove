@@ -1,1 +1,5 @@
 .config/zsh/autoload/zellij.zsh
+.claude/.caveman-active
+.config/git/config
+.config/git/ignore
+.config/zsh/autoload/atuim.zsh
