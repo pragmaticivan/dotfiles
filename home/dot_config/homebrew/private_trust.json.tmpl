@@ -1,0 +1,4 @@
+{{- /* Generated from .chezmoidata/homebrew.yaml. Edit that file, not this one.
+       `brew trust` rewrites this file, so a manual `brew trust` is lost on the
+       next `chezmoi apply`. Add the entry to the YAML file instead. */ -}}
+{{- dict "trustedformulae" .homebrew_trust.formulae "trustedtaps" .homebrew_trust.taps | toPrettyJson }}
