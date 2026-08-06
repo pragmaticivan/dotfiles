@@ -3,3 +3,7 @@ home/.zsh_history
 home/.zshenv_private
 .claude/settings.local.json
 skills-audit-workspace/
+
+# Python bytecode from running the skill scripts and their evals
+__pycache__/
+*.pyc

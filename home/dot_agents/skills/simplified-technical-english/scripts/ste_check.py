@@ -232,38 +232,65 @@ def ste_word_count(sentence: str) -> int:
     return len(tokens)
 
 
-def content_words(sentence: str) -> list[tuple[str, str, str]]:
-    """(word, preceding word, word before that) triples to check against the dictionary.
+def content_words(sentence: str) -> list[tuple[str, str, str, str]]:
+    """(word, preceding word, word before that, next word) to check against the dictionary.
 
     Masked elements are removed first: quoted text and abbreviations are
     unchangeable (8.6), and numbers and identifiers are not dictionary words.
+
+    The next word decides two questions that the words before cannot. A copula
+    after the word puts the word in the subject, which makes it a noun. And an
+    adjective modifies a noun that comes after it, so a word with no noun after
+    it is the head of its phrase.
     """
     text = URL_RE.sub(" ", sentence)
     text = QUOTE_RE.sub(" ", text)
     text = NUMBER_UNIT_RE.sub(" ", text)
     text = PLAIN_NUMBER_RE.sub(" ", text)
-    pairs: list[tuple[str, str, str]] = []
-    previous = ""
-    before = ""
+    # First pass: every token in order, with the surface form the neighbors see
+    # and a mark for the tokens that end a phrase.
+    stream: list[tuple[str, str, bool]] = []   # (token, surface, boundary_before)
     cursor = 0
     for match in WORD_RE.finditer(text):
         token = match.group(0)
         # After a comma or a period the next word starts a clause. That position
         # is the strongest signal of the imperative form, so keep it.
-        if re.search(r"[,.;:!?]", text[cursor:match.start()]):
-            previous, before = "", ""
+        boundary = bool(re.search(r"[,.;:!?]", text[cursor:match.start()]))
         cursor = match.end()
         if token.isupper() and len(token) > 1:   # abbreviation (8.6 item 3)
-            previous, before = "@abbr", previous
-            continue
+            surface = "@abbr"
+        elif "-" in token:
+            surface = "@hyphen"
+        else:
+            surface = token.lower()
+        stream.append((token, surface, boundary))
+
+    def is_content(token: str) -> bool:
+        if token.isupper() and len(token) > 1:
+            return False
         if any(char.isdigit() for char in token) or len(token) < 2:
-            previous, before = token.lower(), previous
+            return False
+        return token.lower() not in NUMBER_WORDS   # Rule 8.6 item 1
+
+    pairs: list[tuple[str, str, str, str]] = []
+    for position, (token, _surface, _boundary) in enumerate(stream):
+        if not is_content(token):
             continue
-        if token.lower() in NUMBER_WORDS:        # Rule 8.6 item 1
-            previous, before = token.lower(), previous
-            continue
-        pairs.append((token, previous, before))
-        previous, before = ("@hyphen" if "-" in token else token.lower()), previous
+        previous = before = ""
+        for offset in (1, 2):
+            index = position - offset
+            if index < 0 or stream[index + 1][2]:   # a boundary cuts the view
+                break
+            value = stream[index][1]
+            if offset == 1:
+                previous = value
+            else:
+                before = value
+        # The next word, unless a punctuation mark ends the phrase first.
+        following = ""
+        if position + 1 < len(stream) and not stream[position + 1][2]:
+            following = stream[position + 1][1]
+        pairs.append((token, previous, before, following))
     return pairs
 
 
@@ -296,7 +323,7 @@ RECURRING_ERRORS = {
 }
 
 
-def guess_usage(word: str, previous: str, before: str) -> str:
+def guess_usage(word: str, previous: str, before: str, following: str = "") -> str:
     """'noun', 'verb' or 'unknown' — a cheap part-of-speech guess.
 
     STE approves or refuses a word per part of speech (Rules 1.2, 9.2), so the
@@ -304,15 +331,31 @@ def guess_usage(word: str, previous: str, before: str) -> str:
     decides how loudly to report a word: a noun reading may still be a valid
     technical noun (Rule 1.6), so it becomes a warning the reader resolves.
     """
+    # A copula after the word puts the word in the subject, so it is a noun.
+    # "Markdown and text files ARE correct" reads the same as "the files".
+    if following in COPULAS:
+        return "noun"
     if previous in DETERMINERS:
         return "noun"
     if previous in VERB_CUES:
+        # A verb takes a determiner, a preposition, or nothing after it: "delete
+        # THE record", "go TO the panel", "stop". A noun inside a compound noun
+        # takes a second noun: "log STRINGS", "config FILES". Rule 2.1 expects
+        # that compound, so read the first word as a noun.
+        if following and following not in DETERMINERS \
+                and following not in VERB_CUES and following != "@abbr":
+            return "noun"
         return "verb"
     if before in DETERMINERS and previous not in VERB_CUES:
         return "noun"   # "the TEST switch", "the four screws"
     if word.lower().endswith(("tion", "ment", "ness", "ity", "ance", "ence")):
         return "noun"
     return "unknown"
+
+
+# A word in front of one of these is the subject of the sentence, so it is a noun.
+COPULAS = {"is", "are", "was", "were", "be", "has", "have", "had",
+           "must", "can", "cannot", "will", "shall", "does", "do", "did"}
 
 
 STEP_RE = re.compile(r"^\s*(?:[-*+]|\(?\d+[.)]|\(?[a-zA-Z][.)])\s+")
@@ -333,10 +376,43 @@ def imperative_start(sentence: str, dictionary: Dictionary) -> bool:
     return first in dictionary.approved and "v" in dictionary.approved.get(first, [])
 
 
+def join_wrapped(lines: list[str]) -> list[tuple[int, str]]:
+    """Makes a hard-wrapped sentence whole again, and keeps its first line number.
+
+    A line break is not the end of a sentence. Rule 6.6 counts the sentences in a
+    paragraph, and Rules 5.1 and 6.3 count the words in a sentence, so a file that
+    wraps one sentence over three lines must still give one sentence. Without this
+    step a 34-word sentence hides from the 25-word limit, and a paragraph of four
+    sentences reports seven.
+
+    A line continues the line before it only when the line before does not end
+    with a sentence mark, and the line itself does not start a new block.
+    """
+    units: list[list] = []
+    in_fence = False
+    for index, raw in enumerate(lines, start=1):
+        if FENCE_RE.match(raw):
+            in_fence = not in_fence
+            units.append([index, raw])
+            continue
+        starts_block = bool(
+            not raw.strip() or HEADING_RE.match(raw) or STEP_RE.match(raw)
+            or NOTE_RE.match(raw.lstrip("-*+ ")) or SAFETY_RE.match(raw.lstrip("-*+ ")))
+        if not in_fence and not starts_block and units:
+            previous_index, previous_text = units[-1]
+            if (previous_text.strip() and not FENCE_RE.match(previous_text)
+                    and not HEADING_RE.match(previous_text)
+                    and not previous_text.rstrip().endswith((".", "!", "?", ":"))):
+                units[-1] = [previous_index, previous_text.rstrip() + " " + raw.strip()]
+                continue
+        units.append([index, raw])
+    return [(index, text) for index, text in units]
+
+
 def extract_sentences(lines: list[str], mode: str, dictionary: Dictionary) -> list[Sentence]:
     sentences: list[Sentence] = []
     in_fence = False
-    for index, raw in enumerate(lines, start=1):
+    for index, raw in join_wrapped(lines):
         if FENCE_RE.match(raw):
             in_fence = not in_fence
             continue
@@ -494,20 +570,32 @@ def check_sentence(sentence: Sentence, path: str, dictionary: Dictionary) -> lis
 def check_vocabulary(sentence: Sentence, path: str, dictionary: Dictionary,
                      reported: set[str]) -> list[Finding]:
     findings: list[Finding] = []
-    for word, previous, before in content_words(sentence.text):
+    for word, previous, before, following in content_words(sentence.text):
         status, alternatives, headword = dictionary.status(word)
         key = word.lower()
         if status == "unapproved":
             entry_pos = dictionary.unapproved_pos.get(headword, set())
-            usage = guess_usage(word, previous, before)
+            usage = guess_usage(word, previous, before, following)
+            # An adjective modifies a noun that comes after it. A word with no
+            # noun after it heads its phrase, so it reads as a noun there, and
+            # Rule 1.5 lets a technical noun through whatever the dictionary
+            # says about the adjective. "The hook sends the PROMPT" is a noun.
+            # "The COMMON case" is the adjective the dictionary refuses.
+            heads_phrase = (not following or following in COPULAS
+                            or following in VERB_CUES)
             # Rules 1.5 and 1.6 let an unapproved word through when it is a
             # technical noun, so a noun reading of a word that is refused only
-            # as a verb needs a human decision. Nothing rescues a refused
-            # adjective, adverb, preposition or conjunction, and nothing
-            # rescues the recurring errors the standard names.
+            # as a verb needs a human decision. Nothing rescues the recurring
+            # errors the standard names.
+            # RECURRING_ERRORS holds the words the standard tells you not to
+            # use. Test the word and its dictionary headword, because the set
+            # holds an inflected form for `required` and the headword is
+            # `require`.
+            recurring = (headword in RECURRING_ERRORS or key in RECURRING_ERRORS)
             noun_escape = (usage == "noun" and "n" not in entry_pos
-                           and bool(entry_pos - {"adj", "adv", "prep", "conj", "pron"})
-                           and headword not in RECURRING_ERRORS)
+                           and (bool(entry_pos - {"adj", "adv", "prep", "conj", "pron"})
+                                or heads_phrase)
+                           and not recurring)
             shown = "/".join(sorted(entry_pos)) if entry_pos else "any part of speech"
             findings.append(Finding(
                 path, sentence.line, "1.1", "warn" if noun_escape else "error",
