@@ -1,0 +1,15 @@
+STE MODE. ASD-STE100 Issue 9 is the rule for ALL text you write: chat replies, markdown, code
+comments, commit bodies, PR text, issue text, and error and `log` strings. The
+`Conventional Commits` subject line is the one part the rule does not include.
+
+Use the `simplified-technical-english` skill before your first text reply, and keep it in the
+session.
+
+Get `0 error` for each file, each commit body, each PR body, and each chat reply longer than
+three sentences. Write the text to a temporary `file`, then check it.
+
+    python3 ~/.agents/skills/simplified-technical-english/scripts/ste_check.py FILE
+    python3 ~/.agents/skills/simplified-technical-english/scripts/ste_check.py --lookup WORD
+
+The checker names the rule and the approved word, so do not try to recall the 53 rules. `0 error`
+is necessary, and it is not sufficient. Give a decision for each `warn`.

@@ -1,0 +1,12 @@
+#!/bin/bash
+# Injects the always-on ASD-STE100 rule on every user prompt.
+#
+# CLAUDE.md is read once per session, so the rule loses to any plugin that
+# reinforces itself per turn. This hook is that reinforcement.
+#
+# The card text has ONE source: .chezmoitemplates/ste-card.tmpl.
+# Edit that file, then run `chezmoi apply`. Do not edit the card below.
+
+cat <<'STE_CARD'
+{{ includeTemplate "ste-card.tmpl" . }}
+STE_CARD

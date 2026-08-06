@@ -75,4 +75,24 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Skills
 
-- Always use the `caveman` and `caveman-commit` skills.
+Simplified Technical English is the rule for all text, each time.
+
+The `ste-mode.sh` hook gives you the full card with each `prompt`, and it fires before your first
+reply. As a result, this file holds no copy of the card.
+
+`.chezmoitemplates/ste-card.tmpl` is the single source. Change that one file, then use
+`chezmoi apply`.
+
+The card is short on purpose, and it holds only what no tool can supply.
+
+The checker names the rule and the approved word for each error, so a list of the 53 rules in
+standing context earns nothing. Use `simplified-technical-english` for the standard, the
+dictionary, and the checker.
+
+## Commit Messages
+
+- `Conventional Commits` format. A subject of 50 characters at most, imperative mood, and no
+  period at the end.
+- Write a body only if the subject and the diff do not give the cause of the change.
+- The subject line is the one part that STE does not include. Write the commit body, the PR
+  title, and the PR body in STE, then use the checker on them.

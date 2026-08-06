@@ -67,4 +67,17 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Skills
 
-- Always use the `caveman` and `caveman-commit` skills.
+Simplified Technical English is the rule for all text, each time. Use the
+`simplified-technical-english` skill before your first text reply in a session, and keep it in
+the session. Copilot has no hook for each turn, so the full rule is below.
+`.chezmoitemplates/ste-card.tmpl` is its single source.
+
+{{ includeTemplate "ste-card.tmpl" . }}
+
+## Commit Messages
+
+- `Conventional Commits` format. A subject of 50 characters at most, imperative mood, and no
+  period at the end.
+- Write a body only if the subject and the diff do not give the cause of the change.
+- The subject line is the one part that STE does not include. Write the commit body, the PR
+  title, and the PR body in STE, then use the checker on them.

@@ -11,7 +11,6 @@
         "${HOME}/.config/bat/config"
         "${HOME}/.config/btop/btop.conf"
         "${HOME}/.config/ghostty/config"
-        "${HOME}/.config/git/config"
         "${HOME}/.config/k9s/config.yaml"
         "${HOME}/.config/lazygit/config.yml"
         "${HOME}/.config/mise/config.toml"
@@ -33,7 +32,6 @@
         "${HOME}/.config/bat"
         "${HOME}/.config/btop"
         "${HOME}/.config/ghostty"
-        "${HOME}/.config/git"
         "${HOME}/.config/k9s"
         "${HOME}/.config/lazygit"
         "${HOME}/.config/mise"
@@ -55,6 +53,24 @@
     [ "$status" -eq 0 ]
 }
 
+@test "[common] ~/.gitconfig is the only global git config" {
+    [ -f "${HOME}/.gitconfig" ]
+
+    # Git reads ~/.config/git/config too, and ~/.gitconfig wins on each shared
+    # key. A second file hides the effective value, so it must not come back.
+    [ ! -f "${HOME}/.config/git/config" ]
+    [ ! -f "${HOME}/.config/git/ignore" ]
+
+    for key in user.email user.name user.signingKey commit.gpgSign core.excludesFile; do
+        echo "Checking ${key}"
+        run git config --get "${key}"
+        [ "$status" -eq 0 ]
+        [ -n "$output" ]
+    done
+
+    [ "$(git config --get core.excludesFile)" = "~/.gitignore_global" ]
+}
+
 @test "[common] chezmoi is on PATH" {
     run command -v chezmoi
     [ "$status" -eq 0 ]
@@ -62,6 +78,59 @@
 
 @test "[common] verify ssh config" {
     [ -f "${HOME}/.ssh/config" ]
+}
+
+@test "[common] claude hooks are executable" {
+    hooks=(
+        "${HOME}/.claude/hooks/ste-mode.sh"
+        "${HOME}/.claude/hooks/session-start.sh"
+        "${HOME}/.claude/hooks/statusline.sh"
+        "${HOME}/.claude/hooks/herdr-agent-state.sh"
+    )
+
+    for hook in "${hooks[@]}"; do
+        echo "Checking hook ${hook}"
+        [ -f "${hook}" ]
+        [ -x "${hook}" ]
+        run bash -n "${hook}"
+        [ "$status" -eq 0 ]
+    done
+}
+
+@test "[common] STE rule reaches every agent" {
+    run "${HOME}/.claude/hooks/ste-mode.sh"
+    [ "$status" -eq 0 ]
+    [[ "$output" == *"STE MODE"* ]]
+    [[ "$output" == *"simplified-technical-english"* ]]
+
+    grep -q "STE MODE" "${HOME}/.copilot/copilot-instructions.md"
+    grep -q "simplified-technical-english" "${HOME}/.claude/CLAUDE.md"
+
+    [ -f "${HOME}/.agents/skills/simplified-technical-english/scripts/ste_check.py" ]
+    for parent in "${HOME}/.claude/skills" "${HOME}/.copilot/skills"; do
+        [ -e "${parent}/simplified-technical-english" ]
+    done
+}
+
+@test "[common] the STE card obeys STE" {
+    checker="${HOME}/.agents/skills/simplified-technical-english/scripts/ste_check.py"
+    [ -f "${checker}" ]
+
+    # The card demands 0 error of each reply, so the card itself must give 0 error.
+    "${HOME}/.claude/hooks/ste-mode.sh" >"${BATS_TEST_TMPDIR}/card.txt"
+    run python3 "${checker}" --severity error "${BATS_TEST_TMPDIR}/card.txt"
+    echo "${output}"
+    [ "$status" -eq 0 ]
+}
+
+@test "[common] the STE card stays small" {
+    # The hook sends this text with each prompt, so each word costs tokens in
+    # every session. The card holds only what the checker cannot supply: the
+    # scope, the command, the loop, and the warn clause. A list of the 53 rules
+    # belongs in the skill, because the checker names the rule for each error.
+    words=$("${HOME}/.claude/hooks/ste-mode.sh" | wc -w)
+    echo "Card is ${words} words (limit 200)"
+    [ "${words}" -le 200 ]
 }
 
 @test "[common] agent skills are individually symlinked" {
