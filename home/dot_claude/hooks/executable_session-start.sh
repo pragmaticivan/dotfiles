@@ -4,7 +4,7 @@
 META_SKILL="$HOME/.agents/skills/using-agent-skills/SKILL.md"
 
 if ! command -v jq >/dev/null 2>&1; then
-  echo '{"priority": "INFO", "message": "agent-skills: jq is required for the session-start hook but was not found on PATH. Install jq (e.g. `brew install jq`) to enable meta-skill injection. Skills remain available individually."}'
+  echo '{"priority": "INFO", "message": "agent-skills: the session-start hook needs jq, and jq is not on PATH. Install jq with brew install jq to get the meta-skill. Each skill is still available alone."}'
   exit 0
 fi
 

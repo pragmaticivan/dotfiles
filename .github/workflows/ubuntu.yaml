@@ -22,29 +22,17 @@ permissions:
 
 jobs:
   build:
-    strategy:
-      matrix:
-        system: [server, client]
-
     runs-on: ubuntu-latest
     steps:
+      # Test the checked-out tree, not the pushed branch. A remote clone cannot
+      # reach a fork's branch, and it cannot see a change before the push.
+      - uses: actions/checkout@v5
+
       - name: Setup dotfiles
         env:
-          SYSTEM: ${{ matrix.system }}
           DOTFILES_DEBUG: 1
-          EVENT_NAME: ${{ github.event_name }}
-        run: |
-          if [ "${EVENT_NAME}" == "push" ]; then
-            BRANCH_NAME="${{ github.ref_name }}"
-          elif [ "${EVENT_NAME}" == "pull_request" ]; then
-            BRANCH_NAME="${{ github.head_ref }}"
-          fi
-          export BRANCH_NAME
-
-          URL="https://raw.githubusercontent.com/pragmaticivan/dotfiles/${BRANCH_NAME}/setup.sh"
-          echo "Download setup.sh from ${URL}"
-
-          printf '${SYSTEM}\n' | bash -c "$(wget -qO - $URL)"
+          DOTFILES_SOURCE: ${{ github.workspace }}
+        run: bash ./setup.sh
 
       - name: Install latest bats-core
         run: |
@@ -55,12 +43,7 @@ jobs:
           rm -rf "${tmp_dir}"
 
       - name: Test file existence
-        env:
-          SYSTEM: ${{ matrix.system }}
         run: |
-          OTHER_SYSTEM=$([ "${SYSTEM}" = "client" ] && echo "server" || echo "client")
-          cd $(chezmoi source-path)/../
-          bats tests/files/common.bats
-          bats --filter-tags "ubuntu,!ubuntu:${OTHER_SYSTEM}" \
-            --print-output-on-failure \
+          bats --print-output-on-failure \
+            tests/files/common.bats \
             tests/files/ubuntu.bats

@@ -1,0 +1,21 @@
+# Homebrew trust list. Renders to ~/.config/homebrew/trust.json.
+#
+# Homebrew 6 does not read a formula, a cask, or a command from a non-official
+# tap until you trust it. An untrusted entry stops `brew bundle`, so a new
+# machine needs this list before the Brewfile can install those entries.
+#
+# CAUTION: EACH ENTRY HERE LETS RUBY CODE FROM A THIRD PARTY OPERATE ON EACH OF
+# YOUR MACHINES. ADD AN ENTRY ONLY AFTER YOU READ ITS FORMULA. GIVE THE REASON
+# ON THE SAME LINE, SO A LATER READER CAN JUDGE IT.
+#
+# `taps` trusts each formula in that tap, at this time and in the future.
+# `formulae` trusts one formula, so prefer it.
+homebrew_trust:
+  formulae:
+    - argoproj/tap/kubectl-argo-rollouts # Argo Rollouts kubectl plugin
+    - coleam00/archon/archon # Archon
+    - dlvhdr/formulae/diffnav # git diff viewer, used by the delta config
+    - hashicorp/tap/nomad # HashiCorp Nomad
+    - hashicorp/tap/packer # HashiCorp Packer
+  taps:
+    - aws/tap # AWS tools, and the tap holds more than one of them

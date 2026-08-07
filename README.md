@@ -60,6 +60,30 @@ pragmaticivan@5f93d270cb51:~$ chezmoi init --apply
 Test the shellscript for setup with [Bash Automated Testing System (bats)](https://github.com/bats-core/bats-core).
 The scripts for the unit test can be found under [`./tests`](https://github.com/pragmaticivan/dotfiles/tree/main/tests) directory.
 
+### 🧹 Lint
+
+`make lint` uses shellcheck on the shell files and on each rendered `*.sh.tmpl` template.
+It also uses yamllint on the CI workflows and the chezmoi data. The `Lint` workflow uses the same script on
+each push and each `pull request`.
+
+Rules come from `./.yamllint`. That file is not the same as `home/dot_config/yamllint/config`,
+which is the global config for other work.
+
+### 📌 External pins
+
+`.chezmoiexternals/*.toml.tmpl` and `.chezmoidata/skills.yaml` pin each upstream commit by SHA.
+Dependabot cannot read those files, so `make update-pins` reports the pins that are behind the
+upstream head. Add `--write` to rewrite them:
+
+```console
+./scripts/update-pins.sh --write
+chezmoi apply --refresh-externals
+```
+
+The `Update pins` workflow does the same each month, and it opens a `pull request`. Read that
+`pull request` before the merge. It moves a pin to the upstream head, which can be an untested
+commit, and it does not change the `# pin:` comment.
+
 ### 🔀 macOS install profiles (personal vs restricted)
 
 On macOS, Homebrew apps are installed from a templated `Brewfile` that respects a profile:

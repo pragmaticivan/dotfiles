@@ -8,21 +8,14 @@
     "command": "~/.claude/hooks/statusline.sh"
   },
   "skillOverrides": {
-    "compound-engineering:agent-native-audit": "on",
     "compound-engineering:ce-compound-refresh": "on",
     "compound-engineering:ce-plan": "on",
-    "compound-engineering:ce-polish-beta": "on",
+    "compound-engineering:ce-polish": "on",
+    "compound-engineering:ce-resolve-pr-feedback": "on",
     "compound-engineering:ce-setup": "on",
-    "compound-engineering:ce-update": "on",
-    "compound-engineering:ce-work-beta": "on",
-    "compound-engineering:changelog": "on",
-    "compound-engineering:deploy-docs": "on",
-    "compound-engineering:lfg": "on",
-    "compound-engineering:report-bug-ce": "on",
-    "compound-engineering:resolve-pr-feedback": "on",
-    "compound-engineering:test-xcode": "on",
-    "compound-engineering:todo-create": "on",
-    "compound-engineering:todo-triage": "on"
+    "compound-engineering:ce-test-xcode": "on",
+    "compound-engineering:ce-work": "on",
+    "compound-engineering:lfg": "on"
   },
   "hooks": {
     "PreToolUse": [
@@ -48,7 +41,7 @@
       {
         "hooks": [
           {
-            "command": "bash '/Users/pragmaticivan/.claude/hooks/herdr-agent-state.sh' session",
+            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/herdr-agent-state.sh' session",
             "timeout": 10,
             "type": "command"
           }
@@ -58,18 +51,12 @@
     ]
   },
   "cleanupPeriodDays": 14,
+  "skipWorkflowUsageWarning": true,
   "enabledPlugins": {
-    "caveman@caveman": true,
     "compound-engineering@compound-engineering-plugin": true,
     "skill-creator@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
-    "caveman": {
-      "source": {
-        "source": "github",
-        "repo": "JuliusBrussee/caveman"
-      }
-    },
     "compound-engineering-plugin": {
       "source": {
         "repo": "EveryInc/compound-engineering-plugin",
@@ -179,6 +166,12 @@
     ],
     "allow": [
       "Read(**)",
+      "Write(/tmp/**)",
+      "Edit(/tmp/**)",
+      "Bash(rm /tmp/:*)",
+      "Bash(rm -f /tmp/:*)",
+      "Bash(rm -r /tmp/:*)",
+      "Bash(rm -fr /tmp/:*)",
       "Bash(grep:*)",
       "Bash(rg:*)",
       "Bash(ag:*)",

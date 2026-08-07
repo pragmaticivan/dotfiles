@@ -1,0 +1,173 @@
+{
+  "skill_name": "simplified-technical-english",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our on-call rotation now includes engineers in Poland and India, and two of them told me our runbooks are hard to parse at 3am. Can you rewrite evals/fixtures/keda-runbook.md in Simplified Technical English? Keep every technical detail — the queue name, the 14-day retention, the page-the-platform-team rule — I just need it unambiguous. Save it next to the original as keda-runbook.ste.md and tell me what you changed.",
+      "expected_output": "The runbook rewritten in ASD-STE100 STE: numbered imperative steps of 20 words or fewer, descriptive prose of 25 words or fewer, active voice, no semicolons, no contractions, no Latin abbreviations, unapproved words replaced (ensure -> make sure, verify -> make sure, should -> must, executing -> use/do, i.e. -> that is, however -> but, therefore -> thus/as a result, rotate -> change). The NOTE containing an instruction must become a work step or a safety instruction, because a note gives information only (Rule 5.5). The purge-the-queue consequence should be a CAUTION or WARNING with a stated result (Rules 7.1-7.3). Every fact preserved: profile-enrichment queue, /profiles/:id endpoint, CrashLoopBackOff, OOMKilled, maxReplicaCount, ClusterTriggerAuthentication, the New Relic alert policy name quoted exactly, 14-day retention. Code, commands, identifiers and quoted strings left verbatim. A short change table listing rule, before and after.",
+      "files": [
+        "evals/fixtures/keda-runbook.md"
+      ],
+      "assertions": [
+        {
+          "text": "Looks words up in the bundled dictionaries",
+          "passing_criteria": "The transcript shows a grep against references/dictionary-unapproved.md or references/dictionary-approved.md for the words it was not sure of, and the approved alternative appears in the output"
+        },
+        {
+          "text": "The rewritten file has no unapproved word and no broken limit",
+          "passing_criteria": "A read of the produced file finds no unapproved word that the dictionaries give an alternative for, no semicolon, no contraction, no Latin abbreviation, no perfect or progressive tense, and no procedural sentence of more than 20 words"
+        },
+        {
+          "text": "No procedural sentence is longer than 20 STE words",
+          "passing_criteria": "Every numbered or bulleted instruction in the output is 20 words or fewer under the STE counting rules 8.4 thru 8.7 (parentheticals, numbers with units, abbreviations, identifiers, quoted text and hyphenated groups each count as one word)"
+        },
+        {
+          "text": "Replaces the recurring unapproved words",
+          "passing_criteria": "The output contains no instance of ensure, verify, should, may, however, therefore, i.e., e.g., utilize, perform, execute, or a semicolon, and uses the approved alternatives instead (make sure, must, but, thus/as a result, that is, use, do)"
+        },
+        {
+          "text": "Turns the instruction-bearing NOTE into a step or safety instruction",
+          "passing_criteria": "The 'Always page the platform team' content appears as a numbered work step or as a WARNING/CAUTION, not as a NOTE, per Rule 5.5"
+        },
+        {
+          "text": "States a consequence for the destructive action",
+          "passing_criteria": "The queue-purge content appears as a WARNING or CAUTION that names the result (the messages are erased and cannot be recovered), satisfying Rules 7.1 thru 7.3"
+        },
+        {
+          "text": "Preserves every technical fact",
+          "passing_criteria": "The output still contains the queue name profile-enrichment, the /profiles/:id endpoint, CrashLoopBackOff, OOMKilled, maxReplicaCount, ClusterTriggerAuthentication, the 14-day retention period, and the New Relic alert policy name — none dropped, none altered"
+        },
+        {
+          "text": "Leaves commands and quoted strings unchanged",
+          "passing_criteria": "kubectl get pods -n consumer-profile appears verbatim and no code, command, identifier or quoted label was reworded to satisfy the dictionary"
+        },
+        {
+          "text": "Reports the changes",
+          "passing_criteria": "The response includes a table or list of the substantive rewrites with the rule number, the original text and the STE text"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Before I send evals/fixtures/migration-doc.md to the Data Platform team for sign-off, is it STE compliant? Don't rewrite the whole thing — I want to know what's actually wrong with it, per rule, so the author can fix it themselves.",
+      "expected_output": "A compliance audit report, not a rewrite: verdict with an error count, a per-rule summary table, findings anchored to file:line with the offending text and a suggested STE correction, a section for the items that need a human decision (candidate technical nouns such as warehouse, dynamic table, resource monitor, and past participles that may be adjectives), and a section naming what the document already gets right. Findings must cite real rule numbers: 3.4 (has been tested, has not been executed), 3.6 (was suspended by the resource monitor, will be required), 3.5 (utilizing, running, in progress), 8.1 (three semicolons), 1.1 (ensure, utilizing, should, may, therefore, retried, concurrently, e.g., approximately usage), GR-6 (e.g.), 6.3 (the 60-plus-word closing sentence), 5.5/7.1 (the do-not-run-twice consequence belongs in a WARNING or CAUTION). The audit must not reword the SQL block or the quoted Snowflake error string.",
+      "files": [
+        "evals/fixtures/migration-doc.md"
+      ],
+      "assertions": [
+        {
+          "text": "Produces an audit, not a rewrite",
+          "passing_criteria": "The output is a findings report with a verdict and per-rule findings; it does not deliver a wholesale rewritten version of the document"
+        },
+        {
+          "text": "Cites the rule and the dictionary entry for each finding",
+          "passing_criteria": "Each finding in the report gives the rule number and, for a word finding, the approved alternative from references/dictionary-unapproved.md. The report does not estimate compliance without a citation"
+        },
+        {
+          "text": "Findings cite specific ASD-STE100 rule numbers",
+          "passing_criteria": "At least six distinct rule identifiers appear (for example 1.1, 3.4, 3.5, 3.6, 5.5, 6.3, 7.1, 8.1, GR-6), each attached to the text it applies to"
+        },
+        {
+          "text": "Catches the perfect-tense and passive constructions",
+          "passing_criteria": "The report flags 'has been tested' / 'has not yet been executed' under Rule 3.4 and at least one passive construction such as 'was suspended by the resource monitor' under Rule 3.6"
+        },
+        {
+          "text": "Catches both prose semicolons and spares the one in the SQL",
+          "passing_criteria": "The report flags the semicolon on line 5 and the one on line 15 under Rule 8.1 and locates them by line, and does not flag the semicolon that terminates the CALL statement inside the fenced SQL block"
+        },
+        {
+          "text": "Flags the over-length sentence with the correct limit",
+          "passing_criteria": "The final paragraph's long sentence is flagged against the 25-word descriptive limit (Rule 6.3), not against the 20-word procedural limit"
+        },
+        {
+          "text": "Anchors findings to lines",
+          "passing_criteria": "Findings reference the file and line number (or quote the exact offending text) so the author can locate each one"
+        },
+        {
+          "text": "Separates judgment calls from proven breaches",
+          "passing_criteria": "The report distinguishes provable errors from items needing a human decision — candidate technical nouns (Rule 1.5) or a past participle that may be an adjective (Rule 3.3) — rather than presenting all findings as violations"
+        },
+        {
+          "text": "Does not demand changes to code or quoted text",
+          "passing_criteria": "The report does not ask for the SQL statement or the quoted error string 'Error: 000603 (57014): SQL execution canceled' to be reworded, per Rule 8.6"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I need to write the safety section for a new internal CLI we ship to agents' laptops. The `eq-sync reset` command wipes the local cache and re-downloads it; if the laptop loses Wi-Fi partway through, the cache ends up half-written and the agent sees stale quotes until they run it again. Also the command needs a confirmation prompt they have to type the environment name into. Write this up in simplified technical english for the docs — a warning plus the steps.",
+      "expected_output": "New STE text written from raw notes, not a rewrite: a CAUTION (risk of damage to data/objects, not injury) that starts with the command or the condition and states the consequence (Rules 7.1 thru 7.3), plus numbered imperative steps of 20 words or fewer with one instruction each. Conditions come before commands (Rule 5.4). Approved vocabulary throughout — 'make sure', 'must', 'erase'/'remove' rather than wipe, 'get again'/'download' for re-download, no 'ensure', no 'should', no contractions, no Latin abbreviations. The command name, the typed environment name and any quoted prompt text stay verbatim. The stale-quote consequence must be stated as a result the reader can act on, and the half-written cache condition must be named as the trigger.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Uses a caution or warning with a stated consequence",
+          "passing_criteria": "The output contains a CAUTION or WARNING that names the risk level, starts with a command or a condition, and states the result (a half-written cache, stale quotes) per Rules 7.1 thru 7.3"
+        },
+        {
+          "text": "Steps are imperative with one instruction each",
+          "passing_criteria": "Every numbered step is in the command form and contains a single instruction, unless two actions genuinely occur at the same time (Rules 5.2, 5.3)"
+        },
+        {
+          "text": "Every procedural sentence is 20 STE words or fewer",
+          "passing_criteria": "No step exceeds 20 words counted per rules 8.4 thru 8.7"
+        },
+        {
+          "text": "No unapproved word and no broken limit",
+          "passing_criteria": "A read of the produced text finds no unapproved word that the dictionaries give an alternative for, no semicolon, no contraction, no Latin abbreviation, and no sentence over the limit for its type"
+        },
+        {
+          "text": "Condition precedes the command",
+          "passing_criteria": "Where a condition applies (network loss, environment confirmation), the descriptive condition comes first, separated from the command by a comma, per Rule 5.4"
+        },
+        {
+          "text": "Keeps the command and prompt text verbatim",
+          "passing_criteria": "eq-sync reset appears exactly as given, and any confirmation prompt text is quoted rather than paraphrased into approved words"
+        },
+        {
+          "text": "No unapproved vocabulary in the prose",
+          "passing_criteria": "The output avoids ensure, should, may, wipe, e.g., i.e., contractions and semicolons, using approved alternatives instead"
+        },
+        {
+          "text": "Explains the STE choices it made",
+          "passing_criteria": "The response says why it chose a caution rather than a warning (risk to data, not injury) or otherwise shows the rule reasoning, rather than silently producing text"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "quick one — can you STE-ify this line for our status page? \"We are currently experiencing elevated error rates on the quote submission API; our engineers have identified the root cause and are actively working on a fix, and we will provide an update shortly.\"",
+      "expected_output": "A short STE rewrite of one sentence, correctly handled as descriptive text (status update, not instructions, so no imperative form and the 25-word limit applies). The three banned constructions must all go: the progressive forms 'are currently experiencing' / 'are actively working' (Rule 3.2, 3.5), the present perfect 'have identified' (Rule 3.4), and the semicolon (Rule 8.1). Unapproved words replaced: currently, experiencing, elevated, actively, shortly, provide, root cause. Result should be two or three short sentences that keep every fact — which API, that the cause is known, that a fix is in progress, that another update follows — and should give the reader a concrete next-update time or say plainly that the time is not known, because 'shortly' is not information. No invented facts such as a made-up percentage or timestamp.",
+      "files": [],
+      "assertions": [
+        {
+          "text": "Treats the text as descriptive, not procedural",
+          "passing_criteria": "The rewrite uses no imperative form and is judged against the 25-word descriptive limit (Rule 6.3)"
+        },
+        {
+          "text": "Removes the progressive and perfect constructions",
+          "passing_criteria": "No '-ing' verb forms after a form of 'to be' and no 'have/has + past participle' remain (Rules 3.2, 3.4, 3.5)"
+        },
+        {
+          "text": "Removes the semicolon",
+          "passing_criteria": "The output contains no semicolon and instead uses separate sentences (Rule 8.1)"
+        },
+        {
+          "text": "Replaces the unapproved words",
+          "passing_criteria": "currently, experiencing, elevated, actively, shortly, provide and root cause are all gone, replaced with approved words or a different construction"
+        },
+        {
+          "text": "Keeps all four facts",
+          "passing_criteria": "The rewrite still says which API is affected, that error rates are high, that the cause is known, that a repair is in progress, and that another report will follow. Accept the approved-word equivalents rather than the original wording — STE says 'repair' for 'fix' and 'report'/'tell' for 'update', so grading must not require the unapproved words."
+        },
+        {
+          "text": "Invents no new facts",
+          "passing_criteria": "No specific error percentage, incident number, duration or timestamp appears that was not in the input; if a next-update time is recommended, it is flagged as something the author must fill in"
+        },
+        {
+          "text": "Stays proportionate to a one-line request",
+          "passing_criteria": "The response leads with the rewritten text and keeps any rule explanation brief — it does not produce a full audit report or a multi-section document for a single sentence"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+name: Update pins
+
+# The externals and the skills lockfile pin upstream commits by SHA. Dependabot
+# cannot read those files, so this job compares each pin against the upstream
+# head and opens a pull request.
+#
+# CAUTION: A REVIEWER MUST READ THE PULL REQUEST BEFORE THE MERGE. THE JOB MOVES
+# A PIN TO THE UPSTREAM HEAD, WHICH CAN BE AN UNTESTED COMMIT. IT ALSO DOES NOT
+# CHANGE THE `# pin:` COMMENT, SO A COMMENT THAT NAMES A TAG CAN BECOME WRONG.
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # 06:00 UTC on the first day of each month
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  update-pins:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Rewrite the stale pins
+        id: pins
+        run: |
+          ./scripts/update-pins.sh --write | tee /tmp/pins.log
+          if git diff --quiet; then
+            echo "changed=false" >>"${GITHUB_OUTPUT}"
+          else
+            echo "changed=true" >>"${GITHUB_OUTPUT}"
+          fi
+
+      - name: Open a pull request
+        if: steps.pins.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          branch="chore/update-pins-${GITHUB_RUN_ID}"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git checkout -b "${branch}"
+          git commit -am "chore(deps): move the external pins to head"
+          git push origin "${branch}"
+
+          {
+            echo "\`scripts/update-pins.sh\` found these pins behind the upstream head."
+            echo
+            echo '```'
+            grep '^stale' /tmp/pins.log
+            echo '```'
+            echo
+            echo "Read each change before the merge. The job moves a pin to the"
+            echo "upstream head, which can be an untested commit. It does not"
+            echo "change the \`# pin:\` comment, so a comment that names a tag can"
+            echo "become wrong."
+            echo
+            echo "After the merge, run \`chezmoi apply --refresh-externals\`."
+          } >/tmp/body.md
+
+          gh pr create \
+            --title "chore(deps): move the external pins to head" \
+            --body-file /tmp/body.md \
+            --head "${branch}" \
+            --base main

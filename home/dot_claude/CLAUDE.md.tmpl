@@ -2,6 +2,10 @@
 
 Behavioral guidelines to reduce common LLM coding mistakes. These guidelines bias toward caution over speed. For trivial tasks, use judgment.
 
+## Refer to
+
+Refer to me as Ivan
+
 ## General Principles
 
 - **Verify before fixing**: Confirm bug is triggerable by user before fixing. No fixes for theoretical issues in unreachable code paths.
@@ -75,4 +79,15 @@ Strong success criteria let you loop independently. Weak criteria ("make it work
 
 ## Skills
 
-- Always use the `caveman` and `caveman-commit` skills.
+`.chezmoitemplates/ste-card.tmpl` is the single source of the card below. Change that one file,
+then use `chezmoi apply`.
+
+{{ includeTemplate "ste-card.tmpl" . }}
+
+## Commit Messages
+
+- `Conventional Commits` format. A subject of 50 characters at most, imperative mood, and no
+  period at the end.
+- Write a body only if the subject and the diff do not give the cause of the change.
+- The subject line is the one part that STE does not include. Write the commit body, the PR
+  title, and the PR body in STE.

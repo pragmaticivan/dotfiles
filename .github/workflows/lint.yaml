@@ -1,0 +1,29 @@
+name: Lint
+
+# shellcheck on the shell files and the rendered templates, and yamllint on the
+# repository's own YAML. This job holds the clean condition, and it prevents a
+# repair after the defect reaches main.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install the linters
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends shellcheck yamllint
+          sudo sh -c "$(curl -fsLS get.chezmoi.io)" -- -b /usr/local/bin
+
+      - name: Run the lint gate
+        run: ./scripts/lint.sh

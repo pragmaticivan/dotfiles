@@ -39,24 +39,45 @@ install_homebrew() {
     if command -v brew >/dev/null 2>&1; then
         echo "Homebrew already installed."
     else
-        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)" || echo "Homebrew install failed."
+        # Every later step needs brew, so let a failure here stop the script.
+        /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
         eval "$(/opt/homebrew/bin/brew shellenv)"
         echo "Homebrew installed."
     fi
 }
 
+# Set to 1 when brew bundle fails, and read at the end of the script.
+BREW_BUNDLE_FAILED=0
+
 install_brew_packages() {
     # Disable quarantine for casks
     export HOMEBREW_CASK_OPTS=--no-quarantine
 
+    # brew reads the trust list from ${XDG_CONFIG_HOME}/homebrew/trust.json,
+    # and from ~/.homebrew/trust.json when XDG_CONFIG_HOME is not set. chezmoi
+    # writes the file to ~/.config/homebrew, and this script does not always
+    # get XDG_CONFIG_HOME from the environment, so brew found no trust list and
+    # an untrusted tap stopped brew bundle.
+    export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
+
     brew --version
 
-    if [ -f "${HOME}/Brewfile" ]; then
-        brew bundle --file="${HOME}/Brewfile" || echo "brew bundle failed."
-    else
+    if [ ! -f "${HOME}/Brewfile" ]; then
         echo "Brewfile not found, skipping brew bundle."
+        return 0
     fi
 
+    # brew bundle fetches each package before it installs any of them, so one
+    # bad checksum in one tap stops all of them. Record that and continue, or
+    # a third-party tap can stop mise and each later step too. The script then
+    # exits non-zero at the end, so chezmoi reports the failure and tries again.
+    if ! brew bundle --file="${HOME}/Brewfile"; then
+        BREW_BUNDLE_FAILED=1
+        echo "brew bundle failed. These entries are absent:" >&2
+        brew bundle check --file="${HOME}/Brewfile" --verbose >&2 || true
+    fi
+
+    # These steps only tidy up or report, so a failure must not stop the script.
     brew update || echo "brew update failed."
     brew upgrade || echo "brew upgrade failed."
     brew autoremove || echo "brew autoremove failed."
@@ -81,22 +102,6 @@ install_mise() {
     echo "mise setup completed."
 }
 
-install_cargo() {
-    if command -v cargo-binstall >/dev/null; then
-        echo "cargo already installed."
-        cargo-binstall -y sheldon starship || echo "cargo-binstall failed."
-    elif command -v cargo >/dev/null; then
-        echo "cargo already installed."
-        cargo install --force sheldon starship || echo "cargo install failed."
-    else
-        brew install cargo
-        cargo --version || echo "cargo install failed."
-        cargo-binstall -y sheldon starship || echo "cargo-binstall failed."
-    fi
-    echo "cargo setup completed."
-}
-
-
 echo "bootstrap.sh"
 echo "--------------------------------"
 install_xcode_command_line_tools
@@ -107,5 +112,12 @@ install_mise
 echo "--------------------------------"
 echo "zsh --version $(zsh --version)"
 echo "--------------------------------"
+
+if [ "${BREW_BUNDLE_FAILED}" -ne 0 ]; then
+    echo "Package install FAILED. Read the brew bundle output above." >&2
+    echo "Each later step ran. chezmoi runs this script again on the next apply." >&2
+    exit 1
+fi
+
 echo "Package install && update done!!"
 echo "--------------------------------"

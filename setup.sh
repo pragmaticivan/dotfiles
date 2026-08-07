@@ -28,6 +28,11 @@ declare -r DOTFILES_REPO_URL="https://github.com/pragmaticivan/dotfiles"
 declare -r BRANCH_NAME="${BRANCH_NAME:-main}"
 declare -r DOTFILES_GITHUB_PAT="${DOTFILES_GITHUB_PAT:-}"
 
+# Set DOTFILES_SOURCE to a local checkout to test that working tree instead of
+# the remote branch. CI sets it so a pull request tests its own diff, which the
+# remote clone cannot do for a fork.
+declare -r DOTFILES_SOURCE="${DOTFILES_SOURCE:-}"
+
 function is_ci() {
     [ "${CI:-false}" = "true" ]
 }
@@ -156,6 +161,7 @@ function run_chezmoi() {
     # download the chezmoi binary from the URL
     sh -c "$(curl -fsLS get.chezmoi.io)"
     local chezmoi_cmd
+    local source_path
     chezmoi_cmd="./bin/chezmoi"
 
     if is_ci_or_not_tty; then
@@ -166,17 +172,32 @@ function run_chezmoi() {
     # run `chezmoi init` to setup the source directory,
     # generate the config file, and optionally update the destination directory
     # to match the target state.
-    "${chezmoi_cmd}" init "${DOTFILES_REPO_URL}" \
-        --force \
-        --branch "${BRANCH_NAME}" \
-        --use-builtin-git true \
-        ${no_tty_option}
+    if [ -n "${DOTFILES_SOURCE}" ]; then
+        echo "Using the local source directory ${DOTFILES_SOURCE}"
+        "${chezmoi_cmd}" init \
+            --force \
+            --source "${DOTFILES_SOURCE}" \
+            ${no_tty_option}
+    else
+        "${chezmoi_cmd}" init "${DOTFILES_REPO_URL}" \
+            --force \
+            --branch "${BRANCH_NAME}" \
+            --use-builtin-git true \
+            ${no_tty_option}
+    fi
 
     # the `age` command requires a tty, but there is no tty in the github actions.
     # Therefore, it is currently difficult to decrypt the files encrypted with `age` in this workflow.
     # I decided to temporarily remove the encrypted target files from chezmoi's control.
     if is_ci_or_not_tty; then
-        find "$(${chezmoi_cmd} source-path)" -type f -name "encrypted_*" -exec rm -fv {} +
+        # `source-path` reads the default source directory unless the same
+        # --source goes with it, and that default is not there in the CI.
+        if [ -n "${DOTFILES_SOURCE}" ]; then
+            source_path="$(${chezmoi_cmd} source-path --source "${DOTFILES_SOURCE}")"
+        else
+            source_path="$(${chezmoi_cmd} source-path)"
+        fi
+        find "${source_path}" -type f -name "encrypted_*" -exec rm -fv {} +
     fi
 
     # Add to PATH for installing the necessary binary files under `$HOME/.local/bin`.
@@ -190,7 +211,11 @@ function run_chezmoi() {
 
     # run `chezmoi apply` to ensure that target... are in the target state,
     # updating them if necessary.
-    "${chezmoi_cmd}" apply ${no_tty_option}
+    if [ -n "${DOTFILES_SOURCE}" ]; then
+        "${chezmoi_cmd}" apply --source "${DOTFILES_SOURCE}" ${no_tty_option}
+    else
+        "${chezmoi_cmd}" apply ${no_tty_option}
+    fi
 
     # purge the binary of the chezmoi cmd
     rm -fv "${chezmoi_cmd}"

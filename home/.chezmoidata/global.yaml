@@ -1,5 +1,10 @@
 name: "Ivan Santos"
+# gitemail is the personal profile. gitemailRestricted is the work profile.
+# ~/.gitconfig reads them for the commit author. ~/.ssh/allowed_signers reads
+# them as the principals of the signing key, because git matches the signer
+# against the committer address.
 gitemail: "301291+pragmaticivan@users.noreply.github.com"
+gitemailRestricted: "286433352+ivan-santos-eq@users.noreply.github.com"
 editor: "nvim"
 visualeditor: "code -w"
 externalGitArgs: "clone.args = ['--depth', '1']\npull.args = ['--depth', '1']"
