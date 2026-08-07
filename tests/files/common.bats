@@ -73,12 +73,13 @@
 
 @test "[common] commit signatures verify against allowed_signers" {
     signers="${HOME}/.ssh/allowed_signers"
-    [ -f "${signers}" ]
 
-    # A machine with no signing key gets an empty file, and it cannot sign. CI
-    # is that machine, so skip before each assertion that needs a key.
+    # The template renders to nothing when ~/.ssh/id_ed25519.pub is absent, and
+    # chezmoi writes no file for an empty render. A machine with no signing key
+    # cannot sign, and CI is that machine, so skip each assertion that needs a
+    # key. `-s` is false for a file that is not there, so this covers the two.
     if [ ! -s "${signers}" ]; then
-        skip "no signing key on this machine, so allowed_signers is empty"
+        skip "no signing key on this machine, so chezmoi writes no allowed_signers"
     fi
 
     # gpg.ssh.allowedSignersFile must point at the file chezmoi writes, or
