@@ -24,6 +24,14 @@ declare -r REPO_ROOT
 declare -r RENDER_DIR="${TMPDIR:-/tmp}/dotfiles-lint-render"
 
 FAILED=0
+RENDER_HOME=""
+RENDER_CONFIG=""
+
+function cleanup() {
+    [ -n "${RENDER_HOME}" ] && rm -rf "${RENDER_HOME}"
+    rm -rf "${RENDER_DIR}"
+}
+trap cleanup EXIT
 
 function need() {
     if ! command -v "$1" >/dev/null 2>&1; then
@@ -75,6 +83,28 @@ function lint_plain_shell() {
 # checkout. CI has no fetched externals, so a render here would always fail.
 declare -r RENDER_SKIP="home/.chezmoiscripts/unix/run_once_after_10-bat-build-cache.sh.tmpl"
 
+# A template reads the data in the config file, and a bare checkout has no
+# config file, so `.profile` and `.isLaptop` are absent and the render fails.
+# Make a config from the same template that `chezmoi init` uses, in a
+# temporary home, and give that config to each render. This also puts
+# .chezmoi.toml.tmpl itself in the gate.
+function make_render_config() {
+    local home
+
+    home="$(mktemp -d)"
+    RENDER_HOME="${home}"
+
+    if ! (
+        export HOME="${home}" XDG_CONFIG_HOME="${home}/.config"
+        chezmoi init --no-tty --source "${REPO_ROOT}"
+    ) >/dev/null 2>&1; then
+        echo "lint: .chezmoi.toml.tmpl does not make a config" >&2
+        return 1
+    fi
+
+    RENDER_CONFIG="${home}/.config/chezmoi/chezmoi.toml"
+}
+
 # Run shellcheck on each rendered template. A template that fails to render is a
 # failure too, because `chezmoi apply` would hit the same error.
 function lint_template_shell() {
@@ -94,7 +124,10 @@ function lint_template_shell() {
 
         out="${RENDER_DIR}/$(echo "${file}" | tr '/' '_' | sed 's/\.tmpl$//')"
 
-        if ! chezmoi execute-template --source "${REPO_ROOT}" <"${REPO_ROOT}/${file}" >"${out}"; then
+        if ! chezmoi execute-template \
+            --config "${RENDER_CONFIG}" \
+            --source "${REPO_ROOT}" \
+            <"${REPO_ROOT}/${file}" >"${out}"; then
             echo "lint: ${file} does not render" >&2
             # Leave no empty file behind, or shellcheck reports SC2148 for it too.
             rm -f "${out}"
@@ -145,6 +178,7 @@ function main() {
     fi
 
     lint_plain_shell
+    make_render_config
     lint_template_shell
     lint_yaml
 
