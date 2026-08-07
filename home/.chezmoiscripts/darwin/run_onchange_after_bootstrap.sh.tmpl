@@ -53,6 +53,13 @@ install_brew_packages() {
     # Disable quarantine for casks
     export HOMEBREW_CASK_OPTS=--no-quarantine
 
+    # brew reads the trust list from ${XDG_CONFIG_HOME}/homebrew/trust.json,
+    # and from ~/.homebrew/trust.json when XDG_CONFIG_HOME is not set. chezmoi
+    # writes the file to ~/.config/homebrew, and this script does not always
+    # get XDG_CONFIG_HOME from the environment, so brew found no trust list and
+    # an untrusted tap stopped brew bundle.
+    export XDG_CONFIG_HOME="${XDG_CONFIG_HOME:-${HOME}/.config}"
+
     brew --version
 
     if [ ! -f "${HOME}/Brewfile" ]; then
