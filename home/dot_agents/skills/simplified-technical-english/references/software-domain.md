@@ -166,6 +166,6 @@ Both need a written list, so keep a glossary next to the document set. Record:
 - a one-sentence definition in STE,
 - the terms it replaces, so a reviewer can find the drift.
 
-When the checker reports `info: "<word>" is not in the dictionary`, that is the
-prompt to add the word to the glossary or to replace it. An unrecorded term is
-how a document ends up with three names for one thing.
+When a word is in neither dictionary, that is the prompt to add it to the
+glossary or to replace it. An unrecorded term is how a document ends up with
+three names for one thing.

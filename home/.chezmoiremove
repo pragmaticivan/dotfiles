@@ -3,3 +3,9 @@
 .config/git/config
 .config/git/ignore
 .config/zsh/autoload/atuim.zsh
+.claude/hooks/ste-mode.sh
+.agents/skills/simplified-technical-english/scripts
+.agents/skills/simplified-technical-english/evals/__pycache__
+.agents/skills/simplified-technical-english/evals/grade_mechanical.py
+.agents/skills/simplified-technical-english/evals/checker_regression.py
+.agents/skills/simplified-technical-english/evals/build_static_viewer.py

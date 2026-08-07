@@ -111,7 +111,6 @@
 
 @test "[common] claude hooks are executable" {
     hooks=(
-        "${HOME}/.claude/hooks/ste-mode.sh"
         "${HOME}/.claude/hooks/session-start.sh"
         "${HOME}/.claude/hooks/statusline.sh"
         "${HOME}/.claude/hooks/herdr-agent-state.sh"
@@ -127,38 +126,43 @@
 }
 
 @test "[common] STE rule reaches every agent" {
-    run "${HOME}/.claude/hooks/ste-mode.sh"
-    [ "$status" -eq 0 ]
-    [[ "$output" == *"STE MODE"* ]]
-    [[ "$output" == *"simplified-technical-english"* ]]
+    # Standing instructions carry the card. No hook repeats it on each prompt.
+    [ ! -e "${HOME}/.claude/hooks/ste-mode.sh" ]
+    ! grep -q "ste-mode" "${HOME}/.claude/settings.json"
 
-    grep -q "STE MODE" "${HOME}/.copilot/copilot-instructions.md"
-    grep -q "simplified-technical-english" "${HOME}/.claude/CLAUDE.md"
+    for doc in "${HOME}/.claude/CLAUDE.md" "${HOME}/.copilot/copilot-instructions.md"; do
+        echo "Checking ${doc}"
+        grep -q "STE MODE" "${doc}"
+        grep -q "simplified-technical-english" "${doc}"
+    done
 
-    [ -f "${HOME}/.agents/skills/simplified-technical-english/scripts/ste_check.py" ]
+    # The dictionaries do the work of the deleted checker, so grep must find them.
+    skill="${HOME}/.agents/skills/simplified-technical-english"
+    for dictionary in dictionary-approved dictionary-unapproved; do
+        [ -f "${skill}/references/${dictionary}.md" ]
+    done
+    grep -qi "^ensure " "${skill}/references/dictionary-unapproved.md"
+
+    # No python. The skill is judgment plus a lookup.
+    [ ! -d "${skill}/scripts" ]
+
     for parent in "${HOME}/.claude/skills" "${HOME}/.copilot/skills"; do
         [ -e "${parent}/simplified-technical-english" ]
     done
 }
 
-@test "[common] the STE card obeys STE" {
-    checker="${HOME}/.agents/skills/simplified-technical-english/scripts/ste_check.py"
-    [ -f "${checker}" ]
-
-    # The card demands 0 error of each reply, so the card itself must give 0 error.
-    "${HOME}/.claude/hooks/ste-mode.sh" >"${BATS_TEST_TMPDIR}/card.txt"
-    run python3 "${checker}" --severity error "${BATS_TEST_TMPDIR}/card.txt"
-    echo "${output}"
-    [ "$status" -eq 0 ]
-}
-
 @test "[common] the STE card stays small" {
-    # The hook sends this text with each prompt, so each word costs tokens in
-    # every session. The card holds only what the checker cannot supply: the
-    # scope, the command, the loop, and the warn clause. A list of the 53 rules
-    # belongs in the skill, because the checker names the rule for each error.
-    words=$("${HOME}/.claude/hooks/ste-mode.sh" | wc -w)
+    # The card is the text from "STE MODE" to the next heading of CLAUDE.md.
+    card="${BATS_TEST_TMPDIR}/card.txt"
+    awk '/^STE MODE/{f=1} f && /^## /{exit} f' \
+        "${HOME}/.claude/CLAUDE.md" >"${card}"
+
+    # The card is in the standing context of every session, so each word costs
+    # tokens. It holds the scope and the rules of the most value. The 53 rules
+    # and the dictionary belong in the skill.
+    words=$(wc -w <"${card}")
     echo "Card is ${words} words (limit 200)"
+    [ "${words}" -ge 50 ]
     [ "${words}" -le 200 ]
 }
 

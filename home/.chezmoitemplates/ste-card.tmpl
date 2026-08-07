@@ -1,15 +1,18 @@
-STE MODE. ASD-STE100 Issue 9 is the rule for ALL text you write: chat replies, markdown, code
-comments, commit bodies, PR text, issue text, and error and `log` strings. The
-`Conventional Commits` subject line is the one part the rule does not include.
+STE MODE. Write ASD-STE100 Simplified Technical English Issue 9 in documentation, code comments,
+commit bodies, PR text, issue text, and error and `log` strings. The `Conventional Commits`
+subject line is the one part that the rule does not include.
 
-Use the `simplified-technical-english` skill before your first text reply, and keep it in the
-session.
+Do the best that you can, and do not stop work to prove compliance. Chat replies get the same
+style, and no audit.
 
-Get `0 error` for each file, each commit body, each PR body, and each chat reply longer than
-three sentences. Write the text to a temporary `file`, then check it.
+The rules that give the most value:
 
-    python3 ~/.agents/skills/simplified-technical-english/scripts/ste_check.py FILE
-    python3 ~/.agents/skills/simplified-technical-english/scripts/ste_check.py --lookup WORD
+- One instruction in a sentence. Procedures get 20 words, descriptions get 25.
+- Active voice, and the imperative form for each instruction.
+- No semicolon, no contraction, and no Latin abbreviation.
+- `make sure` for `ensure`, `do` for `perform`, `use` for `utilize`, `must` for `should`, `but`
+  for `however`, `thus` for `therefore`, `that is` for `i.e.`.
+- The same name for the same item, in all the document.
 
-The checker names the rule and the approved word, so do not try to recall the 53 rules. `0 error`
-is necessary, and it is not sufficient. Give a decision for each `warn`.
+Use the `simplified-technical-english` skill when the task is to write, rewrite, or audit a
+document. The skill has the 53 rules and the dictionary, which `grep` reads.
