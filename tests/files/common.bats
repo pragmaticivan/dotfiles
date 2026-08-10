@@ -115,6 +115,7 @@
         "${HOME}/.claude/hooks/session-start.sh"
         "${HOME}/.claude/hooks/statusline.sh"
         "${HOME}/.claude/hooks/herdr-agent-state.sh"
+        "${HOME}/.claude/hooks/git-push-guard.sh"
     )
 
     for hook in "${hooks[@]}"; do

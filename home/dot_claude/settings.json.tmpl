@@ -24,6 +24,11 @@
           {
             "command": "rtk hook claude",
             "type": "command"
+          },
+          {
+            "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/git-push-guard.sh'",
+            "timeout": 10,
+            "type": "command"
           }
         ],
         "matcher": "Bash"
@@ -140,6 +145,18 @@
       "Bash(chmod 777:*)",
       "Bash(visudo:*)",
       "Bash(passwd:*)",
+      "Bash(git push origin main:*)",
+      "Bash(git push origin master:*)",
+      "Bash(git push -u origin main:*)",
+      "Bash(git push -u origin master:*)",
+      "Bash(git push --set-upstream origin main:*)",
+      "Bash(git push --set-upstream origin master:*)",
+      "Bash(git push -f origin main:*)",
+      "Bash(git push -f origin master:*)",
+      "Bash(git push --force origin main:*)",
+      "Bash(git push --force origin master:*)",
+      "Bash(git push origin HEAD:main)",
+      "Bash(git push origin HEAD:master)",
       "Bash(npm install -g:*)",
       "Bash(pip install:*)",
       "Bash(pip3 install:*)",
@@ -150,8 +167,9 @@
       "Bash(dnf install:*)"
     ],
     "ask": [
-      "Bash(git push:*)",
       "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(gh pr merge:*)",
       "Bash(git rebase:*)",
       "Bash(git reset --hard:*)",
       "Bash(git clean -fd:*)",
@@ -235,6 +253,19 @@
       "Bash(git merge:*)",
       "Bash(git stash:*)",
       "Bash(git stash pop:*)",
+      "Bash(git push:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr edit:*)",
+      "Bash(gh pr view:*)",
+      "Bash(gh pr list:*)",
+      "Bash(gh pr status:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh pr checks:*)",
+      "Bash(gh pr comment:*)",
+      "Bash(gh issue:*)",
+      "Bash(gh repo view:*)",
+      "Bash(gh run view:*)",
+      "Bash(gh run list:*)",
       "Edit(**)",
       "Bash(touch:*)",
       "Bash(mkdir:*)",
