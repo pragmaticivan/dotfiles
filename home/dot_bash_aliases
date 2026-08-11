@@ -33,6 +33,9 @@ alias kn='kubens'
 alias gp='git push'
 alias gpl='git pull'
 
+# Worktrees
+alias wsc='wt switch --create --execute=claude'
+
 # Code Editing
 alias pj='cd ${PROJECTS}'
 alias vimdiff='nvim -d'

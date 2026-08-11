@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# herdr keeps plugins in ~/.config/herdr/plugins.json, which holds absolute paths
+# and resolved commits. chezmoi cannot manage that file, thus this script installs
+# the plugins. Bump the ref to update.
+
+if ! command -v herdr >/dev/null 2>&1; then
+  exit 0
+fi
+
+herdr plugin install devashish2203/herdr-worktrunk \
+  --ref a3107ca566bafcd463bc138007a0c01051970784 --yes

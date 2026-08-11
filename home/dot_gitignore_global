@@ -109,3 +109,7 @@ coverage.txt
 ###
 # Claude
 **/.claude/settings.local.json
+
+###
+# Worktrunk
+.worktrees/

@@ -59,3 +59,5 @@ fi
 # want in your public, versioned repo.
 # shellcheck disable=SC1090
 [ -f ~/.localrc ] && . ~/.localrc
+
+if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init zsh)"; fi
