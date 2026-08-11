@@ -29,7 +29,7 @@ jobs:
     steps:
       # Test the checked-out tree, not the pushed branch. A remote clone cannot
       # reach a fork's branch, and it cannot see a change before the push.
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
 
       - name: Setup dotfiles
         env:
