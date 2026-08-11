@@ -14,7 +14,6 @@ homebrew_trust:
   formulae:
     - argoproj/tap/kubectl-argo-rollouts # Argo Rollouts kubectl plugin
     - coleam00/archon/archon # Archon
-    - dlvhdr/formulae/diffnav # git diff viewer, used by the delta config
     - hashicorp/tap/nomad # HashiCorp Nomad
     - hashicorp/tap/packer # HashiCorp Packer
   taps:
