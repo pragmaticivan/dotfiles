@@ -127,6 +127,25 @@
     done
 }
 
+@test "[common] pixoo hook follows the pixooEnabled option" {
+    # The Pixoo 64 alert is opt-in. The script and the hook entries must both
+    # appear only when the option is on.
+    hook="${HOME}/.claude/hooks/pixoo-notify.py"
+    enabled="$(chezmoi execute-template '{{ if and (hasKey . "pixooEnabled") .pixooEnabled }}yes{{ else }}no{{ end }}')"
+    echo "pixooEnabled=${enabled}"
+
+    if [ "${enabled}" = "yes" ]; then
+        [ -f "${hook}" ]
+        [ -x "${hook}" ]
+        run python3 -c "import ast,sys; ast.parse(open(sys.argv[1]).read())" "${hook}"
+        [ "$status" -eq 0 ]
+        grep -q "pixoo-notify.py" "${HOME}/.claude/settings.json"
+    else
+        [ ! -e "${hook}" ]
+        ! grep -q "pixoo-notify" "${HOME}/.claude/settings.json"
+    fi
+}
+
 @test "[common] STE rule reaches every agent" {
     # Standing instructions carry the card. No hook repeats it on each prompt.
     [ ! -e "${HOME}/.claude/hooks/ste-mode.sh" ]

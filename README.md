@@ -109,6 +109,46 @@ Be aware that a one-off override leaves the affected files differing from the st
 
 Profile-aware targets are `Brewfile` (personal-only casks: extra browsers, chat apps, media, games) and `.gitconfig` (commit email). Note that `brew bundle` never uninstalls, so switching to `restricted` stops installing personal apps but does not remove ones already present.
 
+### 🔔 Divoom Pixoo 64 alerts for Claude Code (optional)
+
+Claude Code can show its state on a Divoom Pixoo 64 and alert the Mac when it needs you. The device stays quiet. `terminal-notifier` shows a macOS notification with the state, the project, the git branch, and the message, and it plays a system sound. The Brewfile installs `terminal-notifier`. macOS asks for permission at the first alert. The feature is off by default. Turn it on at `chezmoi init`:
+
+```
+chezmoi init --apply   # answer "Send Claude Code alerts to a Divoom Pixoo 64", then give the IP
+```
+
+The answer is kept in `~/.config/chezmoi/chezmoi.toml` as `pixooEnabled` and `pixooAddress`. If the option is off, chezmoi does not install the script and does not add the hooks to `~/.claude/settings.json`.
+
+The panel has three zones. The top zone gives the state with a 16 by 16 icon and a large headline, thus you can read it from across the room. The middle zone gives the project, the git branch, and the message. The bottom zone gives the clock.
+
+| Event              | Icon      | Headline    | Mac notification  | Sound  |
+| ------------------ | --------- | ----------- | ----------------- | ------ |
+| `Notification`     | bell      | `NEEDS YOU` | "Claude needs you" | Sosumi |
+| `Stop`             | check     | `DONE`      | "Claude is done"   | Glass  |
+| `UserPromptSubmit` | hourglass | `WORKING`   | none              | none   |
+| `SessionEnd`       | —         | clock face  | none              | none   |
+
+The notification gives the project and the branch in the subtitle, and the message in the body. Each project gets its own group, thus a new alert replaces the last alert of that project only.
+
+The message keeps only its useful part. "Claude needs your permission to use Bash" becomes `ALLOW BASH?`. If a message does not match a known form, the panel wraps it on two lines. If there is no message, the panel drops the line and centers the remaining text, and the notification gives a short default text.
+
+Test the device and see the frame in your terminal:
+
+```
+~/.claude/hooks/pixoo-notify.py test --host 192.168.30.26            # send a frame and show an alert
+~/.claude/hooks/pixoo-notify.py test --preview --dry-run --host x    # draw in the terminal only
+```
+
+To change the text or the sound, edit the `notice`, `fallback`, and `sound` values of the event in the script. Use a sound name from `/System/Library/Sounds`, for example `Hero` or `Funk`.
+
+Set `PIXOO_NOTIFY_DISABLE=1` to stop the alerts for one session, for example when you are away from that network. If the device is off, the hook does nothing and Claude Code continues.
+
+The hook calls `/usr/bin/python3`, and not `python3` from the path. A Python that mise installs has no permission for the local network on macOS, thus each request fails with "no route to host". The system Python has the permission. If you see that error, use the full path:
+
+```
+/usr/bin/python3 ~/.claude/hooks/pixoo-notify.py test --host 192.168.30.26
+```
+
 ## 👏 Acknowledgements
 
 Inspiration and code was taken from many sources, including:

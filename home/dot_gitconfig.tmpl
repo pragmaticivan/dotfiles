@@ -190,7 +190,11 @@
     # Specify the username of the author/committer.
     name = "{{ .name }}"
 
-    signingKey = "~/.ssh/id_ed25519"
+    # The public key, not the private key. `gpg.format` is ssh, so git signs
+    # with `ssh-keygen -Y sign -f <signingKey>`. With a private key path,
+    # ssh-keygen opens that file and asks for the passphrase. With the public
+    # key path, it asks the agent to sign, and no prompt occurs.
+    signingKey = "~/.ssh/id_ed25519.pub"
 
 [include]
     # Include the delta theme.

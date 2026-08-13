@@ -11,9 +11,9 @@
 
 # BROWSERS #
 cask "firefox"
-cask "google-chrome"
 {{- if eq $profile "personal" }}
 cask "brave-browser"
+cask "google-chrome"
 {{- end }}
 
 # COMMUNICATION #
@@ -45,7 +45,7 @@ cask "font-sf-pro"
 
 # UTILITIES #
 cask "keka"
-cask "wireshark"
+cask "wireshark-app" # renamed from "wireshark"
 cask "lunar"
 cask "sf-symbols"
 {{- if eq $profile "personal" }}
@@ -130,6 +130,7 @@ brew "yq"
 brew "unar"
 brew "switchaudio-osx"
 brew "nowplaying-cli"
+brew "terminal-notifier" # macOS alerts for the Claude Code hooks
 brew "aspell"
 brew "mole"
 brew "rtk"

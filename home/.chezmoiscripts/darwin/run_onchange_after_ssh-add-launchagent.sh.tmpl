@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ssh-add LaunchAgent
+# ---------------------------------------------------------------------------
+# Puts the ssh keys in the agent one time at each login.
+#
+# macOS runs its own agent from com.openssh.ssh-agent. That agent declares
+# SecureSocketWithKey, thus launchd makes the socket and gives SSH_AUTH_SOCK to
+# each process in the login session. A terminal, an editor from the Dock, a git
+# hook, and a launchd job all get the same agent. Do not make a private agent in
+# a shell startup file, because only an interactive shell sees it.
+#
+# The agent holds no key after a restart, and `ssh-keygen -Y sign` does not read
+# the keychain. Thus a signed commit asks for the passphrase until something
+# puts the key in the agent. This LaunchAgent does that.
+#
+# A plain file in ~/Library/LaunchAgents starts to work at the next login only.
+# This script also loads the job, thus the change works immediately.
+
+label="com.pragmaticivan.ssh-add"
+plist="{{ .chezmoi.homeDir }}/Library/LaunchAgents/${label}.plist"
+
+mkdir -p "$(dirname "${plist}")"
+
+cat >"${plist}" <<'PLIST'
+<?xml version="1.0" encoding="UTF-8"?>
+<plist version="1.0">
+  <dict>
+    <key>Label</key>
+    <string>com.pragmaticivan.ssh-add</string>
+    <key>ProgramArguments</key>
+    <array>
+      <string>/usr/bin/ssh-add</string>
+      <string>--apple-load-keychain</string>
+      <string>-q</string>
+    </array>
+    <key>RunAtLoad</key>
+    <true/>
+  </dict>
+</plist>
+PLIST
+
+launchctl bootout "gui/$(id -u)/${label}" 2>/dev/null || true
+launchctl bootstrap "gui/$(id -u)" "${plist}"
+
+# The LaunchAgent runs at login, thus load the keys now as well. This also shows
+# if the login keychain holds no passphrase, which is true on a new machine.
+ssh-add --apple-load-keychain -q 2>/dev/null || true
+
+if ! ssh-add -l >/dev/null 2>&1; then
+    echo "ssh-add: the agent holds no key, thus the login keychain has no passphrase."
+    echo "ssh-add: run this one time on this machine:"
+    echo "ssh-add:     ssh-add --apple-use-keychain ~/.ssh/id_ed25519"
+fi
