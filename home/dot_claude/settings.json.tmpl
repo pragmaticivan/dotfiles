@@ -1,3 +1,8 @@
+{{- /* The Pixoo keys arrive with `chezmoi init`. Keep apply usable before that. */ -}}
+{{- $pixooEnabled := false -}}
+{{- $pixooAddress := "" -}}
+{{- if hasKey . "pixooEnabled" }}{{ $pixooEnabled = .pixooEnabled }}{{ end -}}
+{{- if hasKey . "pixooAddress" }}{{ $pixooAddress = .pixooAddress }}{{ end -}}
 {
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
@@ -53,7 +58,51 @@
         ],
         "matcher": "*"
       }
-    ]
+    ]{{ if $pixooEnabled }},
+    "Notification": [
+      {
+        "hooks": [
+          {
+            "command": "/usr/bin/python3 '{{ .chezmoi.homeDir }}/.claude/hooks/pixoo-notify.py' notification --host {{ $pixooAddress }}",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "command": "/usr/bin/python3 '{{ .chezmoi.homeDir }}/.claude/hooks/pixoo-notify.py' stop --host {{ $pixooAddress }}",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "command": "/usr/bin/python3 '{{ .chezmoi.homeDir }}/.claude/hooks/pixoo-notify.py' prompt --host {{ $pixooAddress }}",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ],
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "command": "/usr/bin/python3 '{{ .chezmoi.homeDir }}/.claude/hooks/pixoo-notify.py' end --host {{ $pixooAddress }}",
+            "timeout": 10,
+            "type": "command"
+          }
+        ]
+      }
+    ]{{ end }}
   },
   "cleanupPeriodDays": 14,
   "skipWorkflowUsageWarning": true,
@@ -196,7 +245,6 @@
       "Bash(make release:*)",
       "Bash(npm run deploy:*)",
       "Bash(npm run release:*)",
-      "Bash(npx:*)",
       "Bash(docker rm:*)",
       "Bash(docker rmi:*)",
       "Bash(docker system prune:*)",
@@ -209,7 +257,6 @@
     ],
     "allow": [
       "Read(**)",
-      "Write(/tmp/**)",
       "Edit(/tmp/**)",
       "Bash(rm /tmp/:*)",
       "Bash(rm -f /tmp/:*)",
@@ -309,6 +356,8 @@
       "Bash(pytest:*)",
       "Bash(jest:*)",
       "Bash(vitest:*)",
+      "Bash(npx jest:*)",
+      "Bash(npx vitest:*)",
       "Bash(mocha:*)",
       "Bash(rspec:*)",
       "Bash(go test:*)",

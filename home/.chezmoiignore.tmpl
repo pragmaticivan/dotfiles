@@ -6,6 +6,10 @@
 .chezmoiscripts/linux/**
 {{ end }}
 
+{{ if not (and (hasKey . "pixooEnabled") .pixooEnabled) }}
+.claude/hooks/pixoo-notify.py
+{{ end }}
+
 {{ if ne .chezmoi.os "darwin" }}
 .chezmoiscripts/darwin/**
 Brewfile

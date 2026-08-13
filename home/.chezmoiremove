@@ -9,3 +9,4 @@
 .agents/skills/simplified-technical-english/evals/grade_mechanical.py
 .agents/skills/simplified-technical-english/evals/checker_regression.py
 .agents/skills/simplified-technical-english/evals/build_static_viewer.py
+.config/zsh/autoload/ssh-agent.zsh

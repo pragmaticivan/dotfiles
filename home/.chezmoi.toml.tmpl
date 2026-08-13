@@ -55,6 +55,8 @@
 {{ $catppuccinAccentColor := "lavender" }}
 {{ $isLaptop := false }}
 {{ $shell = "zsh" }}
+{{ $pixooEnabled := false }}
+{{ $pixooAddress := "" }}
 
 {{/* Seed every prompted value from the config already on this machine, so that
      re-running `chezmoi init` (even with --no-tty) preserves earlier answers
@@ -65,6 +67,8 @@
 {{- if hasKey . "catppuccinDarkFlavour" }}{{ $catppuccinDarkFlavour = .catppuccinDarkFlavour }}{{ end }}
 {{- if hasKey . "catppuccinAccentColor" }}{{ $catppuccinAccentColor = .catppuccinAccentColor }}{{ end }}
 {{- if hasKey . "isLaptop" }}{{ $isLaptop = .isLaptop }}{{ end }}
+{{- if hasKey . "pixooEnabled" }}{{ $pixooEnabled = .pixooEnabled }}{{ end }}
+{{- if hasKey . "pixooAddress" }}{{ $pixooAddress = .pixooAddress }}{{ end }}
 
 {{/* Install profile. Env var wins, otherwise the value already stored in
      ~/.config/chezmoi/chezmoi.toml is kept, otherwise prompt (default personal).
@@ -95,6 +99,16 @@
   {{ $catppuccinLightFlavour = promptChoiceOnce . "catppuccinLightFlavour" "Catppuccin flavor for light mode" $catppuccinFlavors $catppuccinLightFlavour }}
   {{ $catppuccinDarkFlavour = promptChoiceOnce . "catppuccinDarkFlavour" "Catppuccin flavor for dark mode" $catppuccinFlavors $catppuccinDarkFlavour }}
   {{ $catppuccinAccentColor = promptChoiceOnce . "catppuccinAccentColor" "Catppuccin accent color" $catppuccinAccentColors $catppuccinAccentColor }}
+  {{ $pixooEnabled = promptBoolOnce . "pixooEnabled" "Send Claude Code alerts to a Divoom Pixoo 64" $pixooEnabled }}
+  {{ if $pixooEnabled }}
+    {{ $pixooAddress = promptStringOnce . "pixooAddress" "Pixoo 64 IP address" $pixooAddress }}
+  {{ end }}
+{{ end }}
+
+{{/* The Pixoo hook needs an address. Stop early, because a hook with an empty
+     host would fail on every notification instead. */}}
+{{ if and $pixooEnabled (eq $pixooAddress "") }}
+{{-   fail "pixooEnabled is true but pixooAddress is empty" }}
 {{ end }}
 
 {{/* Whether this machine is used interactively; gates the GitHub SSH rewrite in
@@ -151,6 +165,8 @@ osId = {{ $osId | quote }}
 profile = {{ $profile | quote }}
 isLaptop = {{ $isLaptop }}
 tty = {{ $tty }}
+pixooEnabled = {{ $pixooEnabled }}
+pixooAddress = {{ $pixooAddress | quote }}
 
 [data.catppuccin]
 accentColors = [ {{ $catppuccinAccentColors | quoteList | join ", " }} ]
