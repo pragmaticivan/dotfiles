@@ -33,6 +33,14 @@ export ZOXIDE_CMD_OVERRIDE="cd"
 
 ##########################################
 
+# SSH
+
+# Point each shell at one agent socket. `ssh-keygen -Y sign` does not read the
+# keychain, thus a signed commit needs an agent that holds the key.
+export SSH_AUTH_SOCK="$HOME/.ssh/agent.sock"
+
+##########################################
+
 # CUSTOM
 export CATPPUCCIN_FLAVOR='{{ .catppuccinFlavor }}' # For those config can read env
 

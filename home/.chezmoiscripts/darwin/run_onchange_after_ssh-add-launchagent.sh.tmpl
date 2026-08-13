@@ -17,23 +17,28 @@ set -euo pipefail
 #
 # A plain file in ~/Library/LaunchAgents starts to work at the next login only.
 # This script also loads the job, thus the change works immediately.
+#
+# The job also makes ~/.ssh/agent.sock a link to that socket. launchd puts the
+# socket in a new directory at each boot, thus no file can hold the path. A
+# shell that gets no SSH_AUTH_SOCK reads the link and finds the same agent.
 
 label="com.pragmaticivan.ssh-add"
 plist="{{ .chezmoi.homeDir }}/Library/LaunchAgents/${label}.plist"
+link="{{ .chezmoi.homeDir }}/.ssh/agent.sock"
 
 mkdir -p "$(dirname "${plist}")"
 
-cat >"${plist}" <<'PLIST'
+cat >"${plist}" <<PLIST
 <?xml version="1.0" encoding="UTF-8"?>
 <plist version="1.0">
   <dict>
     <key>Label</key>
-    <string>com.pragmaticivan.ssh-add</string>
+    <string>${label}</string>
     <key>ProgramArguments</key>
     <array>
-      <string>/usr/bin/ssh-add</string>
-      <string>--apple-load-keychain</string>
-      <string>-q</string>
+      <string>/bin/sh</string>
+      <string>-c</string>
+      <string>[ -n "\$SSH_AUTH_SOCK" ] &amp;&amp; ln -sfn "\$SSH_AUTH_SOCK" "${link}"; exec /usr/bin/ssh-add --apple-load-keychain -q</string>
     </array>
     <key>RunAtLoad</key>
     <true/>
