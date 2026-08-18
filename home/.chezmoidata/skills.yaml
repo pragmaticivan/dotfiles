@@ -11,3 +11,7 @@ external_skills:
     repo: shadcn-ui/ui
     sha: a85299a9edd2a961e32f01ced86963a852652bd2
     path: skills/shadcn
+  show-me:
+    repo: humanlayer/skills
+    sha: 3c2629142c5d437428269b1b722b08c0b87f574d
+    path: plugins/show-me/skills/show-me

@@ -1,0 +1,25 @@
+{
+  "$schema": "https://schema.org",
+  "@type": "FAQPage",
+  "url": "https://{{domain}}/faq",
+  "dateModified": "{{2026-06-30}}",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "{{What is X?}}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{Direct, self-contained answer (40–60 words) matching the visible page.}}",
+        "citation": "https://{{authoritative-source}}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{{How much does X cost?}}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{Direct answer with concrete figures.}}"
+      }
+    }
+  ]
+}

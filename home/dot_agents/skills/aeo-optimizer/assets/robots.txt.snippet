@@ -1,0 +1,41 @@
+# AEO-friendly robots.txt
+# Allow AI search/answer bots (these surface citations). Review training-bot policy.
+
+# --- AI search / live-fetch bots (recommended ALLOW for AEO) ---
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Perplexity-User
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+# --- AI training crawlers (POLICY CHOICE — allow = more brand knowledge in models) ---
+# To allow, leave as Allow. To opt out, change Allow to Disallow.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: CCBot
+Allow: /
+
+# --- Default ---
+User-agent: *
+Allow: /
+
+Sitemap: https://{{your-domain}}/sitemap.xml

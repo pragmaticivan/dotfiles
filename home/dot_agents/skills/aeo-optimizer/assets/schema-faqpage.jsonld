@@ -1,0 +1,24 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "{{What is X?}}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{Direct, self-contained answer in 40–60 words. Must match visible page text.}}"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "{{How do I do Y?}}",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "{{Direct answer with the key steps.}}"
+      }
+    }
+  ]
+}
+</script>

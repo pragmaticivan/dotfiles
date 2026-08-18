@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.org",
+  "name": "{{Product / Site Name}}",
+  "url": "https://{{domain}}",
+  "category": "{{e.g. Developer Tools / SaaS / Documentation}}",
+  "description": "{{One-paragraph, self-contained description of what this is, who it's for, and what it does.}}",
+  "entity": {
+    "type": "Organization",
+    "sameAs": [
+      "https://en.wikipedia.org/wiki/{{Entity}}",
+      "https://www.wikidata.org/wiki/{{Qid}}",
+      "https://github.com/{{org}}",
+      "https://www.linkedin.com/company/{{org}}"
+    ]
+  },
+  "keyResources": [
+    { "title": "Docs", "url": "https://{{domain}}/docs" },
+    { "title": "Quickstart", "url": "https://{{domain}}/quickstart" },
+    { "title": "Pricing", "url": "https://{{domain}}/pricing" }
+  ],
+  "topics": ["{{topic-1}}", "{{topic-2}}", "{{topic-3}}"],
+  "alternatives": ["{{competitor-1}}", "{{competitor-2}}"],
+  "dateModified": "{{2026-06-30}}"
+}

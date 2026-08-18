@@ -1,0 +1,38 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://{{domain}}/#organization",
+      "name": "{{Organization Name}}",
+      "url": "https://{{domain}}",
+      "logo": "https://{{domain}}/logo.png",
+      "description": "{{What the organization does}}",
+      "sameAs": [
+        "https://en.wikipedia.org/wiki/{{Entity}}",
+        "https://www.wikidata.org/wiki/{{Qid}}",
+        "https://github.com/{{org}}",
+        "https://www.linkedin.com/company/{{org}}",
+        "https://x.com/{{handle}}",
+        "https://www.crunchbase.com/organization/{{org}}"
+      ]
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://{{domain}}/#website",
+      "url": "https://{{domain}}",
+      "name": "{{Site Name}}",
+      "publisher": { "@id": "https://{{domain}}/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "https://{{domain}}/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+</script>

@@ -1,0 +1,27 @@
+# {{Project Name}}
+
+> {{One-sentence description: what this is, who it's for, what it does.}}
+
+{{Optional: 1–3 lines of essential context an LLM needs before reading the docs —
+key concepts, scope, or how the project is organized.}}
+
+## Docs
+
+- [Quickstart]({{https://site/quickstart.md}}): Get running fast
+- [Guides]({{https://site/guides.md}}): Task-oriented how-tos
+- [API Reference]({{https://site/api.md}}): Complete reference
+
+## Examples
+
+- [Tutorials]({{https://site/tutorials.md}}): End-to-end walkthroughs
+- [Sample code]({{https://github.com/org/repo/tree/main/examples}}): Runnable examples
+
+## About
+
+- [Homepage]({{https://site}}): Product overview
+- [Changelog]({{https://site/changelog.md}}): Release history
+
+## Optional
+
+- [Blog]({{https://site/blog}}): Articles and updates
+- [Community]({{https://site/community}}): Support channels

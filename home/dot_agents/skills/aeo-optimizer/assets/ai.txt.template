@@ -1,0 +1,17 @@
+# ai.txt — AI usage policy & resources for {{Site Name}}
+# Place at /.well-known/ai.txt
+
+Contact: ai@{{domain}}
+Policy: https://{{domain}}/ai-policy
+
+# Machine-readable resources
+Summary: https://{{domain}}/ai/summary.json
+FAQ: https://{{domain}}/ai/faq.json
+Service: https://{{domain}}/ai/service.json
+LLMs: https://{{domain}}/llms.txt
+LLMs-Full: https://{{domain}}/llms-full.txt
+Sitemap: https://{{domain}}/sitemap.xml
+
+# Usage policy (allow | disallow)
+Training: allow
+Search: allow

@@ -1,0 +1,30 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "{{Article title (question-shaped when possible)}}",
+  "description": "{{One-sentence summary}}",
+  "image": "https://{{domain}}/article-image.png",
+  "datePublished": "{{2026-01-15}}",
+  "dateModified": "{{2026-06-30}}",
+  "author": {
+    "@type": "Person",
+    "name": "{{Author Name}}",
+    "url": "https://{{domain}}/authors/{{slug}}",
+    "jobTitle": "{{Role}}",
+    "description": "{{Credentials / expertise}}"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "{{Organization Name}}",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://{{domain}}/logo.png"
+    }
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://{{domain}}/{{slug}}"
+  }
+}
+</script>
