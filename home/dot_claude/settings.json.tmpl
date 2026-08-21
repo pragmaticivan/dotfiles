@@ -58,6 +58,17 @@
         ],
         "matcher": "*"
       }
+    ],
+    "MessageDisplay": [
+      {
+        "hooks": [
+          {
+            "command": "/usr/bin/python3 '{{ .chezmoi.homeDir }}/.claude/hooks/message-styler.py'",
+            "timeout": 5,
+            "type": "command"
+          }
+        ]
+      }
     ]{{ if $pixooEnabled }},
     "Notification": [
       {
