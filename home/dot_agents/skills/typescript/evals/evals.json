@@ -57,29 +57,33 @@
     {
       "id": 5,
       "prompt": "Starting a new internal service from scratch — Node, Postgres, REST. Set me up with the TypeScript build, linting and tests so I don't have to think about it. We use pnpm.",
-      "expected_output": "A strict tsconfig, a Biome config with the type-aware rules named explicitly, Vitest, and package scripts wiring all three gates. Explains the few settings that matter rather than dumping config.",
+      "expected_output": "A strict tsconfig, an Ultracite lint config that also names the floating-promise nursery rules, Vitest, and package scripts wiring all three gates. Explains the few settings that matter rather than dumping config.",
       "files": [],
       "expectations": [
         "tsconfig enables `strict: true` plus flags beyond it, including `noUncheckedIndexedAccess`",
         "Uses NodeNext/nodenext module resolution for a Node service rather than bundler resolution",
-        "Uses Biome for both linting and formatting, and does not add ESLint or Prettier",
-        "Enables the type-aware rules by name under linter.rules.nursery (noFloatingPromises at minimum), not via a domains block alone",
-        "Package scripts cover all three gates separately: typecheck (tsc --noEmit), a biome check, and test",
-        "States that Biome does not replace tsc, so `tsc --noEmit` still runs",
+        "Uses Ultracite as the lint entry point, extending ultracite/biome/core rather than hand-writing a rule list",
+        "Installs ultracite as a dev dependency, not only as an npx invocation, since Biome resolves extends from node_modules",
+        "Names noFloatingPromises (at minimum) under linter.rules.nursery, because no Ultracite preset enables it",
+        "Does not restate rules ultracite/biome/core already sets, such as noExplicitAny or noNonNullAssertion",
+        "Package scripts cover all three gates separately: typecheck (tsc --noEmit), an ultracite check, and test",
+        "States that Ultracite and Biome do not replace tsc, so `tsc --noEmit` still runs",
         "Does not enable `emitDecoratorMetadata` / `experimentalDecorators` for a plain Node service that has no decorators"
       ]
     },
     {
       "id": 6,
-      "prompt": "We're ripping out ESLint and Prettier and moving to Biome across our TS monorepo. I already ran `biome migrate eslint --write` and it produced a biome.json. Can you review it and make sure we didn't lose anything important? I added a few comments in there explaining our rule choices.",
-      "expected_output": "Flags that comments in biome.json make Biome silently fall back to defaults (rename to biome.jsonc), checks whether the type-aware rules survived the migration, and notes that tsc is still required.",
+      "prompt": "We're ripping out ESLint and Prettier and moving to Ultracite across our TS monorepo. I already ran `biome migrate eslint --write` and it produced a biome.json with about 40 rules in it. I added a few comments in there explaining our rule choices. Can you review it and make sure we didn't lose anything important?",
+      "expected_output": "Flags that comments in biome.json make Biome silently fall back to defaults (rename to biome.jsonc), moves the config onto ultracite/biome/core instead of the hand-migrated rule list, points out that no preset enables the floating-promise rules, and notes that tsc is still required.",
       "files": [],
       "expectations": [
         "Identifies that comments in biome.json cause Biome to ignore the config silently, and says to rename it to biome.jsonc",
-        "Checks whether the type-aware rules (noFloatingPromises / noMisusedPromises) are enabled, since `biome migrate` does not add them",
-        "Notes that these rules are in the nursery group and must be named individually rather than switched on by a domain",
-        "States that Biome does not replace tsc and confirms a `tsc --noEmit` gate still exists",
-        "Mentions setting formatter.indentStyle explicitly rather than inheriting Biome's tab default",
+        "Moves the config to extend ultracite/biome/core rather than keeping the hand-migrated rule list, and says most of those 40 rules are already in the preset",
+        "Says ultracite must be a dev dependency, because Biome resolves extends from the project node_modules",
+        "Checks that noFloatingPromises / noMisusedPromises are named under linter.rules.nursery, since no Ultracite preset enables them",
+        "Notes that neither a `types` domain nor the ultracite/biome/type-aware preset switches those nursery rules on",
+        "States that Ultracite does not replace tsc and confirms a `tsc --noEmit` gate still exists",
+        "Does not tell the user to set formatter.indentStyle by hand once the config extends the preset, since core already sets it",
         "Recommends removing the leftover ESLint and Prettier config files and dependencies",
         "Does not claim rule parity with typescript-eslint without qualification"
       ]

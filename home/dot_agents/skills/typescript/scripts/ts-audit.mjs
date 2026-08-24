@@ -280,14 +280,19 @@ function scan(files) {
   return { totals, docs, srcFiles, testFiles, lines };
 }
 
-// --- biome ----------------------------------------------------------------
+// --- lint config ----------------------------------------------------------
 
-// The type-aware rules are the reason to run a linter on top of tsc, and they
-// are nursery, so they are off unless named individually. A `types` domain does
-// not turn them on, which makes a config look stricter than it is.
+// These three are the reason to run a linter on top of tsc, and no Ultracite
+// preset enables any of them — Ultracite avoids nursery rules on purpose
+// (haydenbleasel/ultracite#457). They are also off in a bare Biome config
+// unless named individually, and a `types` domain does not turn them on. So a
+// config can look comprehensive and still miss every unhandled rejection.
 const TYPE_AWARE = ["noFloatingPromises", "noMisusedPromises", "useExhaustiveSwitchCases"];
 
-function reportBiome() {
+const UC_CORE = "ultracite/biome/core";
+const UC_TYPE_AWARE = "ultracite/biome/type-aware";
+
+function reportLint(pkg) {
   const jsonc = join(root, "biome.jsonc");
   const json = join(root, "biome.json");
   const file = existsSync(jsonc) ? jsonc : existsSync(json) ? json : null;
@@ -297,40 +302,70 @@ function reportBiome() {
   );
 
   if (file === null) {
-    if (stale.length > 0) console.log(`biome         absent; still carrying ${stale.join(", ")}\n`);
+    if (stale.length > 0) console.log(`lint          absent; still carrying ${stale.join(", ")}\n`);
     return;
   }
 
   const raw = readFileSync(file, "utf8");
-  console.log(`biome         ${basename(file)}`);
 
   // A comment in biome.json makes Biome fall back to defaults and say nothing,
   // so the whole config below is decorative. This is the loudest thing here.
-  if (file === json && /^\s*(\/\/|\/\*)/m.test(raw)) {
-    console.log("  !! this file has comments, and Biome silently ignores a commented biome.json.");
-    console.log("     Nothing in it is applying. Rename it to biome.jsonc.");
-  }
+  const commentedJson = file === json && /^\s*(\/\/|\/\*)/m.test(raw);
 
   let cfg;
   try {
     cfg = parseJsonc(raw);
   } catch (e) {
-    console.log(`  ! cannot parse: ${e.message}\n`);
+    console.log(`lint          ${basename(file)}\n  ! cannot parse: ${e.message}\n`);
     return;
+  }
+
+  const ext = [cfg.extends ?? []].flat();
+  const onUltracite = ext.includes(UC_CORE);
+  console.log(`lint          ${basename(file)}${onUltracite ? " — extends ultracite" : ""}`);
+
+  if (commentedJson) {
+    console.log("  !! this file has comments, and Biome silently ignores a commented biome.json.");
+    console.log("     Nothing in it is applying. Rename it to biome.jsonc.");
+  }
+
+  if (onUltracite) {
+    // Biome resolves `extends` from the project node_modules, so a config that
+    // names a preset the project has not installed fails to load outright.
+    const deps = { ...pkg?.dependencies, ...pkg?.devDependencies };
+    if (deps.ultracite === undefined) {
+      console.log(`  !! extends ${UC_CORE} but ultracite is not a dependency. Biome cannot`);
+      console.log("     load this config. An `npx ultracite` call does not install it.");
+    }
+    if (!ext.includes(UC_TYPE_AWARE)) {
+      console.log(`  ${UC_TYPE_AWARE} not extended — no import-cycle or unresolved-import rules.`);
+    }
+    const presets = ext.filter((e) => e !== UC_CORE && e !== UC_TYPE_AWARE);
+    if (presets.length > 0) console.log(`  presets: ${presets.join(", ")}`);
+    // The nestjs preset switches four rules off, one of which this skill argues for.
+    if (presets.includes("ultracite/biome/nestjs")) {
+      console.log("  note: the nestjs preset turns noEnum off. Literal unions are not enforced here.");
+    }
+  } else {
+    console.log(`  not extending ${UC_CORE} — this config carries every rule by hand.`);
   }
 
   const nursery = cfg.linter?.rules?.nursery ?? {};
   const off = TYPE_AWARE.filter((r) => nursery[r] === undefined || nursery[r] === "off");
   console.log(
     off.length === 0
-      ? "  type-aware rules: all enabled"
-      : `  type-aware rules OFF: ${off.join(", ")} — name them under linter.rules.nursery`,
+      ? "  floating-promise rules: all enabled"
+      : `  floating-promise rules OFF: ${off.join(", ")}`,
   );
+  if (off.length > 0) {
+    console.log("     Name them under linter.rules.nursery. No Ultracite preset enables them.");
+  }
 
   if (cfg.linter?.domains?.types !== undefined && off.length > 0) {
     console.log('  note: a "types" domain does not enable the nursery rules. Name each rule.');
   }
-  if (cfg.formatter?.indentStyle === undefined) {
+  // Ultracite core sets the formatter, so an unset indentStyle is correct there.
+  if (!onUltracite && cfg.formatter?.indentStyle === undefined) {
     console.log("  formatter.indentStyle is unset — Biome defaults to tabs. Say which you want.");
   }
   if (stale.length > 0) {
@@ -355,7 +390,7 @@ function main() {
   const pkg = readJsonIfPresent(join(root, "package.json"));
   if (pkg !== null) {
     const deps = { ...pkg.dependencies, ...pkg.devDependencies };
-    const named = ["typescript", "@biomejs/biome", "vitest", "jest", "zod", "react", "@nestjs/core"]
+    const named = ["typescript", "ultracite", "@biomejs/biome", "vitest", "jest", "zod", "react", "@nestjs/core"]
       .filter((d) => deps[d] !== undefined)
       .map((d) => `${d}@${deps[d]}`);
     console.log(`package.json  type: ${pkg.type ?? "commonjs"}`);
@@ -363,7 +398,7 @@ function main() {
     console.log("");
   }
 
-  reportBiome();
+  reportLint(pkg);
 
   const configPath = join(root, "tsconfig.json");
   if (!existsSync(configPath)) {

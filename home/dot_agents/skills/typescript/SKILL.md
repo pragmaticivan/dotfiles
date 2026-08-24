@@ -2,7 +2,7 @@
 # source: https://github.com/SpillwaveSolutions/mastering-typescript-skill/tree/main/mastering-typescript (Richard Hightower, MIT)
 # source: https://github.com/cursor/plugins/tree/main/pstack/skills/typescript-best-practices (Cursor)
 name: typescript
-description: "Write, review, and configure TypeScript with strict types, no `any`/`as`/`!` escapes, and parsing at boundaries. Use for any .ts/.tsx/.mts work: type errors, type and signature design, tsconfig, Biome, Vitest, Zod, or a JavaScript migration."
+description: "Write, review, and configure TypeScript with strict types, no `any`/`as`/`!` escapes, and parsing at boundaries. Use for any .ts/.tsx/.mts work: type errors, type and signature design, tsconfig, Ultracite or Biome linting, Vitest, Zod, or a JavaScript migration."
 ---
 
 # TypeScript
@@ -52,7 +52,7 @@ the gap, name the flag, let the owner schedule it. Suggest flags freely on a pro
 | `satisfies` over `as` | `satisfies` checks the value against the type without widening the literals you want to keep. |
 | Parse at boundaries | Turn untrusted input into a named domain type at the edge. Trust the types inside. Never re-validate deep in the call chain. |
 | Derive, do not duplicate | Reach for `Pick` / `Omit` / `Parameters` / `ReturnType` / `Awaited` / `typeof` / `z.infer` before declaring a parallel interface. |
-| No floating promises | An unawaited promise swallows its rejection. Biome's `noFloatingPromises` catches much of what review does not. |
+| No floating promises | An unawaited promise swallows its rejection. `noFloatingPromises` catches much of what review does not, but you must enable it yourself. |
 | Literal unions over `enum` | An `enum` emits runtime code, is nominally typed, and cannot be stripped. A `const` object plus a literal union cannot. |
 | Object arguments | Pass an object, not four positional strings, so a swap is a compile error and the call site documents itself. Skip on hot paths. |
 | `readonly` at the edges | Mark inputs you do not mutate `readonly` / `ReadonlyArray<T>`. It documents intent and blocks accidental mutation of a caller's data. |
@@ -214,7 +214,7 @@ In `catch`, the variable is `unknown` (under `strict`). Narrow it before use —
 Types cannot see a promise you forgot to await, so let the linter help:
 
 ```jsonc
-// biome.jsonc — these are type-aware, so they must be named individually
+// biome.jsonc — no Ultracite preset enables these, so name them yourself
 "nursery": {
   "noFloatingPromises": "error",   // silent unhandled rejection
   "noMisusedPromises": "error"     // async fn passed where void is expected
@@ -225,8 +225,9 @@ Types cannot see a promise you forgot to await, so let the linter help:
 expecting `() => void` — an event handler, an `Array.prototype.forEach`, an Express middleware — throws
 into nothing. Express 4 in particular does not catch a rejected promise from a handler.
 
-**Do not treat the linter as the whole defense here.** Biome's type inference reads your own source,
-including across imports, but not the types in `lib.dom.d.ts` or `node_modules`. So
+**Do not treat the linter as the whole defense here.** Ultracite sets about 365 rules and neither of these
+two is among them, because it avoids `nursery` rules on purpose. Biome's type inference reads your own
+source, including across imports, but not the types in `lib.dom.d.ts` or `node_modules`. So
 `el.addEventListener("click", saveAsync)` — one of the cases where an unhandled rejection hurts most —
 goes unreported. Read every callback you hand to a framework or DOM API yourself.
 
@@ -252,11 +253,12 @@ properties, which cannot be erased.
 
 `tsc --init` writes most of this list already. Run it rather than hand-assembling a config.
 
-Start from `assets/tsconfig.strict.json` and `assets/biome.jsonc` on a new project. Biome lints and
-formats in one binary, so there is no Prettier and no linter-versus-formatter config to reconcile — but it
-does not replace `tsc`, which is still what proves your types. Full rationale per flag, the Biome rules
-worth enabling and the real limits of its type inference, plus Vite, Vitest, and pnpm wiring:
-`references/toolchain.md`.
+Start from `assets/tsconfig.strict.json` and `assets/biome.jsonc` on a new project, or run
+`ultracite init`. Ultracite is the lint entry point: a preset over Biome that ships about 365 rules, the
+formatter, and a preset per framework, so there is no Prettier and no linter-versus-formatter config to
+reconcile. It does not replace `tsc`, which is still what proves your types. Full rationale per flag, the
+presets, the three rules Ultracite leaves out, and the real limits of Biome's type inference, plus Vite,
+Vitest, and pnpm wiring: `references/toolchain.md`.
 
 ## Frameworks
 
@@ -315,12 +317,13 @@ Types compiling is not the same as code running. Do both.
 
 ```bash
 npx tsc --noEmit          # or the project's `typecheck` script — proves the types
-npx biome check .         # lint + format; catches the promise bugs tsc does not model
+pnpm lint                 # `ultracite check`; catches the promise bugs tsc does not model
 npm test                  # behaviour, not just shape
 ```
 
-Biome is fast enough that skipping it is never the reason a check was left out. It is also not a
-substitute for `tsc` — the two do not overlap.
+Call the linter through the project's script. `ultracite check` spawns `biome` from `PATH`, and a package
+script is what puts `node_modules/.bin` there. It is fast enough that skipping it is never the reason a
+check was left out, and it is not a substitute for `tsc` — the two do not overlap.
 
 - [ ] `tsc --noEmit` is clean — not "clean except the pre-existing errors" unless you say which
 - [ ] No new `any`, `as`, `!`, or `@ts-ignore`; each survivor has a comment saying why
@@ -345,13 +348,14 @@ substitute for `tsc` — the two do not overlap.
   tags worth writing
 - `references/react.md` — React and TypeScript
 - `references/nestjs.md` — NestJS and TypeScript
-- `references/toolchain.md` — tsconfig flags explained, TS 7 removals, Biome rules and the limits of its
-  type inference, Vitest, type tests, Vite, pnpm, publishing
+- `references/toolchain.md` — tsconfig flags explained, TS 7 removals, the Ultracite presets and the rules
+  they leave out, the limits of Biome's type inference, Vitest, type tests, Vite, pnpm, publishing
 
 ## Assets
 
 - `assets/tsconfig.strict.json` — strict baseline for a new project
-- `assets/biome.jsonc` — Biome lint and format config, with the type-aware rules enabled
+- `assets/biome.jsonc` — Ultracite config: extends the core and type-aware presets, and adds the three
+  nursery rules no preset enables
 
 ## Scripts
 

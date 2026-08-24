@@ -6,8 +6,8 @@ Companion to `SKILL.md`. Read the section you need.
 - [Options TypeScript 7 removed](#options-typescript-7-removed)
 - [Which config for which target](#which-config-for-which-target)
 - [Project references](#project-references)
-- [Biome](#biome)
-- [Rules that catch real bugs](#rules-that-catch-real-bugs)
+- [Ultracite](#ultracite)
+- [The rules Ultracite leaves out](#the-rules-ultracite-leaves-out)
 - [Vitest](#vitest)
 - [Testing types](#testing-types)
 - [Vite](#vite)
@@ -17,8 +17,9 @@ Companion to `SKILL.md`. Read the section you need.
 - [Scripts and CI](#scripts-and-ci)
 - [Publishing a library](#publishing-a-library)
 
-Start from `assets/tsconfig.strict.json` and `assets/biome.jsonc` on a new project. On an existing
-project, read what is there first and change nothing that was not the task.
+Start from `assets/tsconfig.strict.json` and `assets/biome.jsonc` on a new project, or run
+`ultracite init` and let it write the lint config. On an existing project, read what is there first and
+change nothing that was not the task.
 
 ## tsconfig flags, explained
 
@@ -140,75 +141,115 @@ The parts that trip people up:
 - **References are not module resolution.** They tell `tsc` about build order; the runtime still needs
   workspace linking (pnpm workspaces) or a `paths` entry.
 
-## Biome
+## Ultracite
 
-Biome is one Rust binary that lints and formats. Choosing it means there is no ESLint, no Prettier, and
-no `eslint-config-prettier` reconciling the two — the reason people reach for it is that the whole
-category of config-fighting-config disappears, and it runs fast enough to be a pre-commit hook.
+Ultracite is the linting entry point. It is a preset over Biome, and Biome is one Rust binary that lints
+and formats. The stack has no ESLint, no Prettier, and no `eslint-config-prettier` reconciling the two.
+Ultracite adds the part a bare Biome config makes you write by hand: about 365 rules already set to
+error, the formatter, the ignore globs, the import sorting, and a framework preset per framework.
 
 ```bash
-pnpm add -D --save-exact @biomejs/biome
-pnpm biome check --write .     # format + lint + organize imports, in one pass
+pnpm add -D --save-exact ultracite @biomejs/biome
+pnpm ultracite init          # writes biome.jsonc, and detects your frameworks
 ```
 
-Start from `assets/biome.jsonc`. Three things about it are worth knowing before you write your own.
+| Command | Does |
+|---|---|
+| `ultracite check` | Lints and checks formatting. Writes nothing. This is the CI gate. |
+| `ultracite fix` | Applies safe fixes. `--unsafe` allows fixes that can change behaviour. |
+| `ultracite doctor` | Reports a broken setup — a missing binary, a config that does not extend the preset, a leftover Prettier config. |
+| `ultracite init` | Sets the project up. `--type-aware` adds the project-graph preset, and `--linter biome` picks the provider. |
 
-**Use the `.jsonc` extension.** Biome reads comments in `biome.jsonc`. A comment in `biome.json` makes
-Biome fall back to its defaults **without reporting an error** — severities revert, nursery rules switch
-off, and the formatter goes back to tabs. Nothing tells you. A config that silently does not apply is
-worse than one that fails, so pick the extension that cannot do that.
+Start from `assets/biome.jsonc`. It extends two presets, and it adds only what the presets leave out.
 
-**Biome does not replace `tsc`.** It has its own type inference, not a type checker. `tsc --noEmit`
-remains the thing that proves your types. Biome's job is the class of bug `tsc` does not model — a
+```jsonc
+{ "extends": ["ultracite/biome/core", "ultracite/biome/type-aware"] }
+```
+
+**Install Ultracite as a dev dependency.** Biome resolves `extends` from the project `node_modules`, so
+an `npx ultracite` call alone leaves a config that cannot load its own preset. Ultracite detects this one
+and says so, which is the rare failure that explains itself.
+
+**Call the CLI through a package script.** `ultracite check` spawns `biome` from `PATH`. A package script
+puts `node_modules/.bin` on `PATH` and a bare shell call does not, so the direct call dies with `ENOENT`
+on a project that has no global Biome.
+
+**Ultracite does not replace `tsc`.** Biome has its own inference, not a type checker. `tsc --noEmit`
+remains the thing that proves your types. The linter's job is the class of bug `tsc` does not model — a
 floating promise above all.
 
-**Ignore patterns come from `.gitignore`** when `vcs.useIgnoreFile` is on, so there is one list instead of
-two. The catch: with that setting and no ignore file, Biome exits with a configuration error rather than a
-warning, which surprises people on a fresh repo.
+**Use the `.jsonc` extension.** Biome reads comments in `biome.jsonc`. A comment in `biome.json` makes
+Biome fall back to its defaults **without reporting an error** — severities revert and the formatter goes
+back to tabs. Nothing tells you. A config that silently does not apply is worse than one that fails.
 
-Biome 2 renamed a few things that older examples still use. `include`/`ignore` became one `includes` list
-where a `!` prefix excludes, and top-level `organizeImports` became an assist action at
-`assist.actions.source.organizeImports`.
+**Commit a `.gitignore` before the first run.** `core` sets `vcs.useIgnoreFile`, which is what keeps the
+ignore list in one file instead of two. With that on and no ignore file present, Biome exits with a
+configuration error rather than a warning, and nothing lints at all. It surprises people on a fresh repo,
+and adopting the preset is what turns it on.
 
-Coming from ESLint and Prettier, let Biome do the translation instead of hand-porting:
+### The presets
 
-```bash
-biome migrate eslint --write
-biome migrate prettier --write
+`core` is the base. It already sets every rule this skill argues for: `noExplicitAny`, `noTsIgnore`,
+`noUnnecessaryConditions`, `noNonNullAssertion`, `noEnum`, `useImportType`, and `noUnusedVariables`. Do
+not restate them — a hand-written list of 30 rules on top of `core` is 30 lines that change nothing.
+
+`type-aware` adds the rules that need the project graph: `noImportCycles`, `noUndeclaredDependencies`,
+`noUnresolvedImports`, `noPrivateImports`, `noDeprecatedImports`, and `useArraySortCompare`.
+
+Then one preset per framework the project actually has — `react`, `nestjs`, `vitest`, `next`, `vue`,
+`svelte`, `solid`, `angular`, `astro`, `qwik`, `remix`, `tanstack`, `jest`.
+
+**Read the `nestjs` preset before adding it.** It turns `noEnum`, `noUselessConstructor`,
+`noStaticOnlyClass`, and `noParameterProperties` **off**, because a decorator-driven framework needs all
+four. That is the right call for NestJS, and it also means a NestJS project silently loses the "no `enum`"
+rule this skill recommends elsewhere. Know which rules your presets switch off.
+
+To change one rule, override it by name — do not fork the preset:
+
+```jsonc
+{
+  "extends": ["ultracite/biome/core"],
+  "linter": { "rules": { "a11y": { "useButtonType": "off" } } }
+}
 ```
 
-It maps the rules it has equivalents for and leaves the rest, so read the result — the diff is the honest
-report of what Biome does not cover.
+## The rules Ultracite leaves out
 
-## Rules that catch real bugs
+Three rules are the highest-value thing a linter adds on top of `tsc`, and **no Ultracite preset enables
+any of them** — not even `type-aware`. Ultracite avoids `nursery` rules on purpose
+([ultracite#457](https://github.com/haydenbleasel/ultracite/issues/457)). Name them yourself:
 
-Biome's recommended set is decent. These are the additions worth making explicit, with the group each
-belongs to (the group is part of the config path, so getting it wrong means the rule silently does not
-apply):
+```jsonc
+"linter": {
+  "rules": {
+    "nursery": {
+      "noFloatingPromises": "error",
+      "noMisusedPromises": "error",
+      "useExhaustiveSwitchCases": "error"
+    }
+  }
+}
+```
 
-| Rule | Group | Why |
-|---|---|---|
-| `noFloatingPromises` | `nursery` | An unawaited promise swallows its rejection, so the failure vanishes. The highest-value rule here. |
-| `noMisusedPromises` | `nursery` | An `async` callback passed where `() => void` is expected — an event handler, a `forEach`. The rejection goes nowhere. |
-| `useExhaustiveSwitchCases` | `nursery` | The linter's version of the `never` default arm. |
-| `noUnnecessaryConditions` | `suspicious` | A check the types prove is always true. Either the check is dead or the type is wrong. |
-| `noExplicitAny` | `suspicious` | Defaults to a warning. Make it an error on a new project. |
-| `noTsIgnore` | `suspicious` | Pushes you to `@ts-expect-error`, which expires when the error does. |
-| `noNonNullAssertion` | `style` | Defaults to a warning. |
-| `noEnum` | `style` | An `enum` emits runtime code, is nominally typed, and blocks type-stripping runtimes. |
-| `useImportType` | `style` | Keeps type-only imports out of the runtime graph. Pairs with `verbatimModuleSyntax`. |
+| Rule | Why |
+|---|---|
+| `noFloatingPromises` | An unawaited promise swallows its rejection, so the failure vanishes. The highest-value rule here. |
+| `noMisusedPromises` | An `async` callback passed where `() => void` is expected — an event handler, a `forEach`. The rejection goes nowhere. |
+| `useExhaustiveSwitchCases` | The linter's version of the `never` default arm. Keep the `never` binding in the code too, because it survives a config change. |
+
+This is the gap worth checking on any Ultracite project: the config looks comprehensive at 365 rules, and
+the three that catch unhandled rejections are still off.
 
 ### The type-aware rules, and their real limits
 
-The first four need type information, and Biome's inference is its own — not `tsc`'s. Two consequences
-that decide how much you can lean on it:
+These three need type information, and Biome's inference is its own — not `tsc`'s. Two consequences that
+decide how much you can lean on it:
 
-- **They are still `nursery` as of Biome 2.5**, so they are opt-in by name and their behaviour can change
-  between minor versions. Install with `--save-exact` and pin the version, or a patch bump silently
-  changes what CI rejects.
+- **They are `nursery` as of Biome 2.5**, so their behaviour can change between minor versions. Install
+  with `--save-exact` and pin the version, or a patch bump silently changes what CI rejects.
 - **A `types` domain does not enable them.** Setting `"domains": { "types": "all" }` looks like it should
-  and does not — the nursery rules stay off. Name each rule under `nursery`. This is the mistake worth
-  checking for, because the config looks stricter than it is.
+  and does not. Neither does `ultracite/biome/type-aware`, whose name suggests it would. Name each rule
+  under `nursery`.
 
 What the inference does and does not reach, measured on Biome 2.5:
 
@@ -227,8 +268,18 @@ exactly where an unhandled rejection hurts most — are still on you and the rev
 those call sites deliberately rather than assuming the linter is watching.
 
 If your project's tolerance for unhandled rejections is zero and it is full of framework callbacks,
-typescript-eslint's `no-misused-promises` still covers more. That is the tradeoff Biome asks you to
+typescript-eslint's `no-misused-promises` still covers more. That is the tradeoff this stack asks you to
 accept in exchange for one fast binary and no config reconciliation.
+
+### Migrating an existing project
+
+`ultracite init` does the migration. It detects an existing ESLint, Prettier, or bare Biome setup, offers
+to remove the configs it replaces, and rewrites `biome.jsonc` to extend the preset. It also detects your
+frameworks from `package.json` and adds the matching presets.
+
+Read the resulting diff rather than trusting it. A hand-tuned ESLint rule with no Biome equivalent is
+dropped silently, and that diff is the honest report of what moving to this stack costs you.
+
 ## Vitest
 
 ```ts
@@ -331,18 +382,20 @@ instead of quietly resolving something else.
 Biome formats, so there is no Prettier. That is most of the appeal: one binary, one config file, and no
 `eslint-config-prettier` layer whose job is to stop two tools from undoing each other's work.
 
-One default worth overriding deliberately: **Biome indents with tabs.** Set `formatter.indentStyle`
-explicitly either way. Left implicit, the first person whose editor disagrees produces a whole-file diff
-and buries the real change.
+`ultracite/biome/core` already decides the format: spaces, width 2, line width 80, LF endings, semicolons
+always, double-quoted JSX. A bare Biome config defaults to **tabs**, so a project that adopts Ultracite
+gets this settled instead of arguing about it. Take the preset's answer. The values do not matter, and
+having one committed file that decides them does.
+
+Override a format setting only for a reason you can say out loud:
 
 ```jsonc
-"formatter": { "indentStyle": "space", "indentWidth": 2, "lineWidth": 100 }
+"formatter": { "lineWidth": 100 }
 ```
 
-The values do not matter. Having one committed file that decides them does.
-
-`biome check --write` formats, lints with safe fixes, and sorts imports in one pass, which is what makes
-it viable as a pre-commit hook rather than a CI-only step.
+`ultracite fix` formats, lints with safe fixes, and sorts imports in one pass, which is what makes it
+viable as a pre-commit hook rather than a CI-only step. Ultracite writes the hook for you during `init`,
+and it runs `ultracite fix` through `lint-staged`.
 
 ## When the type check gets slow
 
@@ -379,8 +432,8 @@ directly, with no compiler-API dependency.
 {
   "scripts": {
     "typecheck": "tsc --noEmit",
-    "lint": "biome check .",
-    "fix": "biome check --write .",
+    "lint": "ultracite check",
+    "fix": "ultracite fix",
     "test": "vitest run",
     "build": "tsc --noEmit && vite build",
     "check": "pnpm typecheck && pnpm lint && pnpm test"
@@ -388,13 +441,14 @@ directly, with no compiler-API dependency.
 }
 ```
 
-In CI, `biome ci .` instead of `biome check .` — same checks, but it never writes and its output is shaped
-for a CI log.
+Route every call through a script like this. `ultracite check` spawns `biome` from `PATH`, and a package
+script is what puts `node_modules/.bin` there. In a monorepo, define `check` and `fix` at the root and
+register them in `turbo.json` as `//#check` and `//#fix`, with `cache: false` on the fix task.
 
-All three gates check different things, and none subsumes another: `tsc` proves shapes, Biome proves
-formatting plus the type-aware invariants `tsc` does not model (floating promises above all), tests prove
-behaviour. Run all three before claiming a change works. Biome being fast is not a reason to skip `tsc` —
-they do not overlap.
+All three gates check different things, and none subsumes another: `tsc` proves shapes, Ultracite proves
+formatting plus the invariants `tsc` does not model (floating promises above all), tests prove behaviour.
+Run all three before claiming a change works. Ultracite being fast is not a reason to skip `tsc` — they do
+not overlap.
 
 Run them in that order locally — `tsc` is the fastest to fail and gives the clearest message.
 

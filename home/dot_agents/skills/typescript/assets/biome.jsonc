@@ -1,120 +1,77 @@
-// Biome config for a strict TypeScript project. Copy to the project root as
-// biome.jsonc, then delete what the project does not need.
+// Lint and format config for a strict TypeScript project. Ultracite is the
+// entry point, and Biome is the engine below it.
 //
-//   pnpm add -D --save-exact @biomejs/biome
-//   pnpm biome check --write .
+//   pnpm add -D --save-exact ultracite @biomejs/biome
+//   pnpm ultracite init      # writes this file, and detects your frameworks
+//   pnpm ultracite check     # read-only
+//   pnpm ultracite fix       # applies safe fixes
 //
-// Keep the .jsonc extension. Biome reads comments in biome.jsonc, but a comment
-// in biome.json makes it fall back to defaults WITHOUT reporting an error — your
-// severities and nursery rules stop applying and nothing tells you.
+// Ultracite MUST be a dev dependency, and not only an `npx ultracite` call.
+// Biome resolves `extends` from the project node_modules, thus a config that
+// extends a preset which is not installed fails to load.
 //
-// Biome replaces both the linter and the formatter, so there is no Prettier and
-// no eslint-config-prettier to reconcile. It does NOT replace `tsc`: Biome has
-// its own type inference, not a full type checker. Run `tsc --noEmit` too.
+// Run the CLI through a package script (`pnpm check`), and not as a bare
+// `./node_modules/.bin/ultracite check`. The CLI spawns `biome` from PATH,
+// which a package script supplies and a direct call does not.
+//
+// Commit a .gitignore before the first run. The core preset sets
+// vcs.useIgnoreFile, and Biome exits with a configuration error, not a warning,
+// when that is on and no ignore file exists. Nothing lints at all.
+//
+// Ultracite does NOT replace `tsc`. Biome has its own inference, not a full
+// type checker. Keep the `tsc --noEmit` gate.
 {
   "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
 
-  // Biome reads .gitignore, so ignore patterns live in one place. This errors
-  // out if no ignore file exists, which is why a new repo needs .gitignore
-  // before its first `biome check`.
-  "vcs": { "enabled": true, "clientKind": "git", "useIgnoreFile": true },
-
-  // Biome 2 replaced include/ignore with one `includes` list. A `!` prefix
-  // excludes. Order matters: later patterns win.
-  "files": {
-    "includes": ["**", "!**/dist/**", "!**/coverage/**", "!**/*.gen.ts"]
-  },
-
-  "formatter": {
-    "enabled": true,
-    // Biome defaults to tabs. Say what you want explicitly, or a teammate's
-    // editor and CI will disagree about the diff.
-    "indentStyle": "space",
-    "indentWidth": 2,
-    "lineWidth": 100
-  },
-
-  "javascript": {
-    "formatter": {
-      "quoteStyle": "double",
-      "semicolons": "always",
-      "trailingCommas": "all"
-    }
-  },
-
-  // Import sorting is an "assist action", not a lint rule, in Biome 2.
-  "assist": {
-    "actions": {
-      "source": { "organizeImports": "on" }
-    }
-  },
+  // `core` sets about 365 rules to error, and it also sets the formatter, the
+  // ignore globs, the import sorting, and the VCS integration. Do not restate
+  // any of that below. It already sets every rule that this skill argues for:
+  // noExplicitAny, noTsIgnore, noUnnecessaryConditions, noNonNullAssertion,
+  // noEnum, useImportType, and noUnusedVariables.
+  //
+  // `type-aware` adds the rules that need the project graph: noImportCycles,
+  // noUndeclaredDependencies, noUnresolvedImports, noPrivateImports, and
+  // noDeprecatedImports. `ultracite init --type-aware` adds it for you.
+  //
+  // Add a framework preset only for a framework the project has. The full set
+  // is angular, astro, jest, nestjs, next, qwik, react, remix, solid, svelte,
+  // tanstack, vitest, and vue.
+  //
+  //   "ultracite/biome/react"     "ultracite/biome/nestjs"
+  //   "ultracite/biome/vitest"    "ultracite/biome/next"
+  //
+  // Read the nestjs preset before you add it. It turns noEnum, noUselessConstructor,
+  // noStaticOnlyClass, and noParameterProperties OFF, because a decorator-driven
+  // framework needs each one. That is correct for NestJS, and it also means a
+  // NestJS project loses the "no enum" rule this skill recommends elsewhere.
+  "extends": ["ultracite/biome/core", "ultracite/biome/type-aware"],
 
   "linter": {
-    "enabled": true,
-
-    // Domains switch on rule sets that need extra context. `project` covers
-    // multi-file rules; `test` covers test-file rules. Biome infers these from
-    // your dependencies, so this block is mostly documentation.
-    //
-    // Note what a domain does NOT do: `"types": "all"` does not enable the
-    // nursery type-aware rules. Those must be named individually, below.
-    "domains": {
-      "project": "recommended",
-      "test": "recommended"
-    },
-
     "rules": {
-      "recommended": true,
-
-      "suspicious": {
-        "noExplicitAny": "error",
-        // `@ts-ignore` never expires. `@ts-expect-error` fails the build once
-        // the underlying error goes away, so it cannot outlive its reason.
-        "noTsIgnore": "error",
-        // A condition the types prove is always true. Either the check is dead
-        // or the type is wrong, and both are worth knowing. Needs inference.
-        "noUnnecessaryConditions": "error",
-        "noConfusingVoidType": "error",
-        "useAwait": "error"
-      },
-
-      "style": {
-        "noNonNullAssertion": "error",
-        // An enum emits runtime code, is nominally typed, and cannot be erased
-        // by a type-stripping runtime. Use a const object plus a literal union.
-        "noEnum": "error",
-        // Keeps type-only imports out of the runtime graph. Pairs with
-        // `verbatimModuleSyntax` in tsconfig.
-        "useImportType": "error",
-        "useConst": "error"
-      },
-
-      "correctness": {
-        "noUnusedVariables": "error",
-        "noUnusedFunctionParameters": "error",
-        "noUnusedImports": "error"
-      },
-
-      // Type-aware rules. Still nursery as of Biome 2.5, so they are opt-in by
-      // name and their behaviour can change between minors. They are the whole
-      // reason to bother with a linter on top of tsc — pin the Biome version
-      // (--save-exact) so a patch bump cannot change what CI rejects.
+      // The one real gap. Ultracite avoids nursery rules on purpose
+      // (haydenbleasel/ultracite#457), so no Ultracite preset enables these
+      // three, and `type-aware` does not either. They are the highest-value
+      // rules a linter adds on top of tsc, thus name them here.
+      //
+      // Pin Biome exactly (--save-exact). These are nursery, so a patch bump
+      // can change what CI rejects.
       "nursery": {
-        // The highest-value rule here: an unawaited promise swallows its
-        // rejection, so the failure vanishes instead of surfacing.
+        // An unawaited promise swallows its rejection, and the failure vanishes.
         "noFloatingPromises": "error",
-        // An async callback passed where `() => void` is expected — an event
-        // handler, a forEach. The rejection goes nowhere.
+        // An async callback passed where `() => void` is expected, such as an
+        // event handler or a forEach. The rejection goes nowhere.
         "noMisusedPromises": "error",
-        // The linter's version of the `never` default arm. Keep the `never`
-        // binding in the code too: it survives a lint config change.
+        // The linter version of the `never` default arm. Keep the `never`
+        // binding in the code too, because it survives a config change.
         "useExhaustiveSwitchCases": "error"
       }
     }
   },
 
-  // Tests run against real objects, so a cast in a fixture is cheap. Do not
-  // widen this to src/.
+  // Ultracite relaxes noExplicitAny for a `__tests__` directory only, and it
+  // never relaxes noNonNullAssertion. Add this block for colocated test files.
+  // A cast in a fixture is cheap, because a test runs against real objects.
+  // Do not widen this to src/.
   "overrides": [
     {
       "includes": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
