@@ -1,0 +1,86 @@
+// Lint and format config for a strict TypeScript project. Ultracite is the
+// entry point, and Biome is the engine below it.
+//
+//   pnpm add -D --save-exact ultracite @biomejs/biome
+//   pnpm ultracite init      # writes this file, and detects your frameworks
+//   pnpm ultracite check     # read-only
+//   pnpm ultracite fix       # applies safe fixes
+//
+// Ultracite MUST be a dev dependency, and not only an `npx ultracite` call.
+// Biome resolves `extends` from the project node_modules, thus a config that
+// extends a preset which is not installed fails to load.
+//
+// Run the CLI through a package script (`pnpm check`), and not as a bare
+// `./node_modules/.bin/ultracite check`. The CLI spawns `biome` from PATH,
+// which a package script supplies and a direct call does not.
+//
+// Commit a .gitignore before the first run. The core preset sets
+// vcs.useIgnoreFile, and Biome exits with a configuration error, not a warning,
+// when that is on and no ignore file exists. Nothing lints at all.
+//
+// Ultracite does NOT replace `tsc`. Biome has its own inference, not a full
+// type checker. Keep the `tsc --noEmit` gate.
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+
+  // `core` sets about 365 rules to error, and it also sets the formatter, the
+  // ignore globs, the import sorting, and the VCS integration. Do not restate
+  // any of that below. It already sets every rule that this skill argues for:
+  // noExplicitAny, noTsIgnore, noUnnecessaryConditions, noNonNullAssertion,
+  // noEnum, useImportType, and noUnusedVariables.
+  //
+  // `type-aware` adds the rules that need the project graph: noImportCycles,
+  // noUndeclaredDependencies, noUnresolvedImports, noPrivateImports, and
+  // noDeprecatedImports. `ultracite init --type-aware` adds it for you.
+  //
+  // Add a framework preset only for a framework the project has. The full set
+  // is angular, astro, jest, nestjs, next, qwik, react, remix, solid, svelte,
+  // tanstack, vitest, and vue.
+  //
+  //   "ultracite/biome/react"     "ultracite/biome/nestjs"
+  //   "ultracite/biome/vitest"    "ultracite/biome/next"
+  //
+  // Read the nestjs preset before you add it. It turns noEnum, noUselessConstructor,
+  // noStaticOnlyClass, and noParameterProperties OFF, because a decorator-driven
+  // framework needs each one. That is correct for NestJS, and it also means a
+  // NestJS project loses the "no enum" rule this skill recommends elsewhere.
+  "extends": ["ultracite/biome/core", "ultracite/biome/type-aware"],
+
+  "linter": {
+    "rules": {
+      // The one real gap. Ultracite avoids nursery rules on purpose
+      // (haydenbleasel/ultracite#457), so no Ultracite preset enables these
+      // three, and `type-aware` does not either. They are the highest-value
+      // rules a linter adds on top of tsc, thus name them here.
+      //
+      // Pin Biome exactly (--save-exact). These are nursery, so a patch bump
+      // can change what CI rejects.
+      "nursery": {
+        // An unawaited promise swallows its rejection, and the failure vanishes.
+        "noFloatingPromises": "error",
+        // An async callback passed where `() => void` is expected, such as an
+        // event handler or a forEach. The rejection goes nowhere.
+        "noMisusedPromises": "error",
+        // The linter version of the `never` default arm. Keep the `never`
+        // binding in the code too, because it survives a config change.
+        "useExhaustiveSwitchCases": "error"
+      }
+    }
+  },
+
+  // Ultracite relaxes noExplicitAny for a `__tests__` directory only, and it
+  // never relaxes noNonNullAssertion. Add this block for colocated test files.
+  // A cast in a fixture is cheap, because a test runs against real objects.
+  // Do not widen this to src/.
+  "overrides": [
+    {
+      "includes": ["**/*.test.ts", "**/*.test.tsx", "**/*.spec.ts"],
+      "linter": {
+        "rules": {
+          "style": { "noNonNullAssertion": "off" },
+          "suspicious": { "noExplicitAny": "off" }
+        }
+      }
+    }
+  ]
+}

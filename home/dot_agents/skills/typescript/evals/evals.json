@@ -1,0 +1,106 @@
+{
+  "skill_name": "typescript",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our order detail page has this state and we keep getting bug reports where the spinner and the error banner render at the same time: `const [loading, setLoading] = useState(false); const [order, setOrder] = useState<Order | null>(null); const [error, setError] = useState<string | null>(null);`. Can you add a retry button and clean this up while you're in there?",
+      "expected_output": "Replaces the three parallel state values with one discriminated union (or useReducer over one), so loading + error cannot both be true. Adds retry as a state transition. Explains why the union removes the bug class rather than adding a guard.",
+      "files": [],
+      "expectations": [
+        "Replaces the parallel boolean/nullable state with a single discriminated union carrying a literal discriminant (kind/type/status)",
+        "Names the impossible-state problem explicitly: the old shape allowed loading and error at once",
+        "Data is reachable only in the success variant, so the render cannot read a field that does not exist",
+        "Adds the retry as a transition of the same state model, not as a fourth independent state value",
+        "Does not introduce `any`, `as`, or a non-null assertion in the rewrite"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Add a POST /webhooks/stripe handler to our Express app that marks the matching order paid. I already wrote the type: `interface StripeEvent { id: string; type: string; data: { object: { metadata: { orderId: string }; amount_received: number } } }` and the other handlers just do `const event = req.body as StripeEvent`.",
+      "expected_output": "Parses the request body into the typed shape at the boundary instead of casting, and flags the cast pattern in the existing handlers. Treats webhook input as untrusted, including signature verification.",
+      "files": [],
+      "expectations": [
+        "Replaces `req.body as StripeEvent` with a runtime parse (schema library or an honest validating function) rather than reusing the cast",
+        "States why the cast is unsafe: nothing checked the shape, so the failure moves to runtime",
+        "Derives the TypeScript type from the schema (e.g. z.infer) instead of keeping a hand-written twin alongside it",
+        "Treats the webhook body as untrusted input and verifies the Stripe signature, not just the shape",
+        "Handles the async handler so a rejection cannot float (await plus try/catch, or an error-forwarding wrapper)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Our tsconfig only has `strict: false` and there's `any` everywhere — about 40k lines across an Express API. Leadership wants us 'type safe'. Can you make the codebase strict?",
+      "expected_output": "Measures the current state first, then proposes a staged, per-flag, per-commit plan starting with `strict: true`. Does not flip every flag at once, and does not claim the migration is done after editing the config.",
+      "files": [],
+      "expectations": [
+        "Measures before changing: reads the existing tsconfig and counts the current `any` / `as` / escape-hatch load (running scripts/ts-audit.mjs counts)",
+        "Proposes a staged plan of one flag per commit rather than enabling everything in a single change",
+        "Sets `strict: true` as a group instead of listing its individual member flags",
+        "Names `noUncheckedIndexedAccess` as high value and warns it produces a large error volume on an existing codebase",
+        "Adds or confirms a `tsc --noEmit` CI gate so the ratchet cannot slip back",
+        "Does not claim the codebase is type safe merely because the config changed"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "tsc is blocking my deploy. Line 12 is `const email = users.find(u => u.id === id).email;` and it says \"Object is possibly 'undefined'\". Just stick a `!` on it or cast it, I know the user exists because we looked them up two lines earlier.",
+      "expected_output": "Declines the assertion and handles the undefined case honestly — or strengthens the type so the lookup cannot miss — while explaining that the earlier lookup does not prove anything to the compiler and unblocking the user in the same reply.",
+      "files": [],
+      "expectations": [
+        "Does not apply the requested `!` or `as` as the fix",
+        "Explains that the compiler cannot see the earlier lookup, so the assertion is an unverified claim that fails at runtime",
+        "Delivers a working alternative: handles the undefined branch, or changes the signature/data structure (e.g. a Map lookup or a non-empty type) so the value is guaranteed",
+        "Unblocks the deploy in the same reply rather than only lecturing",
+        "If a suppression is genuinely unavoidable, uses `@ts-expect-error` with a reason instead of `@ts-ignore` or `any`"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Starting a new internal service from scratch — Node, Postgres, REST. Set me up with the TypeScript build, linting and tests so I don't have to think about it. We use pnpm.",
+      "expected_output": "A strict tsconfig, an Ultracite lint config that also names the floating-promise nursery rules, Vitest, and package scripts wiring all three gates. Explains the few settings that matter rather than dumping config.",
+      "files": [],
+      "expectations": [
+        "tsconfig enables `strict: true` plus flags beyond it, including `noUncheckedIndexedAccess`",
+        "Uses NodeNext/nodenext module resolution for a Node service rather than bundler resolution",
+        "Uses Ultracite as the lint entry point, extending ultracite/biome/core rather than hand-writing a rule list",
+        "Installs ultracite as a dev dependency, not only as an npx invocation, since Biome resolves extends from node_modules",
+        "Names noFloatingPromises (at minimum) under linter.rules.nursery, because no Ultracite preset enables it",
+        "Does not restate rules ultracite/biome/core already sets, such as noExplicitAny or noNonNullAssertion",
+        "Package scripts cover all three gates separately: typecheck (tsc --noEmit), an ultracite check, and test",
+        "States that Ultracite and Biome do not replace tsc, so `tsc --noEmit` still runs",
+        "Does not enable `emitDecoratorMetadata` / `experimentalDecorators` for a plain Node service that has no decorators"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "We're ripping out ESLint and Prettier and moving to Ultracite across our TS monorepo. I already ran `biome migrate eslint --write` and it produced a biome.json with about 40 rules in it. I added a few comments in there explaining our rule choices. Can you review it and make sure we didn't lose anything important?",
+      "expected_output": "Flags that comments in biome.json make Biome silently fall back to defaults (rename to biome.jsonc), moves the config onto ultracite/biome/core instead of the hand-migrated rule list, points out that no preset enables the floating-promise rules, and notes that tsc is still required.",
+      "files": [],
+      "expectations": [
+        "Identifies that comments in biome.json cause Biome to ignore the config silently, and says to rename it to biome.jsonc",
+        "Moves the config to extend ultracite/biome/core rather than keeping the hand-migrated rule list, and says most of those 40 rules are already in the preset",
+        "Says ultracite must be a dev dependency, because Biome resolves extends from the project node_modules",
+        "Checks that noFloatingPromises / noMisusedPromises are named under linter.rules.nursery, since no Ultracite preset enables them",
+        "Notes that neither a `types` domain nor the ultracite/biome/type-aware preset switches those nursery rules on",
+        "States that Ultracite does not replace tsc and confirms a `tsc --noEmit` gate still exists",
+        "Does not tell the user to set formatter.indentStyle by hand once the config extends the preset, since core already sets it",
+        "Recommends removing the leftover ESLint and Prettier config files and dependencies",
+        "Does not claim rule parity with typescript-eslint without qualification"
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "Add a function to our scheduler that returns the oldest instant any of a pipeline's daily sources still needs, or null when none has run. The tricky parts: sources advance independently so a stalled one widens the next run back to it; a source that has never run, or whose timestamp won't parse, should take whatever the others plan rather than dragging everyone back to the floor; and this only covers the daily track since backfills name their own range.",
+      "expected_output": "A small function whose doc comment is at most three lines, keeping only the non-obvious invariant. The scope caveat goes into the name, the contract stays in the signature, and the never-ran rule is covered by a test rather than a paragraph.",
+      "files": [],
+      "expectations": [
+        "The doc comment is at most three prose lines",
+        "The comment does not restate what the signature already says (the return type, or that it can be null)",
+        "No @param or @returns tags that merely repeat the parameter and return types",
+        "The daily-track scope is carried by the function name rather than by a sentence in the comment",
+        "The non-obvious rule is preserved somewhere — the never-ran/unparseable source not setting the floor is kept in the comment or covered by a test, not silently dropped",
+        "Does not move the dropped prose into a wall of inline comments inside the body instead"
+      ]
+    }
+  ]
+}
