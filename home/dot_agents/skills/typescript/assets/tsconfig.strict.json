@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    // Language and environment. Set `target` to the oldest runtime you support,
+    // not to the newest one you develop on. TypeScript 7 removed `target: ES5`.
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    // Every file is a module, so a file with no import is not a script in the
+    // global scope.
+    "moduleDetection": "force",
+
+    // The strict group. Never expand this into its individual flags: a future
+    // TypeScript release adds members, and an explicit list misses them.
+    "strict": true,
+
+    // Beyond `strict`. Each of these catches a class of real runtime bug.
+    // On an existing codebase, adopt them one per commit.
+    "noUncheckedIndexedAccess": true,
+    "exactOptionalPropertyTypes": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitReturns": true,
+    "noUncheckedSideEffectImports": true,
+    "forceConsistentCasingInFileNames": true,
+
+    // Module handling. `verbatimModuleSyntax` makes import elision explicit, so a
+    // type-only import must say `import type` and a side-effect import survives.
+    "verbatimModuleSyntax": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+
+    // Unused-code checks. Set to false while migrating, so the signal is not lost
+    // in noise from code you have not reached yet.
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+
+    // Output. Drop this block and set `"noEmit": true` when a bundler emits.
+    // `declaration` and `declarationMap` earn their build time only for a
+    // published library.
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "sourceMap": true,
+    "declaration": true,
+    "declarationMap": true,
+
+    // One alias is usually enough, and it resolves relative to this file — do not
+    // add `baseUrl`, which TypeScript 7 removed. The runtime needs its own
+    // mapping: `vite-tsconfig-paths`, Jest `moduleNameMapper`, or the `imports`
+    // field in package.json.
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+
+    // Performance. `skipLibCheck` hides genuine conflicts between two libraries'
+    // types; keep it on regardless, because the alternative is unusable.
+    "skipLibCheck": true,
+    "incremental": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
