@@ -1,0 +1,50 @@
+{
+  "skill_name": "stop-slop",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Can you punch up this PR update before I post it in #eng-updates? Feels a little off but I can't put my finger on why:\n\n\"Hey team — wanted to give an update on the caching PR. It's worth noting that this isn't just a performance fix, but a foundational shift in how we handle invalidation. The new layer is robust, seamless, and scalable: it delivers a truly significant boost. In order to make sure we don't regress, I added telemetry. Let me know if you have questions!\"",
+      "expected_output": "A tightened Slack/PR update that keeps the actual content about the caching PR but drops the em dash, the throat-clearing 'It's worth noting' opener, the not-just-X-but-Y construction, the robust/seamless/scalable triad, the mid-sentence colon, and the chatbot sign-off. It should read like an engineer describing a real change, plainly and with a little personality, not like a press release or a list of adjectives.",
+      "files": [],
+      "expectations": [
+        "The rewrite contains no em dash",
+        "The phrase 'It's worth noting' does not appear",
+        "The rewrite does not use a 'not just X, but Y' construction (patterns.md rule 9)",
+        "The 'robust, seamless, and scalable' triad is not reproduced as a three-item list (patterns.md rule 10)",
+        "No mid-sentence colon is used to connect a claim to a restatement of itself (patterns.md rule 14)",
+        "The closing line does not read 'Let me know if you have questions!' or another chatbot-style sign-off (patterns.md rule 20)",
+        "'In order to' is replaced with a plainer opener such as 'To' (patterns.md rule 23)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "This paragraph is going into our onboarding docs and my manager said it reads like ChatGPT wrote it. Can you fix it:\n\n\"Our new onboarding system represents a pivotal moment for the platform. It's a testament to the team's ability to delve into a complex, evolving landscape and emerge with a solution that is both intuitive and enduring. Despite the challenges of migrating legacy data, the system continues to thrive, showcasing our commitment to reliability, scalability, and speed. The answer isn't more manual review. It's better defaults. In conclusion, this update sets the stage for a more seamless experience for every user, every time.\"",
+      "expected_output": "A shorter paragraph that states plainly what changed in the onboarding system and the migration, without puffery phrases, delve/landscape-style AI vocabulary, the 'despite challenges ... continues to thrive' template, or a forced rule-of-three. The binary-contrast sentence becomes one direct claim, and the paragraph ends on real content instead of an 'In conclusion' wrap-up, while still reading like someone with an opinion wrote it rather than a flattened bullet list.",
+      "files": [],
+      "expectations": [
+        "No puffery phrases such as 'pivotal moment', 'testament to', or 'sets the stage for' remain (patterns.md rule 1)",
+        "The AI vocabulary words 'delve', 'landscape', and 'enduring' are removed or replaced with plain words (patterns.md rule 7)",
+        "The 'despite the challenges of X, the system continues to thrive' formulaic structure is replaced with a specific, concrete statement (patterns.md rule 6)",
+        "The 'reliability, scalability, and speed' triad is not kept as a forced three-item list (patterns.md rule 10)",
+        "The 'The answer isn't X. It's Y.' binary contrast is rewritten as one direct statement rather than a setup-and-reveal pair (structures.md, Binary Contrasts)",
+        "'In conclusion' and the generic closing line do not appear (patterns.md rule 25)",
+        "The rewrite does not collapse into a flat, opinion-free list of facts stripped of all voice"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Sanity check this commit body before I push, want to make sure it doesn't sound stiff:\n\n\"Fix race in the retry queue: two workers grabbed the same job when Redis was slow, so jobs got processed twice. Added a lock token on claim; worker checks it before running. Ran the flaky test 200x locally, no repeats since 3pm yesterday. Not sure this is the only place we do unlocked reads elsewhere, but it's the one that mattered for the pager last night.\"",
+      "expected_output": "Since the commit body is already direct, specific, and human-voiced with no AI tells, the correct response leaves it nearly unchanged, at most a trivial punctuation tweak, and says outright that it does not need a rewrite. It must not smooth over the contractions, the exact numbers, or the honest hedge at the end, and must not invent slop-removal work where none exists.",
+      "files": [],
+      "expectations": [
+        "The response states or clearly implies that the text is already clean and needs little to no rewriting",
+        "The concrete phrase describing the bug (two workers grabbing the same job) is preserved rather than replaced with abstract vocabulary like 'race condition dynamics' or 'concurrency landscape'",
+        "Contractions such as \"don't\", \"it's\", and \"wasn't\" are not expanded into formal phrasing",
+        "The hedge 'Not sure this is the only place we do unlocked reads elsewhere' is preserved essentially verbatim, since it is a genuine engineering caveat and not a hedging tell to cut",
+        "The exact figures '200x' and '3pm yesterday' remain unchanged in the output",
+        "No em dash, mid-sentence colon-as-connector, or puffery phrase is introduced that was not already in the input",
+        "The two clean sentences are not restructured into a 'not because X, because Y' or similar binary-contrast template"
+      ]
+    }
+  ]
+}

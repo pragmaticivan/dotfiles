@@ -1,0 +1,16 @@
+{{- /*
+Renders a complete Claude Code agent file.
+Call with (dict "ctx" . "id" "<agent-id>" "body" <rendered body>).
+*/ -}}
+{{- $a := index .ctx.agents .id -}}
+---
+name: {{ .id }}
+description: {{ $a.description | quote }}
+tools: {{ $a.claude.tools }}
+model: {{ $a.claude.model }}
+{{- if hasKey $a.claude "color" }}
+color: {{ $a.claude.color }}
+{{- end }}
+---
+
+{{ .body }}

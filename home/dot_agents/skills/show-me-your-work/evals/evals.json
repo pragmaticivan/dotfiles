@@ -1,0 +1,50 @@
+{
+  "skill_name": "show-me-your-work",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey i'm about to kick off an unattended overnight run migrating all ~140 call sites of the old queue.publish() API to the new EventBus.emit() across the billing-service repo, on branch chore/eventbus-migration. i'll be away for like 8 hours so there's no one to ask questions to. set up the decision log before you start so whoever reviews this tomorrow can follow along.",
+      "expected_output": "The agent starts one canonical TSV log (e.g. decisions.tsv or .audit/eventbus-migration.tsv) with the exact header from references/decision-log-template.tsv, and states it will append rows via scripts/log.sh as decisions happen during the run. It keeps the log local and untracked by git since nothing yet requires a reviewer, and does not invent rows before any decision has actually been made. It must not produce a CSV, a Markdown table, or a paragraph-style journal in place of the TSV.",
+      "files": [],
+      "expectations": [
+        "Creates or ensures a single canonical log file (e.g. decisions.tsv or .audit/eventbus-migration.tsv), not multiple parallel log files",
+        "Header row exactly matches ts, phase, decision, why, evidence, result, copied from references/decision-log-template.tsv",
+        "States the log stays local and untracked in git by default at this stage, rather than being committed immediately",
+        "Uses or names scripts/log.sh as the append mechanism rather than describing a hand-rolled echo/awk one-off",
+        "Response ends with an Attention section that opens with a 'reviewed by <model>' line naming a different-model-family subagent",
+        "NEGATIVE: does not use a CSV file or a Markdown table as the log format instead of TSV",
+        "NEGATIVE: does not commit the log to git just because the run is long and unattended, since no reviewer need has been stated yet"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Append to decisions.tsv: phase=payments, decided to batch the Stripe refund calls instead of doing them one at a time (evidence: commit a1b2c3d), reason was hitting rate limits during the dry run. Also log the earlier call: we tried switching to the v2 refunds endpoint first, reason was it looked simpler, but rolled it back because it broke idempotency keys — tests failed, see commit 9e0f11a.",
+      "expected_output": "The agent appends two new rows to the existing decisions.tsv (not a new file), each cell single-line. The batching row's evidence is the pointer 'commit a1b2c3d' and its why is the plain-language rate-limit reason. The reverted-endpoint row's result column literally contains 'reverted', and its evidence is the pointer 'commit 9e0f11a', not a description of the test failure. No existing row in the log is edited or removed.",
+      "files": [],
+      "expectations": [
+        "Appends new rows to the existing single decisions.tsv rather than creating a second or parallel log file",
+        "The revert row's result column literally contains 'reverted'",
+        "The batching row's evidence cell is the pointer 'commit a1b2c3d' and the revert row's evidence cell is 'commit 9e0f11a', with no other prose in those cells",
+        "Each new row's decision and why cells are short single-line phrases, not full sentences copied verbatim from the prompt",
+        "Prior rows already in the log are left unmodified, consistent with append-only history",
+        "Response ends with an Attention section starting with a 'reviewed by <model>' line",
+        "NEGATIVE: does not collapse the two distinct decisions (batching vs. the reverted v2-endpoint attempt) into a single row"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Can you log the decision we just made about the caching layer? Here's the full context: we spent about forty minutes going back and forth between Redis and an in-process LRU cache for the session store. We ran benchmark.js three times, each run showed Redis at roughly 4ms p99 versus in-process at 0.3ms p99 but with the risk of losing sessions on deploy restarts, which for our use case (short-lived checkout sessions of about 10 minutes) we decided was an acceptable tradeoff given the latency win and the fact that we already have sticky sessions at the load balancer, so in the end we went with the in-process LRU cache and it's now wired up in src/cache/sessionStore.ts, and the benchmark output is saved at benchmark-results/2026-08-26-session-cache.json. Please add this to the log so it's not lost.",
+      "expected_output": "The agent compresses this into one row: a short decision like 'chose in-process LRU over Redis for session store', a short why like 'latency win, acceptable session-loss risk given sticky LB sessions', and an evidence cell that is only a pointer such as 'benchmark-results/2026-08-26-session-cache.json' or 'src/cache/sessionStore.ts'. It must not paste the benchmark numbers, the forty-minutes narrative, or any multi-sentence explanation into a cell.",
+      "files": [],
+      "expectations": [
+        "Decision cell is a short single-line statement, e.g. 'chose in-process LRU cache over Redis for session store', not the full narrative",
+        "Why cell is a short plain-language phrase covering the latency/risk tradeoff, not multiple sentences of backstory",
+        "Evidence cell contains only a pointer (e.g. benchmark-results/2026-08-26-session-cache.json and/or src/cache/sessionStore.ts), with no benchmark numbers or narrative inline",
+        "Result cell is a short outcome/predicate, not a restatement of the tradeoff discussion",
+        "No cell in the appended row contains an embedded newline or multi-sentence paragraph",
+        "Response ends with an Attention section starting with a 'reviewed by <model>' line",
+        "NEGATIVE: does not paste the 4ms-vs-0.3ms benchmark comparison or the forty-minutes-of-back-and-forth narrative into any single cell instead of using the evidence pointer"
+      ]
+    }
+  ]
+}

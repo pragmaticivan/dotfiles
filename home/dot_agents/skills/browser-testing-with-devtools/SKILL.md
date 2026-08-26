@@ -1,7 +1,7 @@
 ---
 # source: https://github.com/addyosmani/agent-skills/blob/main/skills/browser-testing-with-devtools/SKILL.md (Addy Osmani)
 name: browser-testing-with-devtools
-description: Tests in real browsers. Use when building or debugging anything that runs in a browser. Use when you need to inspect the DOM, capture console errors, analyze network requests, profile performance, or verify visual output with real runtime data via Chrome DevTools MCP.
+description: "Drive a real Chrome through the DevTools MCP to inspect the DOM, read console errors, trace network calls, and profile. Use to verify or debug anything that renders in a browser."
 ---
 
 # Browser Testing with DevTools

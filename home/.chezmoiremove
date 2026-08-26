@@ -40,3 +40,17 @@
 .claude/skills/using-agent-skills
 .copilot/skills/using-agent-skills
 .claude/hooks/session-start.sh
+.claude/rules/comments.md
+.claude/rules/security.md
+.claude/rules/typescript-testing.md
+.claude/rules/typescript.md
+.claude/agents/bug-root-cause-analyzer.md
+.claude/agents/codebase-search.md
+.claude/agents/ousterhout-reviewer.md
+.claude/agents/production-safety-reviewer.md
+.claude/agents/prompt-optimizer.md
+.claude/agents/qa-expert.md
+.claude/agents/researcher-persona.md
+.claude/agents/ui-ux-tester.md
+# Copilot reads ~/.agents/skills itself, so the per-skill symlinks are dead weight.
+.copilot/skills

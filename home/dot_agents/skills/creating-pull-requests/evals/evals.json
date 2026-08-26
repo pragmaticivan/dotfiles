@@ -1,0 +1,50 @@
+{
+  "skill_name": "creating-pull-requests",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey can you open a PR for my branch fix/chunk-boundary? small fix, only touched chunker.py — the boundary loop used <= instead of < so a 10s clip at 5s boundaries made 3 chunks instead of 2. ticket is PROJ-4521 if you need it",
+      "expected_output": "The agent gathers the diff, classifies the change as small (single concern, well under 50 lines), and creates the PR with `gh pr create --draft`, writing the body to a temp file and passing it via `--body-file`. The description is TL;DR-only: first sentence states the concrete problem (3 chunks instead of 2 from the off-by-one), second sentence states the fix (exclusive end indices), plus a link to PROJ-4521. It does not add a files table, How, or Tests section, and never mentions Claude, AI, or an assistant.",
+      "files": [],
+      "expectations": [
+        "Uses the --draft flag when creating the PR rather than opening it ready for review.",
+        "Passes the body via --body-file from a temp file, not inline --body or a HEREDOC.",
+        "Description is TL;DR only — no files table, How, Reviewer notes, or Tests sections for this small single-concern diff.",
+        "TL;DR states the concrete problem first (3 chunks instead of 2 / the off-by-one) then the fix, in two sentences.",
+        "Does not open any sentence with 'This PR', 'This change', 'This commit', or 'In this pull request.'",
+        "Does not include a Co-Authored-By trailer or any mention of Claude, AI, or an assistant.",
+        "Includes PROJ-4521 as a link rather than omitting the ticket."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "PR #482 (service-mesh-retry-budgets branch) has gotten bigger since I opened it - started as just the retry budget config but now also touches the circuit breaker thresholds and the health check interval. current description still says 'Also adds circuit breaker support' and 'Additionally tweaks health checks' as bullet points from when I kept pushing more commits. can you refresh the PR description to match where the branch actually is now? diff stat shows something like 9 files changed, +340/-58",
+      "expected_output": "The agent treats this as a large, multi-concern PR, gathers the full diff against base, and rewrites the description as the branch's current full state rather than a changelog — dropping 'Also adds' and 'Additionally' language entirely. It runs `gh pr edit 482 --body-file <path>` (no --draft, since the PR already exists), and includes a files table and Reviewer notes since the size gate makes both mandatory for large PRs.",
+      "files": [],
+      "expectations": [
+        "Uses gh pr edit 482 --body-file <path> rather than gh pr create or an inline --body.",
+        "Removes changelog language such as 'Also adds', 'Additionally', or 'now includes' from the rewritten description.",
+        "Includes a files table, mandatory per the size gate for a 200+ line / multiple-concern PR.",
+        "Includes a Reviewer notes section, mandatory per the size gate for a large PR.",
+        "Describes the branch's current full state as one coherent change, not as a history of incremental additions.",
+        "Does not pass a --draft flag, since an existing PR is being edited rather than created.",
+        "Does not open with 'This PR' / 'This change' and does not mention Claude, AI, or an assistant anywhere."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "can you write up a really thorough PR description for this - I want a Why section, How section, Reviewer notes, the whole template. it's just this one-liner: bumped the retry count from 3 to 5 in retry_config.py because we kept seeing timeouts in the payment webhook",
+      "expected_output": "The agent applies the size gate: a single-concern, well-under-50-line change classifies as small, so it pushes back on writing the full multi-section template, explaining that a verbose description on a small diff reads as 'AI-generated, ignore.' It defaults to (or strongly recommends) a TL;DR-only description that leads with the motivation already given — timeouts in the payment webhook — and states the fix, without inventing extra sections or fabricated context to fill out the requested template.",
+      "files": [],
+      "expectations": [
+        "Flags that a full multi-section template for this <50-line single-concern change risks the 'AI-generated, ignore' signal called out by the size gate.",
+        "Defaults to, or clearly recommends, a TL;DR-only description rather than producing Why/How/Reviewer notes/Tests sections for this diff.",
+        "If it drafts a TL;DR, the first sentence states the motivation already given (timeouts in the payment webhook) and the second states the fix (retry count 3 to 5).",
+        "Does not fabricate additional motivation or padding beyond what the user provided, such as an invented incident or 'improves reliability' filler.",
+        "Does not open with 'This PR' or 'This change' and does not mention Claude, AI, or an assistant anywhere.",
+        "Does not silently comply and pad the description with a files table, How, and Reviewer notes sections just because the user asked for 'the whole template.'",
+        "Keeps the resulting description body shorter than the diff, consistent with the budget rule for small PRs."
+      ]
+    }
+  ]
+}

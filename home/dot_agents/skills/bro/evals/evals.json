@@ -1,0 +1,49 @@
+{
+  "skill_name": "bro",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "You just told me this:\n\nWe're routing incoming webhook events through a BullMQ-backed queue in front of the ingestion service, and each event carries an idempotency key derived from the source's event ID so retries and at-least-once delivery don't create duplicate writes downstream. Because the producer can burst well past our consumer throughput, we've enabled backpressure via the queue's MAX_CONCURRENT_JOBS config flag, which caps in-flight jobs and lets the queue buffer rather than dropping events. The downstream read replicas are only eventually consistent with the primary, typically within a few hundred milliseconds, so any client that reads immediately after a write may see stale data. We also noticed our per-event metrics were tagging on raw customer IDs, which blew up cardinality in our metrics backend and started throttling our dashboards, so we've since bucketed that tag to a coarser customer-tier label. Net effect: writes are idempotent and safe to retry, but reads can lag briefly, and the queue will now throttle upstream bursts instead of letting them overwhelm the workers.\n\n/bro",
+      "expected_output": "A short, plain-language restatement that keeps four facts: retries/duplicate deliveries will not create duplicate writes; the queue now slows down bursts instead of dropping or overwhelming workers, using a setting that limits how many jobs run at once; reading data right after writing it can briefly show an old value; and the metrics tagging change that fixed the dashboard overload. It must not use unexplained jargon like 'idempotency key', 'backpressure', 'eventual consistency', or 'cardinality', and must not be longer than the original.",
+      "files": [],
+      "expectations": [
+        "does not use the term 'idempotency key' without restating its meaning in plain words (e.g. retries will not create duplicate writes)",
+        "does not use the term 'backpressure' without explaining it as slowing down or holding back a flood of incoming events",
+        "does not use the term 'cardinality' without explaining the dashboard overload it caused in plain words",
+        "does not use the phrase 'eventual consistency' without stating plainly that a read right after a write can briefly show old data",
+        "retains the fact that duplicate/retried events will not cause duplicate writes",
+        "retains the fact that a burst of events is now slowed down and buffered rather than dropped or crashing the workers",
+        "is not longer than the original message"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "You just told me this:\n\nSo, just to set expectations proactively, as we finalize the schema migration for the orders table, there's a scenario where, depending on how the backfill job performs under load, we could see a window of reduced write availability on that table — we're thinking somewhere in the fifteen-to-thirty-minute range, though obviously that's subject to change. We're using pg_repack to do the migration online to minimize disruption, but pg_repack still needs to briefly acquire an exclusive lock at the very end of the swap to rename the tables into place, and if a long-running transaction is holding a lock on the table at that moment, the swap could stall and extend that window. To be safe, we'd recommend treating tomorrow's 2am-3am maintenance window as tentatively blocked for any write-heavy batch jobs, just as a precaution, though we're hopeful it won't come to that. We'll obviously keep everyone posted as we learn more, and we don't anticipate any impact to read traffic, so overall we feel good about where this is heading.\n\n/bro",
+      "expected_output": "A short, plain restatement that leads with the actual bad news stated flatly: writes to the orders table will be blocked for roughly 15-30 minutes tomorrow between 2am and 3am, and that window could run longer if another process is mid-transaction on that table at the wrong moment. It must drop the hedging softeners ('just to set expectations proactively', 'we feel good about where this is heading') rather than carrying their soft tone into the restatement, while keeping the fact that reads are unaffected.",
+      "files": [],
+      "expectations": [
+        "states plainly that writes to the orders table will be unavailable/blocked, not merely 'possibly' or 'in some scenario'",
+        "includes the specific window: tomorrow 2am-3am, and the 15-to-30-minute estimate",
+        "does not use the term 'pg_repack' without explaining what it does in plain words, or drops it",
+        "does not carry over corporate softening phrases such as 'just to be safe', 'we feel good about', 'proactively', 'tentatively'",
+        "retains the caveat that the outage could run longer if a long-running transaction is holding a lock at swap time",
+        "retains the fact that reads are not expected to be affected",
+        "is not longer than the original message"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "You just told me this:\n\nI fixed it. The bug was a typo in the config file — it pointed to port 8080 instead of 8081. Tests pass now.\n\n/bro",
+      "expected_output": "A restatement nearly identical to the original, since it is already plain and short: it fixed a typo pointing to the wrong port (8080 vs 8081) and tests now pass. It must not pad the message with extra sentences, added preamble, or new jargon, and must not become noticeably longer than the three-sentence original.",
+      "files": [],
+      "expectations": [
+        "output is not meaningfully longer than the three-sentence original",
+        "retains the fact that the bug was a config file typo",
+        "retains both port numbers, 8080 and 8081",
+        "retains the fact that tests now pass",
+        "does not introduce jargon not present in the original",
+        "does not add a preamble like 'here is a plain restatement' or 'let me simplify that'"
+      ]
+    }
+  ]
+}

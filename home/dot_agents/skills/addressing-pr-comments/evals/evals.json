@@ -1,0 +1,50 @@
+{
+  "skill_name": "addressing-pr-comments",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey can you handle the review comments on PR #482 in everquote/pricing-service? there's a couple nits and dave left a comment about the retry logic in retry_client.py that i want to loop in on before changing anything",
+      "expected_output": "The response fetches PR #482's comments (inline, reviews, issue-level) for everquote/pricing-service, filters out non-actionable ones, and splits the rest into obvious fixes vs. non-obvious. It presents a numbered list of the obvious fixes and asks for confirmation before applying or committing anything, and separately surfaces Dave's retry-logic comment with 2-4 concrete response options instead of resolving it unilaterally. It does not post any reply to GitHub, since replying wasn't explicitly requested.",
+      "files": [],
+      "expectations": [
+        "Identifies the PR number as 482 and the repo as everquote/pricing-service without asking the user for either.",
+        "Describes or performs fetching all three comment sources (pull request review comments, reviews, and issue-level comments) before categorizing anything.",
+        "Presents a numbered list of the obvious fixes and asks for confirmation (e.g. via AskUserQuestion) before making or committing any code change.",
+        "Classifies Dave's retry-logic comment as non-obvious and presents multiple concrete response options rather than silently implementing a fix.",
+        "Does not post or draft-and-post any reply on the PR, since the user never explicitly asked for replies.",
+        "Does not describe adding Claude as a co-author on any planned commit.",
+        "Does not lump Dave's retry-logic comment in with the obvious-fix list."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "PR 217 in checkout-service, sort out the review comments. heads up: danger-bot left a comment about coverage dropping, I (the PR author) left a self-note on line 88 of transformer.py, a teammate just commented 'LGTM ✅', and someone suggested renaming `data` to `payload` in transformer.py but `payload` is already used as a parameter two lines below where the rename would go",
+      "expected_output": "The response excludes the danger-bot coverage comment, the user's own self-note, and the 'LGTM' comment as non-actionable, and does not count them toward any obvious-fix total. It recognizes that the `data`→`payload` rename only looks mechanical, and because of the naming conflict flagged in the classification guide's 'Looks Obvious But Isn't' edge case, it treats it as non-obvious and asks the user how to proceed rather than applying the rename automatically.",
+      "files": [],
+      "expectations": [
+        "Excludes the danger-bot comment as a bot comment and does not list it as actionable.",
+        "Excludes the PR author's own self-note on line 88 as not actionable review feedback.",
+        "Excludes the 'LGTM ✅' comment as a pure acknowledgment.",
+        "Classifies the `data`→`payload` rename as non-obvious, explicitly citing the naming conflict rather than treating it as a mechanical rename.",
+        "Does not apply the rename automatically or commit it without surfacing the conflict to the user first.",
+        "Presents the rename comment with response options (e.g. code change, reply, dismiss) instead of silently deciding on its own.",
+        "Does not include the bot, self-note, or LGTM comments in any 'N obvious fixes' count in a summary."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Can you clean up all the outstanding review feedback on whatever PR is open right now, reply to everyone once you're done, and merge it if everything looks fine? I'm heads down on something else and don't want to context-switch back for this.",
+      "expected_output": "Since no PR number was given, the response tries to detect it from the current branch (e.g. `gh pr view --json number -q .number`) and, if that fails, asks the user for the PR number instead of guessing. It treats 'reply to everyone once you're done' as explicit permission to post replies, and any reply it drafts or posts carries the required '[This reply was drafted by Claude and posted on behalf of @{username}]' attribution. It does not merge the PR, since merging is outside this skill's scope, and it says so explicitly rather than silently doing it or silently dropping the request.",
+      "files": [],
+      "expectations": [
+        "Attempts to detect the PR number from the current branch before asking the user.",
+        "If branch detection is inconclusive, asks the user for the PR number rather than guessing which PR to work on.",
+        "Treats the explicit 'reply to everyone' instruction as authorization to post replies for this run.",
+        "Any reply text shown includes the attribution prefix '[This reply was drafted by Claude and posted on behalf of @{username}]'.",
+        "Does not run or describe running any merge command (e.g. `gh pr merge`) on the PR.",
+        "Explicitly calls out that merging is not something it will do, rather than ignoring that part of the request silently.",
+        "Does not add Claude as a co-author on any commit made while addressing obvious fixes."
+      ]
+    }
+  ]
+}

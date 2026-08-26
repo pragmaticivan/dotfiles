@@ -1,6 +1,6 @@
 ---
 name: context7
-description: "Fetch up-to-date library documentation via Context7 REST API. Use when needing current API docs, framework patterns, or code examples for any library. Use when user asks about React, Next.js, Prisma, Express, Vue, Angular, Svelte, or any npm/PyPI package. Use when user says 'how do I use X library', 'what's the API for Y', or needs official documentation. Lightweight alternative to Context7 MCP with no persistent context overhead."
+description: 'Fetch current library documentation through the Context7 REST API. Use for "how do I use X library", an unfamiliar framework API, or a version-specific migration question.'
 allowed-tools: Bash(python:*)
 ---
 

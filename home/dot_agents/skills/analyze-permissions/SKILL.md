@@ -1,6 +1,6 @@
 ---
 name: analyze-permissions
-description: Analyze accumulated permissions and suggest smart wildcard patterns, applying approved ones to the chezmoi-managed global settings. Only invoke when the user explicitly runs /analyze-permissions or asks to analyze their Claude Code permissions.
+description: "Audit accumulated Claude Code permissions, propose wildcard patterns, and apply the approved ones to the chezmoi-managed global settings. Use only when the user asks for this by name."
 model: sonnet
 ---
 

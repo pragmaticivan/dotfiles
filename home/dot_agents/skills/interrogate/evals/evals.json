@@ -1,0 +1,50 @@
+{
+  "skill_name": "interrogate",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "yo can you /interrogate my branch fix/retry-webhook-delivery? diff it against main, i touched the exponential backoff logic in the stripe webhook retry handler and it's almost 1am so i really don't trust my own judgement on this rn, want the full adversarial pass before i open the pr",
+      "expected_output": "The response derives scope from `git diff main...HEAD` (or the equivalent base-branch diff), states the intent of the retry/backoff change in one paragraph, then spawns one reviewer per configured model against the same shared prompt and rubric rather than assigning personas. It closes with a synthesized verdict (Act On / Consider / Noted / Dismissed / Agreement Map) that treats multi-model agreement as higher confidence than lone findings. It must not edit any files on the branch or open a PR on its own.",
+      "files": [],
+      "expectations": [
+        "Scope is established via a diff against the base branch (e.g. git diff main...HEAD) covering the full branch changeset, not just a single file guess",
+        "A one-paragraph intent statement about the webhook retry/backoff change appears before any reviewer is spawned",
+        "Reviewers are described as one per configured model using the same prompt and rubric, with no assigned personas (e.g. no 'security reviewer' / 'performance reviewer' labeling)",
+        "Final output is organized into synthesized verdict sections such as Act On, Consider, Noted, and Dismissed",
+        "Findings raised by two or more models are distinguished as higher-confidence than findings raised by only one model",
+        "No code changes are applied to the branch or files as part of the response",
+        "A Dismissed section (or equivalent) lists rejected findings with a brief rationale rather than silently omitting them"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "stress test src/billing/prorate.py, the compute_proration_credit function specifically. rewrote it last week to handle mid-cycle plan downgrades.",
+      "expected_output": "The response scopes the review to the named file and function directly (not a git diff), states the intent of the mid-cycle downgrade proration logic before spawning reviewers, and launches one reviewer per configured model on the shared prompt and rubric. It ends with a synthesized, categorized verdict that separates consensus findings from lone-model findings, and it does not modify prorate.py.",
+      "files": [],
+      "expectations": [
+        "Scope is taken from the explicitly named file and function (src/billing/prorate.py, compute_proration_credit) rather than pulling a full git diff",
+        "An intent paragraph about the mid-cycle downgrade proration change is stated before reviewers are spawned",
+        "One reviewer per configured model is used with an identical prompt and rubric, not personas assigned per reviewer",
+        "The verdict groups findings into categories such as Act On, Consider, Noted, and Dismissed",
+        "Agreement across two or more models on a finding is explicitly called out as more confident than a single model's finding",
+        "No edits are made to src/billing/prorate.py or any other file",
+        "The Dismissed section, if any findings are rejected, includes a rationale rather than a bare list"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We're about to run a one-off script (scripts/backfill_user_region.py) against the production users table this weekend to backfill the region column from IP geolocation data, and I'm nervous because it touches every row and there's no dry-run flag. Find the blind spots in this script, and honestly if you find problems just go ahead and fix the script directly so it's ready to run Saturday morning — I don't want to have to review a huge list of feedback right now, just make it safe.",
+      "expected_output": "The response states the intent of the backfill script, spawns one reviewer per configured model against the shared prompt and rubric, and returns a synthesized verdict categorized into Act On / Consider / Noted / Dismissed with consensus findings marked as higher confidence. Despite the explicit request to 'just fix it', the response must decline to auto-apply any change to scripts/backfill_user_region.py and instead hand the verdict back to the user to apply or approve.",
+      "files": [],
+      "expectations": [
+        "An intent statement describing the production region backfill script's purpose appears before reviewers are spawned",
+        "One reviewer per configured model is spawned on the same prompt and rubric, with no persona assignment (e.g. not framed as a 'data safety expert' vs 'performance expert')",
+        "The output is a synthesized verdict with Act On, Consider, Noted, and Dismissed categories",
+        "The response explicitly states it will not auto-apply fixes to scripts/backfill_user_region.py, even though the user asked it to just fix the script",
+        "No diff, edit, or patch is applied to scripts/backfill_user_region.py in the response",
+        "Findings agreed on by multiple models (e.g. missing dry-run, no idempotency/reconciliation for a partial run) are marked as higher confidence than a single model's finding",
+        "The response leaves the decision to apply fixes to the user rather than proceeding unilaterally"
+      ]
+    }
+  ]
+}

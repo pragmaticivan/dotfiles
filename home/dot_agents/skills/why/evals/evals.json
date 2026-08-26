@@ -1,0 +1,46 @@
+{
+  "skill_name": "why",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey why does updateCartWithVersion in services/checkout/src/cart/updateCart.ts use optimistic locking (the row_version column) instead of just locking the cart row for update? someone on the team said it was because of a deadlock issue we hit a while back but i can't find where that's written down. can you dig into it",
+      "expected_output": "The response anchors on updateCartWithVersion and the row_version column, then reports git/PR evidence (commit hashes, PR numbers) for the switch to optimistic locking, treating the teammate's deadlock theory as one hypothesis to check against evidence rather than a fact to confirm. It separates direct citations from inferred claims using hedged language, lists every evidence category queried (git/gh always, plus any ticket/doc/chat/observability MCPs actually available) with nulls and skips explicitly named, and states an honest confidence level rather than declaring the deadlock story confirmed if no source actually says so.", "files": [],
+      "expectations": [
+        "Builds a code anchor first: cites git blame/log output or specific commit hashes touching services/checkout/src/cart/updateCart.ts around updateCartWithVersion before presenting conclusions.",
+        "Treats the teammate's 'deadlock issue' claim as a hypothesis to verify, not a pre-confirmed conclusion, and reports what evidence does or does not support it.",
+        "Includes a Sources Consulted (or equivalent coverage map) section listing all seven evidence categories, marking any without a matching MCP as skipped with an explicit reason such as 'no matching MCP available'.",
+        "Every claim in a 'What We Found' / direct-evidence section carries a specific citation (commit hash, PR number, ticket ID, or file:line); uncited claims appear only in an inferred/hypotheses section with hedged language.",
+        "Does not state the deadlock rationale as settled fact (e.g. using 'because' or 'was designed to') unless it quotes or links a specific PR, ticket, or commit message saying so.",
+        "Includes a 'What We Don't Know' (or equivalent gaps) section naming specific unanswered sub-questions rather than a vague 'unclear' statement.",
+        "Does not cite the optimistic-locking code itself (e.g. 'it checks row_version so it must be for deadlock avoidance') as evidence of the author's motivation."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "packages/api/src/middleware/rateLimiter.js:17 -- const RATE_LIMIT_MAX = 42. where'd 42 come from?",
+      "expected_output": "The response establishes a code anchor at rateLimiter.js:17, runs git blame/log on that line and pulls the introducing PR, then reports whatever direct evidence exists (a PR description, linked ticket, or comment explaining the value 42) or explicitly states that none was found. It queries every available evidence category in parallel for a rationale behind the specific number, distinguishes a cited explanation from an inferred one (e.g. matching an SLA or load-test figure), and never asserts a specific origin for '42' without a traceable citation.", "files": [],
+      "expectations": [
+        "Runs git blame/log on rateLimiter.js line 17 (or the RATE_LIMIT_MAX declaration) and identifies the introducing commit and, if present, its PR number.",
+        "Spawns/reports on investigators across the available evidence categories in parallel (source control always; others if a matching MCP exists) rather than answering only from the code.",
+        "If a PR, ticket, or comment explicitly states the reasoning for the value 42, quotes or precisely cites it as a [Direct] claim.",
+        "If no such explicit source is found, the response says so plainly (e.g. 'no PR, ticket, or comment explains why 42 was chosen') rather than inventing a plausible-sounding rationale like 'likely chosen for load balancing' with no citation.",
+        "Does not present a numerological or convention-based guess (e.g. 'probably a round number chosen for readability') as a factual origin without labeling it explicitly as speculative.",
+        "Lists which evidence categories were searched and which were skipped/unavailable, so the reader can see the coverage."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We're about to touch legacy/billing/src/reconcileInvoices.py for the first time in three years. There's a function called applyRoundingFudge(amount) around line 88 that adds exactly $0.03 to every invoice total before it's written to the ledger, and nobody currently on the team has any idea why. The only history we have is git log -- we don't have Linear, Notion, Slack, Datadog, Sentry, or a data warehouse hooked up in this environment. Before I rip it out, I want to know why it's there and whether it's safe to delete.",
+      "expected_output": "The response builds a code anchor from git blame/log --follow -p on reconcileInvoices.py around applyRoundingFudge, reports whatever the commit messages and any linked PR bodies say, and is explicit that six of the seven evidence categories (tickets, docs, chat, infra observability, error tracking, analytics) were not searchable because no matching MCP exists in this environment. It does not manufacture a plausible rounding/tax/floating-point explanation without a citation; if git history is thin or silent, it says confidence is low and recommends who to ask or what to check next, rather than declaring it safe (or unsafe) to delete based on a guess.", "files": [],
+      "expectations": [
+        "Runs git log --follow -p / git blame on reconcileInvoices.py targeting applyRoundingFudge and reports the actual commit message(s) and author/date found, or states plainly that history is sparse/uninformative.",
+        "Explicitly names, in a Sources Consulted or gaps section, that the issue tracker, long-form docs, real-time chat, infrastructure observability, error tracking, and analytics-warehouse categories were skipped because no matching MCP is available in this environment -- not silently omitted.",
+        "Does not invent a specific rationale (e.g. 'this compensates for floating-point rounding' or 'this matches a known tax rule') for the $0.03 unless it is tied to an actual citation from git history.",
+        "If evidence is thin, states overall confidence as low/unknown in a Confidence Summary or equivalent, rather than a confident narrative built from a single weak signal.",
+        "Includes an explicit 'What We Don't Know' section naming the unanswered core question (why exactly $0.03, and whether removing it is safe) rather than glossing over it.",
+        "Does not tell the user it is safe to delete applyRoundingFudge purely on the basis of an inferred or speculative rationale; any recommendation about deletion is framed as contingent on the acknowledged evidence gap.",
+        "Any hypothesis offered (e.g. rounding correction, legacy tax rule, compensating for a prior bug) is explicitly labeled as speculative/inferred and distinguished from directly cited facts."
+      ]
+    }
+  ]
+}

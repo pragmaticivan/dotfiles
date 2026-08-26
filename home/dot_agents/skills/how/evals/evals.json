@@ -1,0 +1,48 @@
+{
+  "skill_name": "how",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey can you explain how the retry logic in our http client wrapper works, i keep seeing failed requests retried like 3 times in the logs and want to know if it's exponential backoff or a fixed delay before i touch the timeout config",
+      "expected_output": "A focused explanation of the retry mechanism in the specific client/wrapper module, grounded in the actual code read (backoff strategy, retry count, what triggers a retry, where the delay/timeout is configured). Produced via a single-pass exploration (no parallel explorer fan-out, since this is a narrow single-module question), following the Overview/How It Works/Gotchas structure adapted to a small scope. Must not dump large annotated code blocks as a substitute for the explanation, and must not guess the backoff behavior from function or variable names without reading the implementation.",
+      "files": [],
+      "expectations": [
+        "response identifies the actual retry/backoff strategy (e.g. fixed delay vs exponential) based on code that was read, not inferred from names",
+        "response names specific files and/or functions where the retry logic lives",
+        "response does not spawn multiple parallel explorer subagents for this narrow single-module question (simple path, single explainer pass)",
+        "response does not consist mainly of large raw code dumps in place of prose explanation",
+        "response does not ask the user a clarifying question before proceeding; if scope was ambiguous it states a best-guess interpretation and proceeds",
+        "response does not fabricate a retry count or delay value that contradicts what the code actually shows"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "I'm onboarding onto the billing subsystem this week and need a real mental model before I touch anything. Can you walk me through the full path of what happens when a user submits the checkout form: what fires on the frontend, how it reaches the backend API, how the charge gets created with the payment provider, and how the webhook confirmation eventually reconciles the order status in the database. I don't need line-by-line code, I need to understand the shape of it so I don't break the retry/webhook handling when I add proration support.",
+      "expected_output": "A synthesized end-to-end explanation covering the full request lifecycle across frontend, API, payment provider integration, and webhook reconciliation, reflecting that the question was decomposed into multiple parallel exploration angles (e.g. request path, provider integration, webhook/reconciliation) before being merged into one coherent narrative with Overview, Key Concepts, How It Works, Where Things Live, and Gotchas sections. It should call out the webhook/reconciliation edge cases relevant to adding proration, and must not read like a flat single-file walkthrough or a raw dump of source code.",
+      "files": [],
+      "expectations": [
+        "response covers the full cross-cutting flow: form submission, backend API, payment provider call, and webhook-driven reconciliation",
+        "response reflects that the subsystem was explored via multiple decomposed angles (e.g. distinct components/services investigated) rather than a single narrow lookup, consistent with the complex/parallel-explorer path",
+        "response includes a 'Gotchas' or equivalent section calling out non-obvious behavior relevant to billing/webhooks",
+        "response references specific files, services, or functions rather than only describing concepts abstractly",
+        "response does not present the explanation as annotated source code instead of a prose mental model",
+        "response does not claim to trace exact code paths it never actually read (no fabricated function names or file paths)",
+        "response does not stop to ask which part of billing to focus on; it states a best-guess scope (the full checkout-to-reconciliation path) and proceeds"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "where should request validation for a new field live -- in the API gateway middleware or inside the service handler itself?",
+      "expected_output": "A placement/ownership answer, not a walkthrough of unrelated internals: it should identify how validation is currently structured in this codebase (where existing validation lives, what layer owns similar concerns today), then give a direct recommendation for the new field grounded in that existing pattern rather than generic best-practice advice. It should be concise and decision-focused, not a full architectural tour of the gateway or service.",
+      "files": [],
+      "expectations": [
+        "response states a concrete recommendation (gateway middleware vs service handler, or a specific hybrid) rather than listing pros/cons with no conclusion",
+        "response grounds the recommendation in how validation is actually implemented elsewhere in this codebase, citing specific files or functions read",
+        "response does not answer purely from directory/file names without evidence the actual validation code was read",
+        "response stays scoped to the placement question and does not turn into an unrelated full subsystem walkthrough",
+        "response does not ask the user which layer they'd prefer before answering; it commits to a best-guess recommendation",
+        "response does not dump raw source code as the answer in place of a stated recommendation"
+      ]
+    }
+  ]
+}

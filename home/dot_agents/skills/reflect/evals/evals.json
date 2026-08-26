@@ -1,0 +1,49 @@
+{
+  "skill_name": "reflect",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey so we just spent like 45 min on that keda scaling bug for the pricing-svc deployment. first i checked the HPA (kubectl get hpa -n pricing) thinking it was a plain HPA issue, totally wrong lead, wasted like 15 min there. turns out it's actually a ScaledObject and the real fix was running `kubectl get --raw /apis/external.metrics.k8s.io/v1beta1/namespaces/pricing/service-triggers` to see the raw external metric value, which showed the trigger metadata `metricName` didn't match what the exporter actually publishes. fixed by editing the ScaledObject yaml at k8s/pricing-svc/base/scaledobject.yaml and correcting the metricName field. used the kubernetes skill the whole time for this. can you reflect on this session and see if theres a durable learning worth capturing?",
+      "expected_output": "The response locates the current session's own transcript in the workspace's agent-transcripts directory, then runs the three-reviewer fan-out (judgment, tooling, divergent) and a synthesis pass. The synthesis routes the HPA-vs-ScaledObject dead end and the `kubectl get --raw` external-metrics diagnostic recipe to the kubernetes skill's SKILL.md as an Accepted body edit, since that skill was the one actually used, and it presents the Accepted/Rejected/Backlog list for the user's explicit approval rather than editing the skill file outright. It must not glob ~/.claude/projects/* to find the transcript and must not propose a brand-new skill when the kubernetes skill is a real existing home for the learning.",
+      "files": [],
+      "expectations": [
+        "Response locates the transcript via the workspace's own agent-transcripts directory rather than globbing across ~/.claude/projects/*/",
+        "Response describes or performs three parallel review passes (judgment, tooling, divergent lenses) rather than a single generic review",
+        "The judgment and divergent lenses are assigned an opus-class model and the tooling lens a distinct model (fable), matching the reflect skill's model table",
+        "The synthesis routes the HPA-vs-ScaledObject / metricName-mismatch learning to the kubernetes skill's SKILL.md as the routing target, not to a newly invented skill",
+        "Output presents an Accepted/Rejected/Backlog style list and asks for the user's explicit approval before any skill file is edited",
+        "Response does not glob ~/.claude/projects/*/ to locate the transcript",
+        "Response does not propose 'new skill via skill-creator' for this learning given the kubernetes skill already exists and was the one invoked"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "about to touch prod tf state: was going to run `terraform state rm aws_instance.legacy_worker` directly on the prod state to clear a drifted resource, using the terraform skill. ivan stopped me and said never run state surgery on prod without pulling a state backup first (`terraform state pull > backup.tfstate`) and reviewing `terraform plan -target=aws_instance.legacy_worker` diff before any state rm/mv. reflect on this.",
+      "expected_output": "The response finds this session's own transcript (workspace agent-transcripts directory, not a cross-workspace glob), fans out the three parallel reviewers, and synthesizes Ivan's mid-task correction into a durable rule: back up state and review a targeted plan diff before any `terraform state rm`/`mv`. It routes that rule as an Accepted body edit to the terraform skill's SKILL.md, since terraform was the skill actually in use, and withholds any file edit until the user approves the Accepted list. It must not silently apply the edit and must not state the learning without naming the terraform skill and the concrete addition.",
+      "files": [],
+      "expectations": [
+        "Response locates the transcript through the workspace's agent-transcripts directory, not by globbing ~/.claude/projects/*/",
+        "Response runs three parallel reviewer lenses (judgment, tooling, divergent) as part of its process, not just a single pass",
+        "The synthesized finding names the terraform skill's SKILL.md as the routing target for the state-backup-before-surgery rule",
+        "The finding is framed around Ivan's mid-task correction (stopping the state rm, requiring backup + plan -target review) rather than a generic terraform best practice unconnected to this session",
+        "Response asks for explicit user approval of the Accepted list before making any edit to the terraform skill",
+        "Response does not directly edit the terraform skill file without first presenting the proposal for approval",
+        "Response does not state the learning without naming both the target skill (terraform) and a concrete edit (e.g. a state-backup-before-surgery bullet)"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Quick one before we wrap up. Earlier in this session all you did was rename a local variable `usrNm` to `userName` inside the function `formatDisplayName` in src/utils/format.ts. You read the file once, made one Edit call to fix the name at its declaration and its three call sites, I said thanks, and that was it. No tests were run, no dead ends came up, nothing else got touched, and no skill got invoked for this since it was a single-line rename. Can you run the reflect skill over this session now and tell me what we should capture as a lasting improvement to one of our skills?",
+      "expected_output": "The response recognizes this session as a trivial one-off per the reflect skill's own when-to-skip guidance and reports that no durable learning was found, rather than manufacturing an Accepted row or inventing a routing to justify the invocation. It should not spend effort fabricating a finding for a single-variable rename with no dead end, no correction, and no skill invoked, and it should not propose editing or creating any skill.",
+      "files": [],
+      "expectations": [
+        "Response explicitly states that this session is trivial / a one-off and that no durable learning is worth capturing",
+        "Response does not produce an Accepted item, a new-skill proposal, or a body-edit routing for this rename",
+        "Response does not invent a learning by treating the rename as if it revealed a generalizable recipe or correction",
+        "Response does not glob ~/.claude/projects/*/ looking for a transcript",
+        "Response does not name any target skill plus concrete edit, since no skill was invoked and none is proposed",
+        "Response avoids running the full three-reviewer synthesis machinery as if this were a substantive session, instead short-circuiting on the skip criteria"
+      ]
+    }
+  ]
+}

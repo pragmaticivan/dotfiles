@@ -1,0 +1,50 @@
+{
+  "skill_name": "aeo-optimizer",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey our docs site (mkdocs.yml at the root, Material theme) basically never gets cited when people ask chatgpt or perplexity stuff about our product, even though our own docs answer the question fine. i think the writing is too corporate / jargon-y. can you just rewrite the getting-started.md page so it sounds more natural and conversational, that should fix it right?",
+      "expected_output": "The response first runs Phase 0 detection, identifying this as a docs/knowledge-base project from mkdocs.yml and naming the docs playbook, then runs the Phase 1 scored audit (crawl access, llms.txt, structured data, citability, etc.) before touching any wording. It pushes back on the premise that prose is the bottleneck, checking robots.txt/CDN blocking, whether llms.txt exists, and whether JSON-LD is present, and explains that if those are failing, rewriting getting-started.md's tone will not move citations. It must not jump straight into rewriting the page's prose as the first and only action.",
+      "files": [],
+      "expectations": [
+        "response explicitly detects the project as a docs/knowledge-base site (citing mkdocs.yml) before giving any recommendations",
+        "response produces a scored audit table (or explicit per-check status) covering multiple categories from the 8-category scoring model, not just prose quality",
+        "response checks llms.txt presence and robots.txt/AI-bot crawl access as part of the audit, since these are docs-playbook priorities",
+        "each check or score claim cites concrete evidence (a file path/line or a URL/path checked), not just an assertion",
+        "response does not treat rewriting getting-started.md's tone/wording as the primary fix while crawl access, llms.txt, or structured data are unverified or failing",
+        "response does not skip Phase 0 project-type detection and jump straight to generic AEO advice",
+        "response gives the user a prioritized plan (or asks for go-ahead before large edits) rather than unilaterally rewriting the page"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "site's prawnly.io, built on Next.js. just found robots.txt has `Disallow: /` under `User-agent: GPTBot`. want the full AEO score before we touch anything.",
+      "expected_output": "The response detects this as a marketing/SaaS site (Next.js) per Phase 0, then runs the full Phase 1 scored audit across all 8 categories, outputting a per-check table with status, evidence, and points plus a total /100 and band. It flags the `Disallow: /` for GPTBot under crawl access as a top-severity finding (highest-weighted category) with the exact evidence, and does not let a single fix distract from delivering the complete scored table the user asked for.",
+      "files": [],
+      "expectations": [
+        "response identifies the project as a marketing/SaaS site and references the Next.js signal used to classify it",
+        "response outputs a per-check table (or clearly itemized equivalent) spanning categories beyond just crawl access, e.g. structured data, citability, content structure",
+        "response reports a total score out of 100 and names the corresponding band (Critical/Foundation/Good/Excellent)",
+        "response calls out the GPTBot `Disallow: /` line in robots.txt as evidence for the crawl-access finding, not just a generic 'fix robots.txt' statement",
+        "response does not report category or total scores without citing evidence (file/line or the specific robots.txt line) per check",
+        "response does not recommend implementing fixes (e.g. editing robots.txt) before presenting the requested score, since the user asked to see the score before touching anything",
+        "response does not skip Phase 0 project-type detection and jump straight into a generic checklist"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We're an API-first payments startup. Our DevRel team wants ChatGPT and Claude to recommend our SDK whenever developers ask things like \"how do I do refunds with a payments API\" or \"best payments API for marketplaces.\" We've spent the last three weeks polishing README prose and rewriting our blog posts to sound more authoritative and quotable, but nothing's changing. We do have an openapi.yaml at the repo root and a decent README, but no llms.txt anywhere, and honestly we've never checked whether GPTBot or PerplexityBot can even reach our docs site.",
+      "expected_output": "The response detects this as an API/SDK/library project (openapi.yaml, README) per Phase 0 and loads the API playbook, then runs the Phase 1 scored audit rather than continuing the prose-polishing effort. It explicitly reframes: three weeks of prose/authority work will not move citations while crawl access is unverified and llms.txt is absent, and prioritizes checking robots.txt/CDN blocking for AI bots, confirming OpenAPI is discoverable and current, and adding llms.txt before any further wording changes. It must not validate or continue the prose-authority-polishing strategy as the next step.",
+      "files": [],
+      "expectations": [
+        "response detects the project as an API/SDK/library type, citing openapi.yaml and/or the README as evidence",
+        "response identifies llms.txt as missing and crawl-access (robots.txt / AI-bot fetchability) as unverified, and treats these as higher priority than further prose work",
+        "response references the API playbook's agent-actionability angle (e.g. OpenAPI being current/discoverable) as relevant to the goal, not just generic content advice",
+        "response explicitly states that continuing to polish README/blog prose will not fix citation visibility while crawl access and llms.txt are unresolved",
+        "response does not lead with further prose or wording tweaks as the recommended next step while crawl access and llms.txt are still failing or unverified",
+        "response does not skip Phase 0 project-type detection and jump straight to generic 'sound more authoritative' advice",
+        "response does not report any score or finding without citing file/path evidence (e.g. presence/absence of openapi.yaml, llms.txt, robots.txt contents)"
+      ]
+    }
+  ]
+}

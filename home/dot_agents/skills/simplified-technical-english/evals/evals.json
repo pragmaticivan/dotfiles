@@ -8,7 +8,7 @@
       "files": [
         "evals/fixtures/keda-runbook.md"
       ],
-      "assertions": [
+      "expectations": [
         {
           "text": "Looks words up in the bundled dictionaries",
           "passing_criteria": "The transcript shows a grep against references/dictionary-unapproved.md or references/dictionary-approved.md for the words it was not sure of, and the approved alternative appears in the output"
@@ -54,7 +54,7 @@
       "files": [
         "evals/fixtures/migration-doc.md"
       ],
-      "assertions": [
+      "expectations": [
         {
           "text": "Produces an audit, not a rewrite",
           "passing_criteria": "The output is a findings report with a verdict and per-rule findings; it does not deliver a wholesale rewritten version of the document"
@@ -98,7 +98,7 @@
       "prompt": "I need to write the safety section for a new internal CLI we ship to agents' laptops. The `eq-sync reset` command wipes the local cache and re-downloads it; if the laptop loses Wi-Fi partway through, the cache ends up half-written and the agent sees stale quotes until they run it again. Also the command needs a confirmation prompt they have to type the environment name into. Write this up in simplified technical english for the docs — a warning plus the steps.",
       "expected_output": "New STE text written from raw notes, not a rewrite: a CAUTION (risk of damage to data/objects, not injury) that starts with the command or the condition and states the consequence (Rules 7.1 thru 7.3), plus numbered imperative steps of 20 words or fewer with one instruction each. Conditions come before commands (Rule 5.4). Approved vocabulary throughout — 'make sure', 'must', 'erase'/'remove' rather than wipe, 'get again'/'download' for re-download, no 'ensure', no 'should', no contractions, no Latin abbreviations. The command name, the typed environment name and any quoted prompt text stay verbatim. The stale-quote consequence must be stated as a result the reader can act on, and the half-written cache condition must be named as the trigger.",
       "files": [],
-      "assertions": [
+      "expectations": [
         {
           "text": "Uses a caution or warning with a stated consequence",
           "passing_criteria": "The output contains a CAUTION or WARNING that names the risk level, starts with a command or a condition, and states the result (a half-written cache, stale quotes) per Rules 7.1 thru 7.3"
@@ -138,7 +138,7 @@
       "prompt": "quick one — can you STE-ify this line for our status page? \"We are currently experiencing elevated error rates on the quote submission API; our engineers have identified the root cause and are actively working on a fix, and we will provide an update shortly.\"",
       "expected_output": "A short STE rewrite of one sentence, correctly handled as descriptive text (status update, not instructions, so no imperative form and the 25-word limit applies). The three banned constructions must all go: the progressive forms 'are currently experiencing' / 'are actively working' (Rule 3.2, 3.5), the present perfect 'have identified' (Rule 3.4), and the semicolon (Rule 8.1). Unapproved words replaced: currently, experiencing, elevated, actively, shortly, provide, root cause. Result should be two or three short sentences that keep every fact — which API, that the cause is known, that a fix is in progress, that another update follows — and should give the reader a concrete next-update time or say plainly that the time is not known, because 'shortly' is not information. No invented facts such as a made-up percentage or timestamp.",
       "files": [],
-      "assertions": [
+      "expectations": [
         {
           "text": "Treats the text as descriptive, not procedural",
           "passing_criteria": "The rewrite uses no imperative form and is judged against the 25-word descriptive limit (Rule 6.3)"

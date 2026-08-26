@@ -1,0 +1,50 @@
+{
+  "skill_name": "no-comments",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey before i open this PR can you run /no-comments on src/utils/formatOrder.ts, i think i left a bunch of junk comments in there when i was writing it. here's the current state of the function:\n\n```ts\nfunction formatOrderTotal(order) {\n  let total = 0;\n  // loop through each item in the order\n  for (const item of order.items) {\n    // add the item price to the total\n    total += item.price * item.qty;\n  }\n  // return the formatted total\n  return `$${total.toFixed(2)}`;\n\n  // old version, kept just in case\n  // function formatOrderTotalOld(order) {\n  //   return order.items.reduce((sum, i) => sum + i.price, 0);\n  // }\n}\n```\n\ncan you clean it up",
+      "expected_output": "The skill spawns the comment-sicko subagent scoped to src/utils/formatOrder.ts without restating its rules in the spawn prompt, then reviews its report. It accepts the deletions of the three narrating comments ('loop through each item', 'add the item price to the total', 'return the formatted total') and the commented-out old-function block, since none qualify for a keep-list exception. It reports a deletion count of 4 and does not touch the function's logic or behavior. It must not invent a justification to keep any of these comments.",
+      "files": [],
+      "expectations": [
+        "Spawns an Agent with subagent_type comment-sicko scoped to src/utils/formatOrder.ts",
+        "The spawn prompt to comment-sicko does not restate its rules, exceptions, or MUST KILL criteria",
+        "Confirms deletion of all three narrating comments (loop through each item, add the item price, return the formatted total)",
+        "Confirms deletion of the commented-out old formatOrderTotalOld block",
+        "Does not modify formatOrderTotal's logic, variable names, or return value",
+        "Reports a deletion count in the final response",
+        "Does not claim any of the four deleted comments qualifies for a keep-list exception (legal, vendor quirk, lint, doc-API, RFC link)"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/no-comments src/billing/invoice.ts\n\n```ts\n// do not remove: finance signs off on this exact rounding, talk to Priya before changing\nfunction roundInvoiceTotal(cents) {\n  return Math.floor(cents / 5) * 5;\n}\n```",
+      "expected_output": "The skill spawns comment-sicko scoped to src/billing/invoice.ts without restating its rules, then treats the 'do not remove... talk to Priya' comment as a constraint comment rather than a plain narrating comment. Rather than silently deleting it or silently leaving it as prose, it proposes the cheapest in-scope encoding of the rounding constraint (for example a named constant, a type, or a test asserting the floor-to-5-cents behavior) and explicitly waits for the user's approval before deleting the comment and applying that encoding. It does not widen scope beyond roundInvoiceTotal.",
+      "files": [],
+      "expectations": [
+        "Spawns an Agent with subagent_type comment-sicko scoped to src/billing/invoice.ts",
+        "The spawn prompt to comment-sicko does not restate its rules or exceptions",
+        "Identifies the do-not-remove/talk-to-Priya comment as a constraint comment needing an encoding offer, not a plain redundant comment",
+        "Proposes a concrete cheapest encoding (type, runtime assertion, test, or CI lint) for the rounding constraint",
+        "Explicitly asks for the user's approval before deleting the comment or applying the encoding",
+        "Does not delete the comment and does not implement the encoding without approval in this turn",
+        "Does not modify files or functions outside src/billing/invoice.ts"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Running /no-comments over src/payments/stripeWebhook.ts before merge. I want to make sure this is actually clean and not just comment soup, because one of these comments is explaining a real vendor bug and I don't want that lost, but I'm also not sure about the eslint-disable line right above the payment check. Here is the relevant chunk:\n\n```ts\n// Stripe's v2 webhook payload sends `amount` as a string instead of a number due to\n// a known bug in their API (see STRIPE-4821); this coercion can be removed once they fix it upstream.\nconst amountCents = Number(event.data.amount);\n\n// eslint-disable-next-line eqeqeq\nif (amountCents == expectedTotal) {\n  markPaid(order);\n}\n```",
+      "expected_output": "The skill spawns comment-sicko scoped to src/payments/stripeWebhook.ts without restating its rules, then accepts its report keeping the Stripe/STRIPE-4821 comment because it documents non-obvious behavior forced by a vendor API we cannot reshape. It flags the `eslint-disable-next-line eqeqeq` suppression as a MUST KILL naming `amountCents == expectedTotal` as the guilty symbol, since eqeqeq guards against real loose-equality correctness bugs. Since the fix is trivial (replace == with === and drop the suppression), it applies it directly in scope without invoking /architect, and does not touch the Stripe workaround comment.",
+      "files": [],
+      "expectations": [
+        "Spawns an Agent with subagent_type comment-sicko scoped to src/payments/stripeWebhook.ts",
+        "The spawn prompt to comment-sicko does not restate its rules or keep-list exceptions",
+        "Keeps the Stripe/STRIPE-4821 comment as documenting a vendor-forced non-obvious behavior we cannot change",
+        "Flags the eslint-disable-next-line eqeqeq suppression as MUST KILL, naming amountCents == expectedTotal as the guilty symbol",
+        "Fixes the eqeqeq suppression directly (== to === and suppression removed) as a trivial in-scope fix rather than invoking /architect",
+        "Does not delete or rewrite the Stripe/STRIPE-4821 comment",
+        "Does not widen the fix or scope to files or functions outside src/payments/stripeWebhook.ts"
+      ]
+    }
+  ]
+}

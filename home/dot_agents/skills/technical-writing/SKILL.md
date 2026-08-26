@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md
 name: technical-writing
-description: "Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages."
+description: "Structure and sentence standard for docs: Diataxis mode selection, Google developer style, and Global English syntax. Use when writing or reviewing a doc, RFC, readme, or PR description."
 disable-model-invocation: true
 ---
 
@@ -14,6 +14,11 @@ Three rules sit above the layers:
 - **Cut every word that does no work.** If the sentence survives without a word, the word goes. "In order to" is "to". "It is important to note that" is nothing.
 - **Use the short, everyday word.** "Use", not "utilize". "Help", not "facilitate". "Do", not "perform". A long word has to buy its length with precision.
 - **When a rule makes a sentence worse, fix the sentence another way or leave it alone.** The rules serve the reader. A sentence that follows every rule and sounds like a machine wrote it has failed.
+
+The rules govern your own reply as well as the document. Explaining a fix in a sentence that
+breaks the rule you just applied teaches the reader the wrong lesson, and the semicolon in
+"a tutorial explains as it goes; a reference never does" is the case that keeps slipping through.
+Write the review, the rationale, and the summary to the same standard as the text they are about.
 
 The codebase is the word list. Write the real symbol, file, flag, or command name, not a synonym or a description of it.
 
@@ -71,6 +76,9 @@ Source: developers.google.com/style, fetched 2026-07-18.
 ## Make statements load one at a time (STE rules)
 
 - One instruction per sentence. One thought per sentence everywhere else.
+- Two verbs joined by "and" are two instructions, however short the step. "SSH into the host and
+  run `df -h`" is two steps, not one. Length is not the test, and a step under 20 words can still
+  carry two actions. Count the actions the reader has to take, then give each one its own step.
 - Split instructions longer than about 20 words and other sentences longer than about 25.
 - Put the warning or condition before the step it guards: "If hot oil touches your skin, injuries can occur."
 - Keep "the" and "a": "Remove backup file" reads two ways. "Remove the backup file" reads one.

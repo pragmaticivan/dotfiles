@@ -2,7 +2,7 @@
 # source: https://github.com/SpillwaveSolutions/mastering-typescript-skill/tree/main/mastering-typescript (Richard Hightower, MIT)
 # source: https://github.com/cursor/plugins/tree/main/pstack/skills/typescript-best-practices (Cursor)
 name: typescript
-description: "Write, review, and configure TypeScript with strict types, no `any`/`as`/`!` escapes, and parsing at boundaries. Use for any .ts/.tsx/.mts work: type errors, type and signature design, tsconfig, Ultracite or Biome linting, Vitest, Zod, or a JavaScript migration. Applies even when the ask sounds routine and never says TypeScript — 'add this function', 'fix this type error', 'make this build'."
+description: "Write, review, and configure TypeScript with strict types, no `any`/`as`/`!` escapes, and parsing at boundaries. Use for any .ts or .tsx work, even when the ask never says TypeScript."
 ---
 
 # TypeScript

@@ -1,6 +1,6 @@
 ---
 name: addressing-pr-comments
-description: Address GitHub PR review comments by fetching, categorizing, and fixing them. Use when the user wants to handle PR feedback, fix review comments, address PR suggestions, or respond to code review. Triggers on "address PR comments", "fix review comments", "handle PR feedback", "PR comments", or when given a PR number with review context.
+description: 'Fetch, triage, and fix GitHub PR review comments. Use for "address PR comments", "fix review comments", "handle PR feedback", or a PR number given with review context.'
 effort: medium
 ---
 

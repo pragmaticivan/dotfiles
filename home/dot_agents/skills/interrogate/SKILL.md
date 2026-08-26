@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/SKILL.md
 name: interrogate
-description: "Use for \"interrogate\", \"adversarial review\", \"multi-model review\", \"challenge this\", \"stress test this code\", \"find blind spots\", or \"tear this apart\". Multiple LLM reviewers challenge changes from independent angles."
+description: "Adversarially review a change with one reviewer per configured model, then synthesize the verdict. Agreement across models is the signal."
 disable-model-invocation: true
 ---
 

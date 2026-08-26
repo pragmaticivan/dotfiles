@@ -1,0 +1,14 @@
+{{- /*
+Renders a complete GitHub Copilot CLI agent file for ~/.copilot/agents.
+Call with (dict "ctx" . "id" "<agent-id>" "body" <rendered body>).
+
+Copilot takes only name and description. It selects the model itself, and an
+agent with no `tools` key gets every tool, which is what each of these wants.
+*/ -}}
+{{- $a := index .ctx.agents .id -}}
+---
+name: {{ .id }}
+description: {{ $a.description | quote }}
+---
+
+{{ .body }}

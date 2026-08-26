@@ -12,6 +12,36 @@
         "Implements the minimal fix needed to make the test pass",
         "Reruns the test (and ideally the full suite) after the fix to confirm it passes and nothing else broke"
       ]
+    },
+    {
+      "id": 2,
+      "prompt": "hey can u add a `applyLoyaltyDiscount` fn to src/pricing/discounts.ts that gives gold-tier users 15% off orders over $200, and silver-tier users 5% off over $100. everyone else gets 0. shouldnt take long, ty",
+      "expected_output": "A failing test for applyLoyaltyDiscount is written first, covering the gold/silver/no-discount tiers and the dollar thresholds, and confirmed to fail because the function does not exist yet. Only after that does the agent add the minimal implementation, rerun the test, and confirm it passes. The response does not write discounts.ts logic before the test exists, and does not skip straight to handing over the finished function just because the request is phrased as low-effort.",
+      "files": [],
+      "expectations": [
+        "Writes a test for applyLoyaltyDiscount before writing the implementation in discounts.ts",
+        "States or shows that the test fails first (RED) because the function does not exist yet",
+        "Implements only the minimal logic needed for the stated tiers and thresholds (gold 15%/$200, silver 5%/$100, else 0)",
+        "Reruns the test after implementing and reports it passing (GREEN)",
+        "The test asserts on the returned discount value/outcome rather than on internal call structure",
+        "Does not produce the discounts.ts implementation before a test exists for it",
+        "Does not treat the casual tone or stated urgency of the request as license to skip writing a test"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We just got paged — our checkout webhook handler in src/billing/webhooks/stripeChargeHandler.ts is double-charging customers when Stripe retries a webhook delivery within ~500ms of the first attempt. Looking at the code, `handleChargeSucceeded` calls `chargeCustomer(event.data.object)` directly without checking `event.request.idempotency_key` against anything we've already processed. Finance is asking for a hotfix in the next 20 minutes and said don't bother with a full test suite, just patch the idempotency check and deploy — we can write proper tests next sprint.",
+      "expected_output": "The agent pushes back on skipping verification entirely and either writes a fast, narrow test simulating two rapid calls to handleChargeSucceeded with the same idempotency key that confirms the double-charge before adding the check, or — if it judges a true reproduction impractical — explicitly says so and names a concrete substitute executable check (e.g., a focused script exercising the idempotency-store logic) instead of skipping verification. It does not ship the patch on the strength of the finance deadline alone, and it does not reach for a slow, full Stripe-integration end-to-end test when a narrower check on the idempotency logic will do.",
+      "files": [],
+      "expectations": [
+        "Does not silently skip verification just because finance asked for a 20-minute hotfix with no tests",
+        "Either writes an executable reproduction (e.g. two rapid calls with the same idempotency key producing a double-charge) or explicitly states why a full test is impractical and names a specific substitute check",
+        "If invoking the impractical-test exception, still produces executable evidence rather than a bare assertion that the fix works",
+        "Confirms the double-charge (or the substitute check's equivalent failure) before implementing the idempotency check",
+        "Reruns the check after the fix and reports it now passing / no longer double-charging",
+        "Does not claim the fix is correct without running any test or check",
+        "Does not add a full end-to-end Stripe integration test suite when a narrower check on the idempotency logic is sufficient"
+      ]
     }
   ]
 }
