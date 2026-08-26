@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/no-comments/SKILL.md
 name: no-comments
-description: "Spawn Comment Sicko, fix accepted findings, and offer encodings for claimed constraints."
+description: "Spawn Comment Sicko over the diff, fix the accepted findings, and offer to encode any constraint a comment claims."
 disable-model-invocation: true
 ---
 

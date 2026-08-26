@@ -1,6 +1,6 @@
 ---
 name: simplified-technical-english
-description: 'Writes, rewrites, and audits text in ASD-STE100 Simplified Technical English (STE) Issue 9 — the controlled-language standard for technical documentation: 875 approved words, 53 rules, a 20-word limit for procedures and 25 for descriptions, active voice, one instruction per step. Use this skill whenever someone asks for Simplified Technical English, STE, ASD-STE100, a controlled language, or plain technical English — and also when they want a runbook, procedure, README, API doc, incident update, alert text, error message, or safety warning that non-native readers, translators, or a new on-call engineer can follow without ambiguity. Trigger on "rewrite this so anyone can follow it", "make these steps unambiguous", "simplify this documentation", "is this doc STE-compliant", "check this text against the standard", "our docs are too wordy", or "write a procedure for X". Bundles the full Part 2 dictionary, so a word substitution is looked up and not invented.'
+description: "Write, rewrite, or audit text in ASD-STE100 Simplified Technical English Issue 9, with the 875-word dictionary and 53 rules bundled. Use for STE, controlled language, or an unambiguous runbook, procedure, or error string."
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash
 ---
 
@@ -13,6 +13,13 @@ One meaning per word is the target, not fluent English. `ensure` is wrong and
 Apply your judgment, and look a word up when you are not sure. There is no
 checker. Do not estimate a compliance score, and do not report a count of
 errors that you did not find yourself.
+
+The rules apply to everything that you write, not only to the document. The
+rewrite and the notes that go with it ship together, and the reader gets both.
+The failure that recurs is a clean document with a rationale beside it that
+uses semicolons and unapproved words. Write the rationale, the summary, and the
+chat reply to the same standard. A semicolon in `stale has no approved
+equivalent; I used old` is a rule breach in the answer.
 
 ## Look a word up
 
@@ -37,6 +44,12 @@ Every limit depends on this:
 
 Most documents mix the two. Keep them in different blocks, and never mix them
 in one vertical list (Rule 4.3).
+
+A step keeps the imperative form. To shorten a step, do not change it into a
+description of what the command does. `The command erases the local cache` is
+descriptive text in a procedure, and the reader no longer knows what to do.
+Write `Erase the local cache`. If a step needs the result as well, add the
+result as its own descriptive sentence after the instruction.
 
 ## The loop
 

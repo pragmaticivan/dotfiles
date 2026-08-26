@@ -1,7 +1,7 @@
 ---
 # source: https://github.com/addyosmani/agent-skills/blob/main/skills/test-driven-development/SKILL.md (Addy Osmani)
 name: test-driven-development
-description: Drives development with tests. Use when implementing any logic, fixing any bug, or changing any behavior. Use when you need to prove that code works, when a bug report arrives, or when you're about to modify existing functionality.
+description: "Write the failing test before the code, and reproduce a bug with a test before you fix it. Use when implementing logic, fixing a defect, or changing existing behavior."
 ---
 
 # Test-Driven Development

@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/tree/main/pstack/skills/poteto-mode (renamed poteto-mode to kaizen-mode)
 name: kaizen-mode
-description: Kaizen agent style for concise, detailed responses, deliberate subagents, unslopped prose, simple code, and verified work. Use for kaizen, /kaizen-mode, or requests to work in this style.
+description: "Kaizen agent style: concise replies, deliberate subagents, unslopped prose, simple code, and verified work. Routes each task to a playbook and a set of principles."
 disable-model-invocation: true
 ---
 

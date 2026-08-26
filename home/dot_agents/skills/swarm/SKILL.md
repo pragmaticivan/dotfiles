@@ -2,7 +2,7 @@
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/swarm/SKILL.md
 # Merged in: https://github.com/cursor/plugins/blob/main/pstack/skills/arena/SKILL.md (compete mode)
 name: swarm
-description: "Fan out N parallel workers at one task. Cover mode returns one report from slices, races, gauntlets, and exploration. Compete mode spawns N candidates at the same artifact, cross-judges them, picks a base, and grafts the strongest parts of the losers into it. Use for /swarm, 'swarm this', 'arena this', 'throw it in the arena', parallel coverage, or when one attempt at a non-trivial artifact would lock in the wrong shape."
+description: "Fan out N parallel workers at one task. Cover mode returns one report from slices and races. Compete mode cross-judges N candidates, picks a base, and grafts in the best of the losers."
 disable-model-invocation: true
 ---
 

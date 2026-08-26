@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/reflect/SKILL.md
 name: reflect
-description: Spawn three parallel review subagents over the active transcript, surface learnings, and route each to a concrete edit on an existing skill. Use when the user says reflect.
+description: "Mine the active transcript for durable learnings with three parallel reviewers, then route each one to a concrete edit on an existing skill."
 disable-model-invocation: true
 ---
 

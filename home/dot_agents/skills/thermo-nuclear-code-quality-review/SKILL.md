@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-code-quality-review/SKILL.md
 name: thermo-nuclear-code-quality-review
-description: Run an extremely strict maintainability review for abstraction quality, giant files, and spaghetti-condition growth. Use for a thermo-nuclear code quality review, thermonuclear review, deep code quality audit, or especially harsh maintainability review.
+description: "Extremely strict maintainability audit of a branch: abstraction quality, giant files, spaghetti conditions, and ambitious code-judo restructurings."
 disable-model-invocation: true
 ---
 
@@ -10,6 +10,31 @@ disable-model-invocation: true
 Use this skill for an unusually strict review focused on implementation quality, maintainability, abstraction quality, and codebase health.
 
 Above all, this skill should push the reviewer to be **ambitious** about code structure. Do not merely identify local cleanup opportunities. Actively search for "code judo" moves: restructurings that preserve behavior while making the implementation dramatically simpler, smaller, more direct, and more elegant.
+
+## Ambition needs a floor
+
+Ambition means proposing the big move when the code earns it. It does not mean every review must
+produce one. Some diffs are already well structured, and the honest verdict is that the structure
+holds up.
+
+That verdict is a real outcome of this review, not a failure to find something. The cost of a
+manufactured finding is high here: the author reworks sound code, the reviewer's judgment stops
+being trusted, and the next real finding gets discounted. A review that says "this is clean, ship
+it" and names why the structure works is more useful than one that pads a list to look thorough.
+
+So a finding has to clear this bar before it goes in the report:
+
+- It names a concrete problem in the code as written, not a problem a future edit might create.
+  "The regex and the table could drift apart if someone adds a unit" is speculation until someone
+  adds the unit. Missing tests, error-message wording, and unsupported input the caller never
+  passes are not structural findings.
+- It survives the question "what breaks today if this ships unchanged?" If the answer is nothing,
+  it is at most an optional note, and it says so in those words.
+- It does not change behavior for any input. A proposal that adds validation, widens accepted
+  input, or changes a return type is a feature request, and it belongs in a different conversation.
+
+When a diff produces no finding that clears the bar, say the structure holds up and name the
+specific thing it does well. Then stop.
 
 ## Core Prompt
 

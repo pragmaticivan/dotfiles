@@ -1,6 +1,6 @@
 ---
 name: creating-pull-requests
-description: Use this skill BEFORE drafting or writing any pull request content. Trigger as soon as you decide a PR will be created or updated — not at the moment you run the shell command. This means: when the user asks to create a PR, when you're about to push code and open a PR, when splitting work into a separate PR, or when updating an existing PR description. Load this skill first, then draft. Also triggers on "update PR", "refresh PR description", "rewrite PR", or syncing a PR with current branch state.
+description: "Draft or update a pull request description that transfers the author's mental model to the reviewer. Load this before writing any PR text, including a rewrite or a sync to the current branch."
 effort: low
 ---
 

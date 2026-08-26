@@ -1,6 +1,6 @@
 ---
 name: stop-slop
-description: Cut AI tells from any writing. Use when writing or editing prose to eliminate predictable AI patterns and add human voice. Applies to every prose surface, including replies, docs, PR descriptions, commit bodies, and log text.
+description: "Cut AI tells from prose and put the voice back in. Use for any prose surface: a chat reply, a doc, a PR description, a commit body, or a log string."
 model: haiku
 ---
 
@@ -26,31 +26,26 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 - **Let some mess in.** Perfect structure looks machine-made.
 - **Be specific.** Not "this is concerning" but "there's something unsettling about agents churning away at 3am."
 
-## Core Principles
+## Fix the shape, not the vocabulary
 
-1. **Eliminate filler** - Remove predictable opening phrases and emphasis words
-2. **Avoid formulaic patterns** - Sidestep binary contrasts and dramatic structures
-3. **Vary sentence rhythm** - Mix lengths and paragraph endings
-4. **Write directly** - Trust readers without excessive explanation
-5. **Remove quotable moments** - Rewrite anything that reads like a pull-quote
+The tell that survives a rewrite is the sentence's shape. Swapping the fancy words for plain
+ones leaves the rhetorical move intact, and the move is what reads as machine-written. So after
+each rewrite, ask what the sentence is *doing*, not which words it uses.
 
-## Quick Audit Before Finalizing
+Two that keep getting through:
 
-- Check for repetitive sentence lengths
-- Look for monotonous paragraph endings
-- Remove unnecessary em-dashes
-- Cut over-explained metaphors
+- **The concession-then-survival move** (rule 6). "Despite the challenges of migrating legacy
+  data, the system continues to thrive" becomes "The team migrated legacy data, a hard job, and
+  the system still works well." Same move, plainer words, still nothing to know. The move is only
+  gone when a fact replaces it: "The migration moved 4M rows and ran for six hours. Nothing broke."
+  If you cannot supply the fact, cut the sentence. A concession with no specifics was never
+  carrying information.
+- **The triad** (rule 10). "reliable, scalable, and fast" becomes "It is reliable, it scales, and
+  it is fast." Recasting three nouns as three clauses keeps the forced-list rhythm. Count what you
+  actually have evidence for and write that number of items. Usually it is one.
 
-## Assessment Framework
-
-Rate prose 1-10 on each dimension:
-- **Directness** - Does it get to the point?
-- **Rhythm** - Does sentence length vary naturally?
-- **Trust** - Does it respect reader intelligence?
-- **Authenticity** - Does it sound like a human wrote it?
-- **Density** - Is every word earning its place?
-
-Below 35/50: revise.
+The general test: read the before and after side by side. If they make the same move in the same
+order, you edited the vocabulary and left the slop. Change the structure or delete the sentence.
 
 ## Reference Files
 

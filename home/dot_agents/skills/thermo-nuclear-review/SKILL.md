@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-review/SKILL.md
 name: thermo-nuclear-review
-description: Comprehensive security and correctness audit of a branch's changes. Use for thermo nuclear, thermonuclear, or deep review requests, or branch/PR diff audits focused on bugs, breaking changes, security issues, devex regressions, and feature-gate leaks.
+description: "Extremely strict security and correctness audit of a branch diff: bugs, broken features, vulnerabilities, devex regressions, and feature-gate leaks."
 disable-model-invocation: true
 ---
 

@@ -1,6 +1,6 @@
 ---
 name: aeo-optimizer
-description: "Master skill to audit, score, and improve a project's Answer Engine Optimization (AEO) / Generative Engine Optimization (GEO) so AI agents and answer engines (ChatGPT, Claude, Perplexity, Gemini, Google AI Overviews) can discover, parse, trust, cite, and act on its content. Use whenever the user mentions AEO, GEO, LLMO, AI SEO, llms.txt, ai.txt, 'getting cited by AI', 'optimize for ChatGPT/Perplexity', 'AI visibility', citation tracking, making a site/docs/repo 'AI-readable' or 'agent-friendly', or wants to improve how AI tools find and represent their project — even if they don't say 'AEO' explicitly. Works on websites, docs sites, marketing pages, SaaS apps, APIs, and code repos. Produces a 0–100 score, prioritized fixes, and generated artifacts."
+description: "Audit and improve a project's Answer Engine Optimization so AI answer engines can find, parse, trust, and cite it. Use for AEO, GEO, llms.txt, ai.txt, \"AI visibility\", or \"make our docs AI-readable\"."
 ---
 
 # AEO Optimizer (master)

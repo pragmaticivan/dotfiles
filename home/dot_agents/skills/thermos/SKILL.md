@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/thermos/skills/thermos/SKILL.md
 name: thermos
-description: "Launch both thermo-nuclear review subagents in parallel, then synthesize their findings. Use for thermos, double thermo review, or combined bug/security and code-quality branch audits."
+description: "Run both thermo-nuclear reviews in parallel, then synthesize one deduplicated verdict."
 disable-model-invocation: true
 ---
 
