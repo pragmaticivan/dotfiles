@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+{{ range $plugin := .agent_plugins -}}
+# pin: {{ $plugin.repo }}@{{ $plugin.sha }}
+{{ end -}}
+plugin_sources="${HOME}/.agents"
+plugin_revision="{{ range $plugin := .agent_plugins }}{{ $plugin.name }}:{{ $plugin.sha }};{{ end }}"
+state_dir="${XDG_STATE_HOME:-${HOME}/.local/state}/chezmoi-agent-plugins"
+
+needs_install() {
+  local client=$1
+  local marker="${state_dir}/${client}"
+
+  [ ! -f "${marker}" ] || [ "$(cat "${marker}")" != "${plugin_revision}" ]
+}
+
+record_install() {
+  local client=$1
+
+  mkdir -p "${state_dir}"
+  printf '%s\n' "${plugin_revision}" >"${state_dir}/${client}"
+}
+
+install_claude_plugins() {
+  if ! command -v claude >/dev/null 2>&1; then
+    echo "Claude Code is not installed. Skip its plugins."
+    return
+  fi
+  if ! needs_install claude; then
+    return
+  fi
+
+{{ range $plugin := .agent_plugins -}}
+  claude plugin marketplace add "${plugin_sources}/{{ $plugin.name }}-plugin"
+  claude plugin install "{{ $plugin.name }}@{{ $plugin.marketplace }}" --scope user
+{{ end }}
+  record_install claude
+}
+
+install_codex_plugins() {
+  if ! command -v codex >/dev/null 2>&1; then
+    echo "Codex is not installed. Skip its plugins."
+    return
+  fi
+  if ! needs_install codex; then
+    return
+  fi
+
+{{ range $plugin := .agent_plugins -}}
+  codex plugin marketplace add "${plugin_sources}/{{ $plugin.name }}-plugin"
+  codex plugin add "{{ $plugin.name }}@{{ $plugin.marketplace }}"
+{{ end }}
+  record_install codex
+}
+
+install_copilot_plugins() {
+  if ! command -v copilot >/dev/null 2>&1; then
+    echo "Copilot CLI is not installed. Skip its plugins."
+    return
+  fi
+  if ! needs_install copilot; then
+    return
+  fi
+
+{{ range $plugin := .agent_plugins -}}
+  copilot plugin marketplace add "${plugin_sources}/{{ $plugin.name }}-plugin"
+  copilot plugin install "{{ $plugin.name }}@{{ $plugin.marketplace }}"
+{{ end }}
+  record_install copilot
+}
+
+install_claude_plugins
+install_codex_plugins
+install_copilot_plugins

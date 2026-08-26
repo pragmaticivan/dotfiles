@@ -1,0 +1,13 @@
+# Generated from .chezmoidata/skills.yaml. Edit that file, not this one.
+{{ range $plugin := .agent_plugins }}
+[".agents/{{ $plugin.name }}-plugin"]
+type = "archive"
+# pin: {{ $plugin.repo }}@{{ $plugin.sha }}
+url = "https://github.com/{{ $plugin.repo }}/archive/{{ $plugin.sha }}.tar.gz"
+include = [
+{{- range $path := $plugin.include }}
+  "*/{{ $path }}",
+{{- end }}
+]
+stripComponents = 1
+{{ end }}
