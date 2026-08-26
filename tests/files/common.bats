@@ -112,7 +112,6 @@
 
 @test "[common] claude hooks are executable" {
     hooks=(
-        "${HOME}/.claude/hooks/session-start.sh"
         "${HOME}/.claude/hooks/statusline.sh"
         "${HOME}/.claude/hooks/herdr-agent-state.sh"
         "${HOME}/.claude/hooks/git-push-guard.sh"
@@ -167,9 +166,9 @@
     # No python. The skill is judgment plus a lookup.
     [ ! -d "${skill}/scripts" ]
 
-    for parent in "${HOME}/.claude/skills" "${HOME}/.copilot/skills"; do
-        [ -e "${parent}/simplified-technical-english" ]
-    done
+    # Claude needs the symlink. Copilot reads ~/.agents/skills itself, so it
+    # gets the skill from the canonical copy and needs no symlink of its own.
+    [ -e "${HOME}/.claude/skills/simplified-technical-english" ]
 }
 
 @test "[common] the STE card stays small" {
@@ -190,7 +189,9 @@
 @test "[common] agent skills are individually symlinked" {
     [ -d "${HOME}/.agents/skills" ]
 
-    for parent in "${HOME}/.claude/skills" "${HOME}/.copilot/skills"; do
+    # Only Claude gets per-skill symlinks. Copilot discovers ~/.agents/skills
+    # on its own, so a symlink tree under ~/.copilot would duplicate it.
+    for parent in "${HOME}/.claude/skills"; do
         echo "Checking skills directory ${parent}"
         [ -d "${parent}" ]
         [ ! -L "${parent}" ]
