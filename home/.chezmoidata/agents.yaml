@@ -1,0 +1,108 @@
+# Registry for the portable agents.
+#
+# One body per agent lives in .chezmoitemplates/agents/body/<id>.md, written as
+# tool-neutral prose. This file carries the metadata that each tool spells
+# differently, and .chezmoitemplates/agents/header-<tool>.tmpl renders it into
+# that tool's native frontmatter.
+#
+# To add an agent: write the body, add an entry here, then add one two-line
+# wrapper per target under dot_claude/agents, dot_copilot/agents, and
+# dot_codex/agents. To remove one: delete those files and add the destination
+# paths to .chezmoiremove.
+#
+# `write` is explicit rather than derived from the Claude tool list, because
+# Codex has no tool allowlist. It expresses permission as a sandbox mode, so
+# every agent has to state plainly whether it edits files.
+#
+# Claude models are the alias names (opus, sonnet, haiku). Codex takes a real
+# model id plus a reasoning effort. Copilot picks the model itself, so it has no
+# model field.
+agents:
+  ci-watcher:
+    description: >-
+      Watch PR CI for the current branch and report pass or fail with the
+      relevant failure links. Use when waiting for CI results or when CI has
+      failed. Use proactively to monitor branch CI.
+    write: false
+    targets: [claude, copilot, codex]
+    claude:
+      model: haiku
+      tools: Bash
+    codex:
+      model: gpt-5.6
+      reasoning: low
+
+  comment-sicko:
+    description: >-
+      A deranged comment-hater that savors deletion and condemns workaround
+      code. Use before review to strip narration, commented-out code, and
+      suppression comments, and to flag the symbols that need reshaping.
+    write: true
+    targets: [claude, copilot, codex]
+    claude:
+      model: opus
+      tools: Bash, Read, Edit, Glob, Grep
+    codex:
+      model: gpt-5.6
+      reasoning: high
+
+  prose-editor:
+    description: >-
+      Audits writing as a red pen. Flags needless words, passive voice, AI
+      slop, throat-clearing, puffery, and formulaic structures with line
+      references and concrete rewrites. Does not rewrite the document. Use for
+      RFC drafts, PR descriptions, design docs, and any prose others will read.
+    write: false
+    targets: [claude, copilot, codex]
+    claude:
+      model: opus
+      tools: Read, Grep
+    codex:
+      model: gpt-5.6
+      reasoning: high
+
+  skeptical-reviewer:
+    description: >-
+      Adversarial reviewer that attacks claims, hunts contradictions, finds
+      unstated assumptions, and tries to refute. The default stance is
+      disbelief, and the burden of proof sits on the claim. Use for RFC
+      validation, design critique, and code correctness verification.
+    write: false
+    targets: [claude, copilot, codex]
+    claude:
+      model: opus
+      tools: Bash, Read, Glob, Grep
+    codex:
+      model: gpt-5.6
+      reasoning: high
+
+  unit-test-writer:
+    description: >-
+      Writes unit tests for TypeScript, Python, and Go in each language's
+      idiomatic style. Use when new logic needs coverage, when a bug needs a
+      regression test, or when existing tests are weak or missing.
+    write: true
+    targets: [claude, copilot, codex]
+    claude:
+      model: sonnet
+      tools: Read, Write, Edit, Grep, Glob, Bash
+      color: green
+    codex:
+      model: gpt-5.6
+      reasoning: medium
+
+  security-reviewer:
+    description: >-
+      Security vulnerability detection and remediation specialist. Use
+      PROACTIVELY after writing code that handles user input, authentication,
+      API endpoints, or sensitive data. Flags secrets, SSRF, injection, unsafe
+      crypto, and OWASP Top 10 vulnerabilities.
+    write: true
+    targets: [claude, copilot, codex]
+    claude:
+      model: opus
+      tools: Read, Write, Edit, Bash, Grep, Glob
+      color: red
+    codex:
+      model: gpt-5.6
+      reasoning: high

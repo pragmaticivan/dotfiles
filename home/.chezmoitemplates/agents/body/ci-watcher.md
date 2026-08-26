@@ -1,11 +1,3 @@
----
-# Source: https://github.com/cursor/plugins/blob/main/cursor-team-kit/agents/ci-watcher.md
-name: ci-watcher
-description: Watch PR CI for the current branch and report pass/fail with relevant failure links. Use when waiting for CI results or CI has failed. Use proactively to monitor branch CI.
-tools: Bash
-model: haiku
----
-
 # CI watcher
 
 CI monitoring specialist for PR-attached checks.

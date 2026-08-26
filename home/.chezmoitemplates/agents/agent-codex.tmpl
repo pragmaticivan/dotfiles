@@ -1,0 +1,26 @@
+{{- /*
+Renders a complete Codex agent file for ~/.codex/agents.
+Call with (dict "ctx" . "id" "<agent-id>" "body" <rendered body>).
+
+Codex carries the prompt inside the config as `developer_instructions`, so the
+body becomes a TOML string instead of the file's contents.
+
+The string uses the '''literal''' form, not the """basic""" form. A literal
+string processes no escape sequences, and these bodies contain backslashes in
+code examples that a basic string would reject as bad escapes. The one thing a
+literal string cannot hold is a ''' sequence, so a body must not contain one.
+
+Codex names in the docs are snake_case, so the agent id is converted. The tool
+has no tool allowlist. It expresses permission as a sandbox mode, which is why
+the registry states `write` for every agent.
+*/ -}}
+{{- $a := index .ctx.agents .id -}}
+{{- if contains "'''" .body }}{{ fail (printf "agent body %s contains ''' and cannot be a TOML literal string" .id) }}{{ end -}}
+name = {{ .id | replace "-" "_" | quote }}
+description = {{ $a.description | quote }}
+model = {{ $a.codex.model | quote }}
+model_reasoning_effort = {{ $a.codex.reasoning | quote }}
+sandbox_mode = {{ if $a.write }}"workspace-write"{{ else }}"read-only"{{ end }}
+developer_instructions = '''
+{{ .body }}
+'''
