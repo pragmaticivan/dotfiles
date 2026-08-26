@@ -18,7 +18,7 @@ Write a failing test before writing the code that makes it pass. For bug fixes, 
 - Adding edge case handling
 - Any change that could break existing behavior
 
-**When NOT to use:** Pure configuration changes, documentation updates, or static content changes that have no behavioral impact.
+**When NOT to use:** Pure configuration changes, documentation updates, or static content changes that have no behavioral impact. When the behavior matters but a test would be impractical, see When a Failing Test Is Impractical below — that section is the only sanctioned way to skip the regression step, and it still requires executable evidence.
 
 **Related:** For browser-based changes, combine TDD with runtime verification in a real browser — Playwright MCP by default, Chrome DevTools MCP as fallback. See the Browser Testing section below.
 
@@ -127,6 +127,29 @@ export async function completeTask(id: string): Promise<Task> {
 
 // Step 3: Test passes → bug fixed, regression guarded
 ```
+
+### Choose the Narrowest Executable Check
+
+Prefer the closest unit, component, integration, or regression test already used for that codepath. The test should encode intended behavior, not mirror the current implementation. Run it before fixing and confirm it fails for the intended reason — if it passes, or fails for an unrelated reason, correct the test or the reproduction before touching the implementation.
+
+After the fix, rerun the regression test, then run relevant adjacent tests, type checks, lint, or scenario checks when the change has broader risk.
+
+## When a Failing Test Is Impractical
+
+Do not force a test when it would be impractical. If the available test would require broad harness setup, brittle mocks, slow end-to-end infrastructure, production-only state, vague reproduction steps, or large unrelated fixture churn, skip adding a new test and use the closest useful verification instead.
+
+Do not silently skip the regression step. Before fixing, explicitly explain why a failing test is impossible or not worth the cost, then choose the closest executable regression check available: a targeted script, manual reproduction command, browser automation, snapshot comparison, log assertion, or focused integration check.
+
+Prefer no new test over a bad test. A bad test is one that mostly tests mocks, encodes current implementation details, depends on timing or unrelated global state, needs expensive infrastructure for a small fix, or would be deleted immediately after proving the fix.
+
+## Guardrails
+
+- Do not change tests merely to match a wrong implementation.
+- Do not weaken existing assertions unless the expected behavior has genuinely changed and the reason is clear.
+- Keep the regression test focused on the bug; avoid broad fixture churn or unrelated coverage expansion.
+- Do not add tests when the practical signal is weak; use manual or scripted verification and say why.
+- If the bug is flaky, make the test deterministic where possible and document the signal being locked down.
+- If the bug exposes a broader class of failures, first land the focused regression path, then consider additional sibling coverage.
 
 ## The Test Pyramid
 
@@ -389,7 +412,7 @@ For detailed testing patterns, examples, and anti-patterns across frameworks, se
 - Writing code without any corresponding tests
 - Tests that pass on the first run (they may not be testing what you think)
 - "All tests pass" but no tests were actually run
-- Bug fixes without reproduction tests
+- Bug fixes without reproduction tests, or without a stated reason and a substitute check
 - Tests that test framework behavior instead of application behavior
 - Test names that don't describe the expected behavior
 - Skipping tests to make the suite pass
@@ -401,9 +424,17 @@ After completing any implementation:
 
 - [ ] Every new behavior has a corresponding test
 - [ ] All tests pass: `npm test`
-- [ ] Bug fixes include a reproduction test that failed before the fix
+- [ ] Bug fixes include a reproduction test that failed before the fix, or a stated reason plus the substitute check that replaced it
 - [ ] Test names describe the behavior being verified
 - [ ] No tests were skipped or disabled
 - [ ] Coverage hasn't decreased (if tracked)
 
 **Note:** Run each test command after a change that could affect the result. After a clean run, don't repeat the same command unless the code has changed since — re-running on unchanged code adds no confidence.
+
+## Reporting the Result
+
+Report the evidence, not just the outcome:
+
+- Name the failing-before test or executable check and the failure it produced.
+- Name the passing-after test run and any nearby validation performed.
+- If failing-before evidence could not be demonstrated, state why and describe the closest regression check used instead.

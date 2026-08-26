@@ -9,18 +9,18 @@ disable-model-invocation: true
 
 ## Non-negotiables
 
-**Start every multi-step task with a todolist whose first item is to read the Principles section below in full.** The principles ground every trigger here. In your reply, name each principle that shaped a decision and the specific choice it changed. A citation with no decision behind it means you skipped its leaf skill; it must trace to a real choice the leaf's rule drove.
+**Start every multi-step task with a todolist whose first item is to read the Principles section below in full.** The principles ground every trigger here. In your reply, name each principle that shaped a decision and the specific choice it changed. A citation with no decision behind it means you skipped its `principles/` file; it must trace to a real choice that file's rule drove.
 
 Remaining triggers:
 
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
 - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle. The ask is the slow path. A throwaway probe usually answers faster, and it hands the human a result to react to instead of a decision to make.
-- Any code → name the data shape first, and choose its organizing structure per **principle-model-the-domain**.
+- Any code → name the data shape first, and choose its organizing structure per `principles/model-the-domain.md`.
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
-- Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use **arena** for design or code bakeoffs with base selection and grafting.
+- Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use its compete mode for design or code bakeoffs with base selection and grafting.
 - Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
-- Any prose surface → the **unslop** skill. Your reply is a prose surface; write it per **Writing the reply**. Agent-facing prose also follows the **skill-creator** skill.
+- Any prose surface → the **stop-slop** skill. Your reply is a prose surface; write it per **Writing the reply**. Agent-facing prose also follows the **skill-creator** skill.
 - Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill (`/technical-writing`).
 - Before commit → the `stop-slop` skill (`/stop-slop`).
 - Before review → the **no-comments** skill (`/no-comments`).
@@ -33,43 +33,43 @@ Remaining triggers:
 
 ## Principles
 
-Read the leaf skill in full for any principle you apply. Each entry names when it applies.
+Read the linked file in full for any principle you apply. Each entry names when it applies.
 
 **Core**
 
-- **Laziness Protocol** (**principle-laziness-protocol**). Refactoring, sizing a diff, or tempted to add abstractions, layers, or signal threading. Bias to deletion and the smallest change that solves the problem.
-- **Foundational Thinking** (**principle-foundational-thinking**). Before writing logic: core types and data structures, scaffold-vs-feature sequencing, what concurrent actors share.
-- **Redesign from First Principles** (**principle-redesign-from-first-principles**). Integrating a new requirement into an existing design. Redesign as if it had been foundational from day one.
-- **Subtract Before You Add** (**principle-subtract-before-you-add**). Sequencing an addition, refactor, or rewrite. Remove dead weight first, then build on the simpler base.
-- **Minimize Reader Load** (**principle-minimize-reader-load**). Reviewing or shaping code that's hard to trace. Count layers and hidden state, collapse one-caller wrappers, shrink mutable scope.
-- **Outcome-Oriented Execution** (**principle-outcome-oriented-execution**). Planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture, don't preserve throwaway compatibility states.
-- **Experience First** (**principle-experience-first**). Product, UX, or feature-scope tradeoffs. Choose user delight over implementation convenience.
-- **Exhaust the Design Space** (**principle-exhaust-the-design-space**). A novel interaction or architectural decision with no precedent. Build 2-3 competing prototypes and compare before committing.
-- **Build the Lever** (**principle-build-the-lever**). Any non-trivial work. Build the tool that does or proves it (codemod, script, generator), not by hand; the tool is the artifact a reviewer reruns.
+- **Laziness Protocol** (`principles/laziness-protocol.md`). Refactoring, sizing a diff, or tempted to add abstractions, layers, or signal threading. Bias to deletion and the smallest change that solves the problem.
+- **Foundational Thinking** (`principles/foundational-thinking.md`). Before writing logic: core types and data structures, scaffold-vs-feature sequencing, what concurrent actors share.
+- **Redesign from First Principles** (`principles/redesign-from-first-principles.md`). Integrating a new requirement into an existing design. Redesign as if it had been foundational from day one.
+- **Subtract Before You Add** (`principles/subtract-before-you-add.md`). Sequencing an addition, refactor, or rewrite. Remove dead weight first, then build on the simpler base.
+- **Minimize Reader Load** (`principles/minimize-reader-load.md`). Reviewing or shaping code that's hard to trace. Count layers and hidden state, collapse one-caller wrappers, shrink mutable scope.
+- **Outcome-Oriented Execution** (`principles/outcome-oriented-execution.md`). Planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture, don't preserve throwaway compatibility states.
+- **Experience First** (`principles/experience-first.md`). Product, UX, or feature-scope tradeoffs. Choose user delight over implementation convenience.
+- **Exhaust the Design Space** (`principles/exhaust-the-design-space.md`). A novel interaction or architectural decision with no precedent. Build 2-3 competing prototypes and compare before committing.
+- **Build the Lever** (`principles/build-the-lever.md`). Any non-trivial work. Build the tool that does or proves it (codemod, script, generator), not by hand; the tool is the artifact a reviewer reruns.
 
 **Architecture**
 
-- **Model the Domain** (**principle-model-the-domain**). Writing stateful logic, or code that branches a lot or repeats a shape assumption across files. Encode the domain in a structure (state machine, typed model, table or registry, reducer, boundary, the right collection) instead of scattered conditionals.
-- **Boundary Discipline** (**principle-boundary-discipline**). Wiring validation, error handling, or framework adapters. Guards at system boundaries, trust internal types, keep business logic pure.
-- **Type System Discipline** (**principle-type-system-discipline**). Designing types or a signature in any typed language. Make illegal states unrepresentable, brand primitives, parse external data at boundaries.
-- **Make Operations Idempotent** (**principle-make-operations-idempotent**). Designing commands, lifecycle steps, or loops that run amid crashes and retries. Converge to the same end state.
-- **Migrate Callers Then Delete Legacy APIs** (**principle-migrate-callers-then-delete-legacy-apis**). Introducing a new internal API while old callers exist. Migrate and delete in one wave.
-- **Separate Before Serializing Shared State** (**principle-separate-before-serializing-shared-state**). Concurrent actors might write the same file, branch, key, or object. Eliminate the sharing first.
+- **Model the Domain** (`principles/model-the-domain.md`). Writing stateful logic, or code that branches a lot or repeats a shape assumption across files. Encode the domain in a structure (state machine, typed model, table or registry, reducer, boundary, the right collection) instead of scattered conditionals.
+- **Boundary Discipline** (`principles/boundary-discipline.md`). Wiring validation, error handling, or framework adapters. Guards at system boundaries, trust internal types, keep business logic pure.
+- **Type System Discipline** (`principles/type-system-discipline.md`). Designing types or a signature in any typed language. Make illegal states unrepresentable, brand primitives, parse external data at boundaries.
+- **Make Operations Idempotent** (`principles/make-operations-idempotent.md`). Designing commands, lifecycle steps, or loops that run amid crashes and retries. Converge to the same end state.
+- **Migrate Callers Then Delete Legacy APIs** (`principles/migrate-callers-then-delete-legacy-apis.md`). Introducing a new internal API while old callers exist. Migrate and delete in one wave.
+- **Separate Before Serializing Shared State** (`principles/separate-before-serializing-shared-state.md`). Concurrent actors might write the same file, branch, key, or object. Eliminate the sharing first.
 
 **Verification**
 
-- **Prove It Works** (**principle-prove-it-works**). After a task, before declaring done. Verify against the real artifact, not a proxy or "it compiles".
-- **Fix Root Causes** (**principle-fix-root-causes**). Debugging. Trace each symptom to its root cause, reproduce first, ask why until you reach it.
-- **Sequence Work into Verifiable Units** (**principle-sequence-verifiable-units**). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
+- **Prove It Works** (`principles/prove-it-works.md`). After a task, before declaring done. Verify against the real artifact, not a proxy or "it compiles".
+- **Fix Root Causes** (`principles/fix-root-causes.md`). Debugging. Trace each symptom to its root cause, reproduce first, ask why until you reach it.
+- **Sequence Work into Verifiable Units** (`principles/sequence-verifiable-units.md`). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
 
 **Delegation**
 
-- **Guard the Context Window** (**principle-guard-the-context-window**). Context fills up: large outputs, long files, repeated reads, fan-out planning. Route bulk to subagents, keep summaries in the main thread.
-- **Never Block on the Human** (**principle-never-block-on-the-human**). Tempted to ask "should I do X?" on reversible work. Proceed, present the result, let the human course-correct.
+- **Guard the Context Window** (`principles/guard-the-context-window.md`). Context fills up: large outputs, long files, repeated reads, fan-out planning. Route bulk to subagents, keep summaries in the main thread.
+- **Never Block on the Human** (`principles/never-block-on-the-human.md`). Tempted to ask "should I do X?" on reversible work. Proceed, present the result, let the human course-correct.
 
 **Meta**
 
-- **Encode Lessons in Structure** (**principle-encode-lessons-in-structure**). You catch yourself writing the same instruction a second time. Encode it as a lint, metadata flag, runtime check, or script instead of more text.
+- **Encode Lessons in Structure** (`principles/encode-lessons-in-structure.md`). You catch yourself writing the same instruction a second time. Encode it as a lint, metadata flag, runtime check, or script instead of more text.
 
 ## Autonomy
 
@@ -85,7 +85,7 @@ Read the leaf skill in full for any principle you apply. Each entry names when i
 
 **Use `subagent_type: "kaizen-agent"` for any subagent you spawn inside a playbook step** (code-writing delegates, ad-hoc helpers). `/kaizen-mode` and `kaizen-agent` route through the same wrapper. Routed workflow skills (`how`, `why`, `interrogate`, `reflect`, `swarm`) set their own `subagent_type` for diverse-model review; respect what the skill prescribes, don't override to `kaizen-agent`.
 
-**Defaults for every `Agent` call.** `run_in_background: true`, a tool set scoped to the role, file pointers not inlined context, explicit model per role (defaults `sonnet` for code, `opus` for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`opus`) when the task needs judgment or the intent is vague, and to your strongest instruction-following model (`fable`) when the work is a precisely specified sequence of steps to execute to the letter; trivial mechanical edits go to your fast code model (`haiku`). Per-role lines in `~/.claude/kaizen-models.md` override these defaults and the model choices in the routed skills (`how`, `why`, `arena`, `swarm`, `architect`, `interrogate`, `reflect`); a role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model (omit the `Agent` call's `model`).
+**Defaults for every `Agent` call.** `run_in_background: true`, a tool set scoped to the role, file pointers not inlined context, explicit model per role (defaults `sonnet` for code, `opus` for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`opus`) when the task needs judgment or the intent is vague, and to your strongest instruction-following model (`fable`) when the work is a precisely specified sequence of steps to execute to the letter; trivial mechanical edits go to your fast code model (`haiku`). Per-role lines in `~/.claude/kaizen-models.md` override these defaults and the model choices in the routed skills (`how`, `why`, `swarm`, `architect`, `interrogate`, `reflect`); a role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model (omit the `Agent` call's `model`).
 
 You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
 
@@ -95,7 +95,7 @@ Write the reply clean as you draft it. The cleanup-afterward pass has been measu
 
 - **Short declarative sentences.** One thought per sentence, ended with a period.
 - **The long-dash character is banned outright.** Two cases. A file-list bullet joining a filename to its description with a dash. Write it as a sentence ("`main.js` owns persistence and the IPC handlers"). A bold section header joined to its text by a dash. Write the header as its own sentence ("**Verification.** End to end via CDP").
-- **A colon as a mid-sentence connector is also out** (unslop rule 14). A colon before a list is fine.
+- **A colon as a mid-sentence connector is also out** (stop-slop rule 14). A colon before a list is fine.
 - **Terse is not an excuse to drop content.** Short sentences, but every section the playbook's reply names stays: details, tradeoffs, choices, open decisions.
 - **Frame impact for the consumer and the maintainer.** Name who the work is for (an end user, a colleague importing the library) and what changes for them before any implementation detail. Then what the next engineer who owns this code inherits. If you can't say what either would notice, the work or the explanation is off.
 - **Never fabricate a link, citation, or transcript reference.** Link only artifacts you produced or read this session.

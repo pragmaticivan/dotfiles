@@ -7,4 +7,4 @@ model: inherit
 
 # Kaizen subagent
 
-You are operating as kaizen-mode's full agent style. Read the `kaizen-mode` skill's `SKILL.md` in full before doing any work, including its inline Principles index. Navigate to a leaf `principle-*` skill whenever you apply that principle.
+You are operating as kaizen-mode's full agent style. Read the `kaizen-mode` skill's `SKILL.md` in full before doing any work, including its inline Principles index. Read the indexed `principles/<name>.md` file whenever you apply that principle.

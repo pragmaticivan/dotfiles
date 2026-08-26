@@ -29,11 +29,11 @@ Skip Phase A only when the work is genuinely greenfield with no surrounding syst
 
 ## Phase B: Sketch
 
-Run the **arena** skill with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`: the caller's usage written first, then the type sketch, function signatures, module map, and prose rationale derived from it.
+Run the **swarm** skill in compete mode with the design-sketch task and the Phase A grounding artifacts. Pass `references/runner-prompt.md` as each runner's prompt. Each candidate produces a design package shaped per `references/rationale-template.md`: the caller's usage written first, then the type sketch, function signatures, module map, and prose rationale derived from it.
 
 Use your configured architect runners (defaults `opus`, `fable`, `sonnet`, `haiku`).
 
-Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **exhaust-the-design-space** principle skill made concrete. Whole-shape alternatives, not point fixes inside one shape.
+Design it twice. Require at least two structurally distinct candidates before synthesis, even when the first looks sufficient. This is the **exhaust-the-design-space** principle made concrete. Whole-shape alternatives, not point fixes inside one shape.
 
 Screen every candidate against [`references/design-red-flags.md`](references/design-red-flags.md) before synthesis. Reject or revise shallow modules, information leakage, temporal decomposition, and pass-through methods.
 
@@ -47,7 +47,7 @@ Default: proceed directly to implementation with the synthesized design. No huma
 
 Opt in to a checkpoint when the invoker explicitly asks: "/architect with checkpoint," "stop and show me before implementing," or similar. Then surface the synthesized design and pause for sign-off.
 
-The synthesis can ship as its own commit either way. That's the "scaffold first" mode of the **foundational-thinking** principle skill; subsequent commits read as filling in bodies against a stable contract. Planned and scoped breakage during fill-in is fine, per the **outcome-oriented-execution** principle skill. For adversarial pressure on the design before implementing, run the **interrogate** skill on the synthesized sketch.
+The synthesis can ship as its own commit either way. That's the "scaffold first" mode of the **foundational-thinking** principle; subsequent commits read as filling in bodies against a stable contract. Planned and scoped breakage during fill-in is fine, per the **outcome-oriented-execution** principle. For adversarial pressure on the design before implementing, run the **interrogate** skill on the synthesized sketch.
 
 If the human pushes back on the shape (in a checkpoint or after the fact), treat that as Phase A evidence. Re-ground and re-run Phase B before writing more code.
 
@@ -59,7 +59,7 @@ Deviations from the sketch are signal worth surfacing, not friction to absorb si
 
 ## Phase E: Scrap when the architecture is wrong
 
-If implementation keeps producing friction the sketch can't absorb, throw the sketch out. Don't bolt fixes onto a wrong design, per the **redesign-from-first-principles** and **fix-root-causes** principle skills.
+If implementation keeps producing friction the sketch can't absorb, throw the sketch out. Don't bolt fixes onto a wrong design, per the **redesign-from-first-principles** and **fix-root-causes** principles.
 
 The signal is a *pattern*, not single instances. Tells:
 
@@ -76,8 +76,8 @@ When you scrap:
 
 1. Re-run the **how** skill over what's been built. The implementation lessons enter the new design as inputs, not vibes.
 2. Redesign as if the new constraints had been day-one assumptions, per redesign-from-first-principles.
-3. Subtract before adding, per the **subtract-before-you-add** principle skill. The new sketch should be smaller than the old one before it grows.
-4. Return to Phase B and re-run arena.
+3. Subtract before adding, per the **subtract-before-you-add** principle. The new sketch should be smaller than the old one before it grows.
+4. Return to Phase B and re-run the swarm.
 
 ## Outputs
 

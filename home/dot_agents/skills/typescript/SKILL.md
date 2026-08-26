@@ -7,7 +7,7 @@ description: "Write, review, and configure TypeScript with strict types, no `any
 
 # TypeScript
 
-Grounds the `principle-type-system-discipline` and `principle-boundary-discipline` skills in TypeScript
+Grounds the Type System Discipline and Boundary Discipline principles (`../kaizen-mode/principles/`) in TypeScript
 syntax. Those skills say what to aim for in any typed language. This one says how TypeScript spells it,
 which compiler flags do the work for you, and where the language has sharp edges.
 

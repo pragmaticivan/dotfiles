@@ -12,17 +12,17 @@ Plan when the change spans three or more files, introduces architecture, has com
 
 ## 1. Re-read principles
 
-Read the **Principles** section of the `kaizen-mode` skill end to end, and the leaf `principle-*` skills it indexes. The principles govern every plan decision; cross-link them.
+Read the **Principles** section of the `kaizen-mode` skill end to end, and the `principles/*.md` files it indexes. The principles govern every plan decision; cross-link them.
 
 ## 2. Scope and constraints
 
-State your read of scope and constraints in one paragraph. Use `AskUserQuestion` only for genuinely ambiguous intent (the **never-block-on-the-human** principle skill); give concrete options with each open question.
+State your read of scope and constraints in one paragraph. Use `AskUserQuestion` only for genuinely ambiguous intent (the **never-block-on-the-human** principle); give concrete options with each open question.
 
 Resolve what is in scope vs explicitly out, technical or platform constraints, patterns to preserve, and the definition of done.
 
 ## 3. Explore in subagents
 
-Delegate codebase exploration (the **guard-the-context-window** principle skill).
+Delegate codebase exploration (the **guard-the-context-window** principle).
 
 - Prefer `subagent_type: "kaizen-agent"`. `general-purpose` is the fallback. Never use the built-in `plan` subagent_type; it ignores this skill.
 - Pass `model:` explicitly per the configured roles (defaults `sonnet` for code, `opus` for judgment).
@@ -47,7 +47,7 @@ NN-slug/
 
 - One function or type plus tests, or one bug fix. Not "one file".
 - Two to three files touched, max.
-- Prefer eight to ten small phases over three to four large ones to preserve option value (the **foundational-thinking** principle skill).
+- Prefer eight to ten small phases over three to four large ones to preserve option value (the **foundational-thinking** principle).
 - Split if a phase has more than five test cases or three functions.
 
 ### Overview file
@@ -55,7 +55,7 @@ NN-slug/
 - **Context.** Problem and why now.
 - **Scope.** Included; explicitly excluded.
 - **Constraints.** Technical, platform, dependency, pattern.
-- **Alternatives.** Two or three approaches sketched, choice and rationale (the **exhaust-the-design-space** principle skill). Skip when constraints dictate one.
+- **Alternatives.** Two or three approaches sketched, choice and rationale (the **exhaust-the-design-space** principle). Skip when constraints dictate one.
 - **Applicable skills.** Domain skills the implementer should invoke, by name.
 - **Phases.** Ordered standard-markdown links to phase files.
 - **Verification.** Project-level commands.
@@ -66,12 +66,12 @@ NN-slug/
 - Back-link to overview.
 - **Goal.** What the phase accomplishes.
 - **Changes.** Files affected and the change at a high level. What and why, not how. No code snippets.
-- **Data structures.** Name the key types or schemas. One-line sketch only (the **foundational-thinking** principle skill).
+- **Data structures.** Name the key types or schemas. One-line sketch only (the **foundational-thinking** principle).
 - **Verification.** Per section 6.
 
-Order phases so infrastructure and shared types land first (the **foundational-thinking** principle skill). Each phase should be independently shippable.
+Order phases so infrastructure and shared types land first (the **foundational-thinking** principle). Each phase should be independently shippable.
 
-For changes touching existing code, apply the **redesign-from-first-principles** principle skill: if we'd built this with the new requirement on day one, what would it look like? Redesign holistically; deliver incrementally.
+For changes touching existing code, apply the **redesign-from-first-principles** principle: if we'd built this with the new requirement on day one, what would it look like? Redesign holistically; deliver incrementally.
 
 If a phase creates or edits a skill, the phase instructs the implementer to use the **skill-creator** skill.
 
@@ -88,7 +88,7 @@ Each phase needs both:
 - Native mobile: whatever simulator-driving skill your team has.
 - No control skill for the touched surface: flag it in the plan.
 
-For bug fixes, the loop is reproduce on the surface, fix, verify on the same surface. Unit tests show a branch behaves a certain way; they do not prove the bug is gone (the **prove-it-works** principle skill).
+For bug fixes, the loop is reproduce on the surface, fix, verify on the same surface. Unit tests show a branch behaves a certain way; they do not prove the bug is gone (the **prove-it-works** principle).
 
 ## 6. Implementation guidance
 
@@ -96,7 +96,7 @@ In the overview, name which kaizen-mode non-negotiables the implementer must app
 
 - the **how** skill over each unfamiliar subsystem before changing it.
 - the **interrogate** skill for adversarial review on contested designs before shipping.
-- `/stop-slop` over each diff before commit. the **unslop** skill over any prose surface.
+- `/stop-slop` over each diff before commit, and over any prose surface.
 - the **show-me-your-work** skill to keep a decision trail when the plan is large enough to need an auditable record.
 - the **Babysit** playbook (`../playbooks/babysit.md`) after opening the PR.
 
