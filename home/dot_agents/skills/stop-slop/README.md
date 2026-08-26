@@ -8,6 +8,9 @@ This skill is adapted from [stop-slop](https://github.com/hardikpandya/stop-slop
 
 Vendored from [tdhopper/dotfiles2.0](https://github.com/tdhopper/dotfiles2.0/tree/master/.claude/skills/stop-slop).
 
+The numbered rule catalog in `references/patterns.md` and the "Adding soul" section come from the
+`unslop` skill, which was merged into this one.
+
 ## Usage
 
 This skill is automatically available when writing or editing prose. It helps make writing more direct, authentic, and human by:
@@ -20,6 +23,7 @@ This skill is automatically available when writing or editing prose. It helps ma
 ## Files
 
 - `SKILL.md` - Core skill instructions
+- `references/patterns.md` - Numbered rule catalog, cited by number from other skills
 - `references/phrases.md` - Specific phrases to eliminate
 - `references/structures.md` - Formulaic patterns to avoid
 - `references/examples.md` - Before/after transformations

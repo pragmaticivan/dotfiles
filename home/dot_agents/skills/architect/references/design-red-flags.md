@@ -31,3 +31,21 @@ Group code around domain knowledge and ownership. Methods that run at different 
 A pass-through method forwards the same arguments to another method with the same shape. It adds a layer without hiding complexity.
 
 Remove it or move responsibility to the module that can complete the operation. Keep a forwarding boundary only when it adds policy, adaptation, or a distinct abstraction.
+
+## Unbounded observable surface (Hyrum's Law)
+
+With enough callers, every observable behavior becomes a contract, whatever the documentation promises. Undocumented quirks, error message text, ordering, and timing all get depended on.
+
+Screen for what the candidate exposes beyond its stated interface. Be deliberate about each observable behavior, because each one is a commitment. Contract tests do not save you here, so a change that looks safe can still break a caller that depended on something you never meant to promise.
+
+## No deprecation path
+
+A design that cannot remove anything is a design that only grows. Plan removal when you add the surface, not when it hurts.
+
+Ask how a caller migrates off each part of the interface, and what signals the removal. A candidate with no answer keeps every mistake forever.
+
+## Version forking
+
+Avoid a shape that makes consumers pick between two versions of the same thing. Diamond dependencies follow, where different callers need different versions at once.
+
+Design as if one version exists. Extend the interface rather than forking it.
