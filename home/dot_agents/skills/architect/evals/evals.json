@@ -1,0 +1,49 @@
+{
+  "skill_name": "architect",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/architect I need to add a new `webhook` delivery channel to billing-service's NotificationDispatcher. Right now it only supports `email` and `sms`, each implementing the `Channel` interface in notifications/channel.go, and dispatcher.go retries failed sends off an in-memory queue with exponential backoff. Sketch how a WebhookChannel should plug into that without breaking the existing retry contract, including how it should classify non-2xx responses as retryable vs. terminal.",
+      "expected_output": "The response first grounds itself by tracing the existing Channel interface, dispatcher.go's retry/backoff logic, and how email and sms classify failures, treating this as mandatory since WebhookChannel integrates with a live subsystem. It then runs a compete-style sketch producing at least two structurally distinct candidates for where response classification and retry policy live (e.g., inside WebhookChannel vs. a shared classifier the dispatcher owns), screens both against the design-red-flags list, and synthesizes one design package with usage shown before the type sketch. It must not skip straight to a type sketch without grounding, and must not write the actual WebhookChannel implementation before the sketch is agreed.",
+      "files": [],
+      "expectations": [
+        "Response describes tracing the existing Channel interface and dispatcher.go's retry/backoff behavior (running the `how` skill or equivalent grounding) before producing any sketch",
+        "Response treats this grounding step as mandatory rather than optional, since WebhookChannel integrates with an existing subsystem",
+        "Response produces at least two structurally distinct candidate designs for WebhookChannel (e.g., differing on where response classification or retry policy is owned), not two minor variations of one shape",
+        "Response screens the candidates against design red flags such as shallow module, information leakage, or pass-through methods before picking a base",
+        "Output shows the caller's usage (how WebhookChannel is registered/invoked) before the type sketch, with a prose rationale",
+        "Response does not write the full WebhookChannel implementation body before the sketch is synthesized and the design package is presented",
+        "Response does not claim the design is grounded without referencing the actual existing files (channel.go, dispatcher.go) or their retry/classification logic"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "hey can you /architect a little config-diffing tool i want to build. it reads two yaml files and prints a structured diff of just the keys that changed values, nothing fancy. it's a brand new standalone script, own repo, nothing existing to plug into or break",
+      "expected_output": "Since the tool is genuinely greenfield with no surrounding system, the response explicitly notes Phase A grounding can be skipped and moves straight to sketching, without inventing an existing subsystem to trace or running the `how` skill over nonexistent code. It still produces at least two structurally distinct candidate shapes for the diff tool (e.g., streaming key-by-key comparison vs. materializing both trees then walking a merged structure), screens them against the red-flags list, and returns a synthesized design package (types, signatures, usage) rather than a working implementation. It must not treat the tool's simplicity as license to settle for a single candidate.",
+      "files": [],
+      "expectations": [
+        "Response states or clearly implies that Phase A grounding is being skipped because the work is greenfield with no existing system to integrate with",
+        "Response does not claim to run the `how` skill over an existing codebase or subsystem, since none exists for this tool",
+        "Response produces at least two structurally distinct candidate shapes for the diff tool (e.g., different data-flow or representation choices), not point variations of one shape",
+        "Response screens the candidates against the design-red-flags checklist before synthesizing a final design",
+        "Output is a design package (type sketch, signatures, usage) with 'not implemented' bodies or pseudocode rather than a fully working diff implementation",
+        "Response does not use the tool's small size as a reason to skip the two-candidate requirement entirely"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/architect Add a Tags resource. Same shape as Categories in resources/categories.py: id, name, slug fields, same CRUD handlers, same repository pattern, same serializer class. Nothing new to decide here.",
+      "expected_output": "The response recognizes there is no genuine design decision to make since the shape is already fixed by mirroring the existing Categories resource exactly, and says running a full swarm compete with two structurally distinct candidates would be over-engineering for this case. It names Categories as the source of the shape, produces a direct sketch (or goes straight to implementation) of the Tags resource's types, handlers, repository, and serializer mirroring Categories, and does not manufacture a fake second 'structurally distinct' alternative just to satisfy the letter of the compete rule.",
+      "files": [],
+      "expectations": [
+        "Response explicitly states that a full two-candidate swarm compete is unnecessary or over-engineered for this task",
+        "Response gives the reasoning that the shape is already fixed by mirroring the existing Categories resource, not derived from a fresh design exploration",
+        "Response does not fabricate a second 'structurally distinct' candidate purely to satisfy the two-candidate rule when no real design alternative exists",
+        "Response does not present superficial variations (e.g., renamed fields, reordered methods) inside the Categories shape as if they were structurally distinct alternatives",
+        "Response still produces a concrete plan or sketch for the Tags resource's types, handlers, repository, and serializer",
+        "Response names Categories/resources/categories.py explicitly as the pattern being mirrored",
+        "Response surfaces this as a deliberate judgment call rather than silently skipping the compete step without explanation"
+      ]
+    }
+  ]
+}

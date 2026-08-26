@@ -12,6 +12,36 @@
         "References documentation content returned by the script in the final answer",
         "Mentions version-specific handling if a version is relevant to the answer"
       ]
+    },
+    {
+      "id": 2,
+      "prompt": "next 13.4 -> 14.2 bump broke useRouter from next/router, getting 'invariant expected app router to be mounted'. does push()/query still work the same under app router?",
+      "expected_output": "The response runs scripts/context7.py docs against the Next.js library ID (optionally with a version segment such as /vercel/next.js/14) with a topic targeting the app router / useRouter migration, then explains the difference between the pages-router next/router hook and the app-router next/navigation hook using content from the fetched docs. It states plainly whether push() and query access work the same way, and flags any caveats the docs mention (such as query no longer being on the router object). It does not assert the migration behavior from memory before checking the docs, since the API differs between the two routers.",
+      "files": [],
+      "expectations": [
+        "Invokes scripts/context7.py docs (or search then docs) rather than answering the version-specific question from memory alone",
+        "Uses the Next.js library ID /vercel/next.js, optionally with a version suffix like /vercel/next.js/14",
+        "Passes a topic focused on the app router / useRouter / navigation migration to scripts/context7.py",
+        "Explains the distinction between next/router (pages router) and next/navigation (app router) grounded in the fetched docs",
+        "Does not claim push()/query behave identically across the two routers without confirming against the fetched docs",
+        "Does not state or imply the fetched documentation was skipped because the answer 'seemed obvious'",
+        "If the docs mention that query is not available on the app-router router object, surfaces that caveat"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "hey so we vendor an internal package called @everquote-labs/quote-throttle for rate limiting quote requests, it's not on npm, just sits in our private registry. can you check the context7 docs for what options the createThrottle() function takes? i think theres a burstSize param but not sure",
+      "expected_output": "The response attempts scripts/context7.py search for the package (and retries with an alternate name per the skill's recovery workflow), finds no matching library because it is a private, unpublished internal package outside Context7's index, and clearly tells the user the lookup found nothing rather than guessing. It does not state or imply that createThrottle() takes a burstSize option, and it does not fabricate any other option name or signature. It points the user to the package's own source or README as the way to confirm the API.",
+      "files": [],
+      "expectations": [
+        "Invokes scripts/context7.py search with a query derived from the package name before answering",
+        "Attempts at least one alternate search phrasing (e.g. without the scope, or with the org name) per the skill's recovery workflow before giving up",
+        "Explicitly reports that no matching library/documentation was found for this package",
+        "Does not state or confirm that createThrottle() accepts a burstSize parameter",
+        "Does not invent any other function signature or option name for createThrottle()",
+        "Does not imply that a private, unpublished internal package would be present in Context7's public index",
+        "Recommends checking the package's own source/README or asking the team that owns it instead of guessing the API"
+      ]
     }
   ]
 }

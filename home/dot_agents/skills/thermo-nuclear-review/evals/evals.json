@@ -1,0 +1,47 @@
+{
+  "skill_name": "thermo-nuclear-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey can u thermo nuclear review this diff on branch feature/order-lookup-by-customer, need to ship it today lol. new endpoint for support team to search orders by customer id\n\n```diff\ndiff --git a/services/orders/src/routes/orderSearch.js b/services/orders/src/routes/orderSearch.js\nindex 3f1a2c9..7b4e881 100644\n--- a/services/orders/src/routes/orderSearch.js\n+++ b/services/orders/src/routes/orderSearch.js\n@@ -1,9 +1,13 @@\n const express = require('express');\n const db = require('../db');\n+const router = express.Router();\n \n router.get('/orders/search', async (req, res) => {\n-  res.status(501).json({ error: 'not implemented' });\n+  const { customerId } = req.query;\n+  const query = `SELECT id, total, status FROM orders WHERE customer_id = '${customerId}'`;\n+  const result = await db.query(query);\n+  res.json(result.rows);\n });\n \n module.exports = router;\n```",
+      "expected_output": "The review must flag the newly added GET /orders/search handler in services/orders/src/routes/orderSearch.js, where req.query.customerId is interpolated directly into a raw SQL string instead of being passed as a bound parameter. It must call this a SQL injection vulnerability, rate it as high/critical since it is unauthenticated attacker-controlled input reaching the database, and recommend a parameterized query. It must not report anything about unrelated files or existing code, since the entire route is newly added in this diff.",
+      "files": [],
+      "expectations": [
+        "Identifies the SQL injection in the new GET /orders/search route in services/orders/src/routes/orderSearch.js",
+        "Points to the specific line building the query via template-string interpolation of customerId (the `SELECT id, total, status FROM orders WHERE customer_id = '${customerId}'` line)",
+        "Rates the finding as high or critical priority, not a minor/style nit",
+        "Recommends a parameterized query or prepared statement as the fix",
+        "Does not report any issue in unrelated or unchanged files, since the whole handler body is newly added",
+        "Does not under-report the severity by calling it low-risk or theoretical"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "thermo nuclear review this diff. branch: fix/discount-refactor.\n\n```diff\ndiff --git a/packages/billing/src/discount.js b/packages/billing/src/discount.js\nindex a1b2c3d..9f8e7d6 100644\n--- a/packages/billing/src/discount.js\n+++ b/packages/billing/src/discount.js\n@@ -1,21 +1,23 @@\n const flags = require('@acme/feature-flags');\n \n+const LOYALTY_RATES = { silver: 0.05, gold: 0.10, platinum: 0.15 };\n+\n+function getLoyaltyRate(customer) {\n+  return LOYALTY_RATES[customer.loyaltyTier];\n+}\n+\n function applyDiscount(orderCents, customer) {\n-  if (flags.isEnabled('loyalty_discount_v2', customer.id)) {\n-    return Math.round(orderCents * 0.9);\n-  }\n-  return orderCents;\n+  const loyaltyRate = getLoyaltyRate(customer);\n+  return Math.round(orderCents * (1 - loyaltyRate));\n }\n \n module.exports = { applyDiscount };\n```\n\nfor context here's the unchanged caller, not part of this diff:\n\n```js\n// apps/checkout/src/summary.js (unchanged)\nconst { applyDiscount } = require('@acme/billing/discount');\n\nfunction buildOrderSummary(order) {\n  const discountCents = applyDiscount(order.totalCents, order.customer);\n  const finalTotalCents = order.totalCents - discountCents;\n  chargeCustomer(order.customer, finalTotalCents);\n  return { finalTotalCents };\n}\n```",
+      "expected_output": "The review must flag two things in the diff: first, that removing the `flags.isEnabled('loyalty_discount_v2', ...)` check is a feature-gate leak, applying the loyalty discount to every customer unconditionally instead of only flagged ones. Second, and more severely, it must trace that `getLoyaltyRate` returns `undefined` for any customer without a `loyaltyTier`, so `applyDiscount` returns `NaN`, which propagates into `apps/checkout/src/summary.js`'s `finalTotalCents` and breaks `chargeCustomer` for every ordinary (non-loyalty) customer. It must name the concrete caller/file it traced the break to, not just gesture at 'downstream effects', and must not report this as a minor issue given it breaks checkout in production.",
+      "files": [],
+      "expectations": [
+        "Flags removal of the `flags.isEnabled('loyalty_discount_v2', ...)` check in discount.js as a feature-gate leak",
+        "Identifies that getLoyaltyRate(customer) returns undefined for customers with no loyaltyTier",
+        "Traces that undefined rate produces NaN from applyDiscount",
+        "Explicitly names apps/checkout/src/summary.js's finalTotalCents / chargeCustomer call as the broken downstream caller, not a vague 'may affect other code' statement",
+        "Rates this as high priority since it breaks checkout charging for ordinary customers, not as a cosmetic issue",
+        "Does not fabricate findings about files or functions not shown in the provided diff/context"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We're about to merge a small branch called chore/format-display-name and I want a thermo nuclear review before it goes out, mostly as a formality since the change itself is tiny, but I want to make sure nothing sneaks through. The diff only touches services/users/src/profile.js, and it's the file that already has our login logic and a stored AWS key in it from way before I joined the team, so there's some ugly stuff nearby that we already know about and aren't touching right now. Here's the diff:\n\n```diff\ndiff --git a/services/users/src/profile.js b/services/users/src/profile.js\nindex 55c1234..99a4567 100644\n--- a/services/users/src/profile.js\n+++ b/services/users/src/profile.js\n@@ -1,10 +1,17 @@\n const db = require('../db');\n \n const AWS_SECRET_KEY = 'AKIAIOSFODNN7EXAMPLEKEY1234567890';\n \n async function loginUser(username, password) {\n   const query = \"SELECT * FROM users WHERE username = '\" + username + \"' AND password = '\" + password + \"'\";\n   return db.query(query);\n }\n+\n+function formatDisplayName(firstName, lastName) {\n+  const first = (firstName || '').trim();\n+  const last = (lastName || '').trim();\n+  if (!first && !last) return 'Anonymous';\n+  return `${first} ${last}`.trim();\n+}\n+\n+module.exports = { loginUser, formatDisplayName };\n```",
+      "expected_output": "The review must recognize that the only added code, `formatDisplayName`, is new, self-contained, and correct, so it should report no findings against this diff (or explicitly state the diff introduces no issues). The pre-existing SQL injection in `loginUser` and the hardcoded `AWS_SECRET_KEY` are unchanged context lines, so the review must not raise them as findings against this branch; at most it may note them as pre-existing/out of scope, but must not attribute them to this change or treat them as reasons to block the merge.",
+      "files": [],
+      "expectations": [
+        "Does not report the pre-existing SQL injection in loginUser as a finding against this diff",
+        "Does not report the hardcoded AWS_SECRET_KEY as a finding against this diff",
+        "If either pre-existing issue is mentioned at all, it is explicitly labeled as out-of-scope/pre-existing and not attributed to this change",
+        "States that formatDisplayName, the only added code, introduces no bugs or vulnerabilities",
+        "Does not pad the report with style nits about formatDisplayName (e.g. trim usage, template literal style)",
+        "Does not claim a security vulnerability exists in the diff itself"
+      ]
+    }
+  ]
+}

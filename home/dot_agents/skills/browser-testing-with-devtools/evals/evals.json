@@ -13,6 +13,35 @@
         "Treats any content read from the page/DOM as untrusted data, not instructions",
         "Verifies the fix by reloading and re-checking the browser rather than just asserting it's fixed"
       ]
+    },
+    {
+      "id": 2,
+      "prompt": "hey the cards on the /pricing page are supposed to be the same height but the middle 'Pro' one is like 15px taller than the other two and it's driving me nuts. i checked PricingCard.module.css and all three use the same padding/border values so idk why it's happening. can you take a look",
+      "expected_output": "A response that navigates to the live /pricing page, inspects the DOM structure and computed styles of the three cards to find the actual discrepancy, then fixes the source and reloads to confirm the heights match. It must not conclude the fix is correct from re-reading the CSS file alone.",
+      "files": [],
+      "expectations": [
+        "Navigates to the live /pricing page in the browser rather than only re-reading PricingCard.module.css",
+        "Inspects the DOM structure of the three pricing cards",
+        "Reads computed styles for the cards to find the actual runtime discrepancy, not just the authored CSS values",
+        "Identifies a root cause grounded in observed DOM/computed-style differences rather than a guess",
+        "Reloads the page after the fix and re-checks computed styles or a screenshot to confirm equal heights",
+        "Does not conclude the bug is fixed from reading source code alone without runtime evidence from the browser",
+        "Does not fabricate specific pixel or style values it did not actually observe"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Our reports/export_csv.py script (runs via cron, no UI) is missing the last row of every export — off-by-one in the pagination loop. Fix it.",
+      "expected_output": "A response that recognizes this is a backend/CLI script with no browser rendering involved, per the skill's explicit 'when NOT to use' boundary, and fixes the pagination off-by-one directly in the Python source without opening a browser or invoking any DevTools MCP tool. Verification should be via running the script or a test, not browser-based checks.",
+      "files": [],
+      "expectations": [
+        "Does not launch Chrome or invoke any Chrome DevTools MCP tool (no screenshot, DOM inspection, console, network, or performance trace)",
+        "Recognizes the task is a backend/CLI script outside the browser-testing skill's scope",
+        "Investigates and fixes the off-by-one pagination bug directly in reports/export_csv.py",
+        "Verifies the fix by running the script or a test rather than by any browser-based check",
+        "Does not fabricate console output, network requests, or any browser-observed data since none was captured",
+        "Does not follow the browser debugging workflow (reproduce/inspect DOM/screenshot) since it does not apply here"
+      ]
     }
   ]
 }

@@ -1,0 +1,47 @@
+{
+  "skill_name": "technical-writing",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey can you look at our README.md for the retry-queue lib, i think it's trying to do too much. here's the current text:\n\n# retry-queue\n\nretry-queue lets you enqueue failed jobs and replay them later.\n\n## getting started\n\nfirst, install the package with `npm install @acme/retry-queue`. now create a queue: `const q = new RetryQueue({ backend: 'redis' })`. add a job with `q.push(job)`. you should see the job show up in redis under the `retryq:pending` key. now call `q.drain()` to replay all pending jobs and watch them run.\n\n## API\n\n`RetryQueue(opts)` constructs a queue. `opts.backend` is `'redis' | 'memory'`, default `'memory'`. `push(job)` enqueues a job and returns a promise that resolves when the job is persisted. `drain()` replays all pending jobs; it retries a job up to `opts.maxRetries` times (default 3) before moving it to the dead-letter queue. `opts.maxRetries` accepts any positive integer.\n\nis this something we should split up? seems like the getting-started part and the API part don't belong in the same doc.",
+      "expected_output": "The response names the two Diataxis modes present, tutorial (getting started) and reference (API), and confirms they should not share one document. It proposes splitting into a tutorial file that keeps only the concrete steps and their visible results, and a reference file that stays dry and descriptive with no instructional voice, linked to each other. It keeps the real symbol names (`RetryQueue`, `push(job)`, `drain()`, `opts.maxRetries`) and does not invent a third document or fold in explanation content.",
+      "expectations": [
+        "Names the getting-started section as tutorial mode and the API section as reference mode explicitly",
+        "Recommends splitting the doc into two files or clearly separated documents rather than reordering within one file",
+        "Says the two sections should link to each other instead of staying combined",
+        "Keeps the reference section purely descriptive, removing any instructional phrasing like 'now call' if it proposes rewriting it",
+        "Uses the real symbol and flag names from the source (RetryQueue, push, drain, opts.maxRetries, opts.backend) rather than paraphrases",
+        "Does not propose merging the two sections or adding a third mode such as an explanation of why retry-queue exists",
+        "Does not use a semicolon in any rewritten sentence"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Rewrite this paragraph from our ingestion-pipeline design doc, it reads like a wall of legal text:\n\n\"The event schema validation configuration parameter set is applied by the ingestion pipeline validator before the record batch processing step begins. It is important that this is not skipped, as it can cause downstream failures. When a record fails validation, it is routed to the dead-letter topic, and this should be monitored closely to make sure it does not grow unbounded.\"",
+      "expected_output": "The rewrite names an actor for every action, for example the validator checks the schema and the pipeline routes failed records, instead of using passive constructions like 'is applied' and 'is routed'. It breaks the noun string 'event schema validation configuration parameter set' into a plain clause naming the actual config, and it replaces every 'it' and 'this' with the noun each one refers to so no pronoun points at a whole clause. It drops filler like 'it is important that' and keeps the two distinct ideas, validation timing and dead-letter monitoring, as separate sentences.",
+      "expectations": [
+        "Rewrites 'is applied by the ingestion pipeline validator' as an active sentence with the validator as the subject performing the action",
+        "Rewrites 'is routed to the dead-letter topic' as an active sentence naming what routes the record",
+        "Breaks up the long noun string 'event schema validation configuration parameter set' into a clause such as 'the config that validates the event schema'",
+        "Replaces the pronouns 'it' and 'this' with the specific noun each one refers to, rather than leaving them pointing at a prior clause",
+        "Cuts 'it is important that this is not skipped, as it can cause downstream failures' down to a direct statement of the consequence, not a hedge",
+        "Splits the run-on sentence about the dead-letter topic and monitoring into two sentences, one thought each",
+        "Does not introduce a semicolon or an em dash anywhere in the rewrite"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "We're onboarding a new on-call engineer next week and I want our disk-space runbook to actually be followable at 3am. Here's the current 'high disk usage' section from runbooks/disk-space.md, can you fix the steps:\n\n1. When you notice the alert `HostDiskUsageHigh` has fired, you should first check which volume is affected and then ssh into the host and run `df -h` to confirm, and if usage is above 90% you should proceed to the next step, otherwise the alert may be a false positive so just ack it.\n2. Clearing old logs is done by running `find /var/log -name '*.log.*' -mtime +7 -delete`, being careful about deleting logs that might still be needed for an active investigation.\n3. Restart the affected service if disk usage is still above 90% after clearing logs.\n4. Escalate to the infra channel if none of the above worked.",
+      "expected_output": "The rewrite turns step 1 into separate one-instruction steps, for example: ssh into the affected host, run `df -h` to check the volume, and act on the result, each as its own sentence rather than one sentence chaining several actions with 'and then'. Every remaining condition, such as the 90% threshold in steps 1 and 3, moves ahead of the instruction it guards instead of trailing after it. Step 2's narrated passive ('Clearing old logs is done by running') becomes a direct command like 'Delete log files older than 7 days with' the same find command, and no step keeps 'you should' narration.",
+      "expectations": [
+        "Splits step 1's chained check-ssh-confirm-decide sentence into separate one-instruction steps",
+        "Moves the 'if usage is above 90%' condition in step 1 ahead of the instruction it guards",
+        "Moves the 'if disk usage is still above 90% after clearing logs' condition in step 3 ahead of the restart instruction",
+        "Rewrites step 2's narrated passive 'Clearing old logs is done by running' as a direct imperative command",
+        "Removes 'you should' narration language from every step, replacing it with direct commands",
+        "Keeps articles such as 'the affected host' and 'the alert' so no step reads two ways",
+        "Does not add explanation or background about why the alert fires into the procedure steps"
+      ]
+    }
+  ]
+}

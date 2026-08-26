@@ -1,0 +1,50 @@
+{
+  "skill_name": "thermos",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "thermos this branch before i open the pr — it's `feature/quote-retry-backoff`, touches src/quotes/retryClient.ts and src/quotes/backoffPolicy.ts, about 180 lines changed. added exponential backoff around the carrier quote call since we were hammering their api on transient 5xx. nothing fancy, just want a sanity check before i push.",
+      "expected_output": "The assistant gathers the diff for feature/quote-retry-backoff (the two named files, ~180 lines) so neither reviewer has to guess, then launches thermo-nuclear-review-subagent and thermo-nuclear-code-quality-review-subagent together in one message with run_in_background true, passing both the same scoped diff. After both return, it synthesizes a single findings-first verdict — bug/security/devex risk from one reviewer and maintainability risk from the other — deduplicating anything both flagged, rather than pasting two separate reports back to back. It does not do the audit itself, and it does not restate either subagent's full output verbatim if it was already streamed to the user.",
+      "files": [],
+      "expectations": [
+        "Response identifies the scope as feature/quote-retry-backoff and the two named files before launching any subagent",
+        "Both thermo-nuclear-review-subagent and thermo-nuclear-code-quality-review-subagent are launched via the Agent tool in the same message/turn with run_in_background true",
+        "Both subagents are given the same scoped diff/context (the retry backoff change), not different or partial slices",
+        "Final response synthesizes findings from both reviewers into one prioritized, findings-first summary rather than two separate unmerged reports",
+        "Response does not launch the two subagents in separate sequential messages or turns",
+        "Response does not perform the bug/security/maintainability review itself in place of delegating to the two subagents",
+        "Response does not restate each subagent's full report wholesale if the background summaries are already visible to the user"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Double thermo review on feat/pricing-engine-v2. New function computeAdjustedPremium in src/pricing/engine.ts is ~340 lines, added in this diff, replaces three old small functions that used to live in separate files. Go.",
+      "expected_output": "The assistant scopes to feat/pricing-engine-v2, pulls the diff and the new computeAdjustedPremium function body, then launches both subagents together in one message with run_in_background true and identical context. When both return, the synthesis recognizes that the giant function is the same underlying issue flagged by both reviewers — a maintainability/structure problem per the code-quality reviewer and a latent correctness/bug risk per the security-and-correctness reviewer — and merges it into one weighted finding rather than listing it twice under two headings. It does not present the two reviewers' takes on this function as unrelated, separate findings, and it resolves any residual disagreement (e.g. on severity) with its own stated judgment.",
+      "files": [],
+      "expectations": [
+        "Response establishes scope as feat/pricing-engine-v2 and gathers the diff, including the computeAdjustedPremium function, before launching subagents",
+        "Both subagents are launched via the Agent tool in the same message with run_in_background true, not one after the other",
+        "Both subagents receive the same scoped context including the new ~340-line function and its replacement of the three prior functions",
+        "Synthesis explicitly merges the maintainability finding and the correctness/bug-risk finding about computeAdjustedPremium into a single deduplicated finding",
+        "The merged finding is called out as higher-confidence or higher-priority because both reviewers independently flagged it",
+        "Response does not list the computeAdjustedPremium issue twice under separate reviewer-specific headings",
+        "Response does not skip or omit launching either one of the two required subagent types"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "hey can you run a thermo review on my changes real quick, want to make sure nothing's broken before I ask for a review. I've been jumping between a couple of branches today so I'm honestly not 100% sure what's actually staged vs committed vs still on main right now.",
+      "expected_output": "Because the user names no branch, PR, or file list, the assistant first establishes scope — checking git status/branch/diff (or asking a clarifying question) to determine what changed and against what base — before touching either subagent. Only once the scope and diff are pinned down does it launch thermo-nuclear-review-subagent and thermo-nuclear-code-quality-review-subagent together in one message with run_in_background true, passing both the same resolved diff. It does not guess a branch or fabricate a diff, and it does not launch either subagent until the scope is actually confirmed.",
+      "files": [],
+      "expectations": [
+        "Response takes an explicit scope-determination step (e.g. checking git status/branch/diff, or asking the user which branch/base to compare) before launching any subagent",
+        "Response does not launch either subagent before the scope and diff are established",
+        "Response does not fabricate or assume a specific branch name or diff content that was never confirmed",
+        "Once scope is resolved, both subagents are launched together in the same message with run_in_background true",
+        "Both subagents are passed the same resolved diff/context, not two different guesses at scope",
+        "Final synthesis (once both return) presents deduplicated findings rather than two separate raw reports",
+        "Response does not perform the review itself instead of delegating to the two subagent types"
+      ]
+    }
+  ]
+}

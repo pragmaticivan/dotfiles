@@ -1,0 +1,49 @@
+{
+  "skill_name": "kaizen-mode",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "kaizen mode: we're getting bug reports that the /api/orders endpoint throws a 500 whenever a cart has more than 20 line items. it's in server/checkout.js inside the handleCart function. looks like it might be an array size thing but I haven't confirmed anything yet. can you dig in, find the real cause, and fix it properly instead of just wrapping it in a try/catch?",
+      "expected_output": "The agent opens with a todolist whose first item is reading the Principles section in full, then copies the Bug fix playbook's steps verbatim (reproduce it directly, binary-search the cause, plan the fix, delegate and review, verify on the real surface, stage failing-repro-then-fix commits, open the PR) ahead of any task-specific todo. It reproduces the 500 itself with a >20-item cart, binary-searches to the actual root cause in handleCart rather than shipping a defensive try/catch, and verifies by re-running the same repro until it passes. The reply names fix-root-causes, prove-it-works, and sequence-verifiable-units, each tied to the specific decision it drove (what hypothesis got ruled out, what verification ran, why the failing repro commit precedes the fix commit).",
+      "files": [],
+      "expectations": [
+        "The todolist's first listed item is reading the Principles section in full",
+        "The todolist includes the Bug fix playbook's named steps (reproduce, binary-search the cause, plan the fix, delegate and review, verify, stage failing-then-fix commits, open PR) copied before task-specific todos, with any skipped step kept in the list as 'skip: <reason>' rather than dropped silently",
+        "The reply cites fix-root-causes and names the specific hypothesis it traced or ruled out in handleCart, not just the principle's name",
+        "The reply cites prove-it-works and names the concrete re-run of the >20-item repro that proved the fix, not 'it compiles' or a self-report",
+        "The reply cites sequence-verifiable-units and states the failing-repro-commit-before-fix-commit ordering",
+        "The response does not ship a bare try/catch or defensive guard as the fix without a stated root cause in handleCart",
+        "The response does not ask the user to reproduce the bug themselves before the agent has attempted to reproduce it directly on the matching surface"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/kaizen-mode hey should the search box in SearchBox.tsx debounce or throttle the api calls as you type? not sure which one will feel more responsive, what do you think we should go with",
+      "expected_output": "The agent recognizes this as an empirical fork (observable timing/responsiveness behavior) rather than a pure preference call, so it does not fire AskUserQuestion asking the user to pick. It opens with the Prototype playbook's steps copied verbatim (scope the decision, build a throwaway scratch script comparing debounce vs throttle, verify by observing the logged timing/render behavior, present alternatives with a recommendation) and is explicit that the sketch is throwaway and separate from SearchBox.tsx's production code. It presents observed timing evidence for both variants, a tradeoff summary, and a recommendation, then hands the chosen approach to Feature for the real implementation rather than shipping the prototype code itself.",
+      "files": [],
+      "expectations": [
+        "The response does not call AskUserQuestion, or otherwise ask the user to pick between debounce and throttle, before attempting to settle it empirically",
+        "The todolist copies the Prototype playbook's steps (scope the decision, build throwaway, verify by observation, present alternatives and recommendation) before task-specific todos",
+        "The response builds or explicitly describes a throwaway scratch script or sketch comparing debounce and throttle, kept separate from SearchBox.tsx",
+        "The response presents observed evidence (logged timing, output, or render behavior) for the comparison rather than an unsubstantiated opinion",
+        "The response ends with a named recommendation plus tradeoffs and hands the chosen direction to the Feature playbook for the real build",
+        "The response does not cite a principle (e.g. exhaust-the-design-space) without naming the specific decision it changed",
+        "The reply does not fabricate a link, screenshot, or transcript reference it did not produce this session"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/kaizen-mode write the commit message for extracting the pagination logic out of ResultsList.jsx into a usePagination hook.",
+      "expected_output": "The agent treats the commit message as a prose surface and writes it in short declarative sentences, one thought per sentence, ending in a period. It contains no long-dash character anywhere, including in any file-list bullet or header, and uses no colon as a mid-sentence connector (a colon introducing a list is fine). The body states why the extraction was made, not merely a mechanical restatement of the diff, and stays terse rather than padded. The agent does not open with a bespoke unstyled paragraph before applying the reply-style rules.",
+      "files": [],
+      "expectations": [
+        "Every sentence in the output is short and declarative, ending in a period, with one thought per sentence",
+        "No em dash or en dash character appears anywhere in the output",
+        "No colon is used as a mid-sentence connector anywhere in the output (a colon introducing a list is acceptable)",
+        "The commit body states the reason for extracting the pagination logic, not just a restatement of the file rename or diff",
+        "The response does not cite a principle without naming the specific decision it changed",
+        "The reply does not fabricate a link, PR reference, or transcript citation not produced this session"
+      ]
+    }
+  ]
+}

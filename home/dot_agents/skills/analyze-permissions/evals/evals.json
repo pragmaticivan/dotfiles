@@ -13,6 +13,35 @@
         "Output follows the report structure with sections: Settings Overview, Already Covered, Blocked by Global Deny, Suggested New Patterns, Uncategorized",
         "Does not modify any files, since the default action is analyze, not apply"
       ]
+    },
+    {
+      "id": 2,
+      "prompt": "/analyze-permissions apply — I ran the analyze pass earlier and want to actually apply the safe global patterns now (the docker:* and gh pr view:* ones), just don't touch anything that overlaps the deny list.",
+      "expected_output": "The agent resolves the chezmoi source path, confirms the specific patterns to write, appends them to the chezmoi source settings.json (never to ~/.claude/settings.json directly), validates the JSON with `jq empty`, shows `chezmoi diff` then runs `chezmoi apply`, verifies `chezmoi status` is clean, removes the now-redundant entries from settings.local.json, and tells the user the chezmoi repo has an uncommitted change without committing it.",
+      "files": [],
+      "expectations": [
+        "Writes new allow patterns to the chezmoi source file resolved via `chezmoi source-path`, not directly to ~/.claude/settings.json",
+        "Runs `chezmoi apply` (e.g. `chezmoi apply ~/.claude/settings.json`) to propagate the change to the home directory",
+        "Validates the source file's JSON syntax (e.g. `jq empty`) before or after the edit",
+        "Does not hardcode the chezmoi source path instead of resolving it with `chezmoi source-path`",
+        "Removes the now-redundant entries from the project's settings.local.json after applying",
+        "States that the chezmoi repo now has an uncommitted change and does not run `chezmoi apply` to commit or otherwise commit it without being asked",
+        "Does not edit ~/.claude/settings.json directly"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "been getting prompted nonstop for npm run stuff in the pricing-service repo so i want to clean up settings.local.json before it gets out of hand. it's got like six entries: npm run test:unit, npm run test:integration, npm run lint, npm run build, npm run db:migrate, and npm run db:reset (that last one wipes the local postgres and reseeds fixtures, so i really don't want that one silently auto-approved for everyone). can you look at what should get promoted to a wildcard?",
+      "expected_output": "The report groups test/lint/build/migrate under a candidate wildcard such as `Bash(npm run:*)` but explicitly calls out that a plain `npm run:*` wildcard would also auto-approve `npm run db:reset`, which is destructive, and therefore refuses to fold it into that pattern — recommending it stay a specific, non-wildcarded, per-project entry instead. No files are modified, since this is the default analyze action.",
+      "files": [],
+      "expectations": [
+        "Identifies npm run test/lint/build entries as candidates for consolidation into a wildcard pattern",
+        "Explicitly flags that `npm run db:reset` must not be folded into a `Bash(npm run:*)` wildcard because it is destructive",
+        "Does not propose any wildcard pattern broad enough to auto-approve `npm run db:reset`",
+        "Recommends keeping the destructive db:reset entry specific and reviewed rather than auto-approved",
+        "Resolves the chezmoi source path via `chezmoi source-path` rather than hardcoding it",
+        "Does not modify any files, since the default action is analyze, not apply"
+      ]
     }
   ]
 }

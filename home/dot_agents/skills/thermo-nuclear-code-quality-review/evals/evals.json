@@ -1,0 +1,48 @@
+{
+  "skill_name": "thermo-nuclear-code-quality-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "hey so my branch `feature/intl-shipping-rules` touches apps/checkout/src/pricing/shippingFee.ts and it's turned into a real mess after like 4 promo patches got bolted on over the last few months. can you do one of those thermo nuclear code quality reviews on it before i open the PR? here's the current function:\n\n```typescript\n// apps/checkout/src/pricing/shippingFee.ts\nexport function calculateShippingFee(order: Order): number {\n  let fee = 5;\n\n  if (order.isInternational) {\n    if (order.customerTier === \"gold\") {\n      if (order.hasFragileItems) {\n        fee = 18;\n      } else {\n        fee = 15;\n      }\n    } else {\n      if (order.hasFragileItems) {\n        fee = 25;\n      } else {\n        fee = 20;\n      }\n    }\n    if (order.isPriority) {\n      fee += 10;\n    }\n  } else {\n    if (order.weightKg > 20) {\n      if (order.customerTier === \"gold\") {\n        fee = 8;\n      } else {\n        fee = 12;\n      }\n    } else {\n      if (order.customerTier === \"gold\") {\n        fee = 0;\n      } else if (order.customerTier === \"silver\") {\n        fee = 3;\n      } else {\n        fee = 5;\n      }\n    }\n    if (order.isPriority && order.destinationRegion === \"AK\") {\n      fee += 6;\n    } else if (order.isPriority) {\n      fee += 4;\n    }\n  }\n\n  if (order.destinationRegion === \"HI\" && !order.isInternational) {\n    fee += 3;\n  }\n\n  return fee;\n}\n```",
+      "expected_output": "The review names the nested if/else chain in calculateShippingFee as accreted spaghetti (rule 2) and proposes a code-judo restructuring: collapse the conditions into a rate table or dispatcher keyed by (isInternational, customerTier, weight bucket, priority, region) rather than the current chain, or an equivalent typed lookup model. It must not settle for extracting each nested branch into its own helper function while preserving the same branching shape, and it must not propose any change that alters the computed fee for a given input.",
+      "files": [],
+      "expectations": [
+        "identifies the nested if/else chain in calculateShippingFee as spaghetti / accreted special-case branching",
+        "proposes replacing the conditional chain with a table, lookup, dispatcher, or typed model keyed by the order's tier/region/weight/priority attributes",
+        "frames the fix as a structural restructuring (a code-judo move) rather than a purely local cleanup",
+        "does not stop at suggesting to extract a helper for each nested if while keeping the same nested branching shape",
+        "does not propose a change that alters the fee produced for any given order input",
+        "treats the finding as high-priority per the skill's spaghetti-growth standard rather than a minor nit",
+        "does not invoke the 1000-line file-size rule, since the file is small and that rule does not apply here"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Thermo-nuclear review. Branch: chore/profile-wrapper. File: src/services/userProfileService.ts, single caller in src/controllers/profileController.ts. Diff:\n\n```typescript\n// src/services/userProfileService.ts\nimport { userService } from \"./userService\";\n\nexport function fetchUserProfile(userId: string): Promise<UserProfile> {\n  return userService.getProfile(userId);\n}\n```\n\n```typescript\n// src/controllers/profileController.ts\nimport { fetchUserProfile } from \"../services/userProfileService\";\n\nexport async function getProfileHandler(req: Request, res: Response) {\n  const profile = await fetchUserProfile(req.params.userId);\n  res.json(profile);\n}\n```",
+      "expected_output": "The review calls out fetchUserProfile as a pass-through/identity wrapper around userService.getProfile that adds no logic, has an identical signature, and has exactly one caller, and it recommends deleting the wrapper and calling userService.getProfile directly from getProfileHandler. It must not defend keeping the wrapper for hypothetical future flexibility or testability, and it must not propose fixing it by adding another abstraction (e.g., an interface or DI layer) instead of removing it.",
+      "files": [],
+      "expectations": [
+        "identifies fetchUserProfile as a pass-through / identity wrapper that adds no logic beyond calling userService.getProfile",
+        "notes it has exactly one caller (getProfileHandler in profileController.ts)",
+        "recommends deleting fetchUserProfile and calling userService.getProfile directly at the call site",
+        "does not justify keeping the wrapper on the grounds of hypothetical future flexibility or testability with no cited evidence",
+        "does not propose adding a new abstraction (interface, DI container, additional layer) as the fix instead of removing the wrapper",
+        "does not propose a change that alters how the user profile is fetched or returned"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "I just pushed refactor/duration-parser and want a full thermo-nuclear code quality pass before I open the PR. The change adds a small parseDuration helper in src/utils/parseDuration.ts that converts strings like '500ms' or '2h' into milliseconds for our rate-limiter config loader. I want an extremely strict maintainability review because this parser will get reused across a few services, and I want to be sure I'm not missing a hidden abstraction problem or a spaghetti condition creeping in before other people build on top of it. Here is the full diff:\n\n```typescript\n// src/utils/parseDuration.ts\nconst UNIT_TO_MS: Record<string, number> = {\n  ms: 1,\n  s: 1000,\n  m: 60_000,\n  h: 3_600_000,\n};\n\nexport function parseDuration(input: string): number {\n  const match = /^(\\d+)(ms|s|m|h)$/.exec(input.trim());\n  if (!match) {\n    throw new Error(`invalid duration: ${input}`);\n  }\n\n  const [, amount, unit] = match;\n  return Number(amount) * UNIT_TO_MS[unit];\n}\n```",
+      "expected_output": "The review states that parseDuration's structure holds up: it is a small, pure, single-purpose function that already uses a lookup table instead of branching logic, has an explicit typed contract, and stays well under any size threshold, so there is no structural regression or missed code-judo opportunity to report. It must not manufacture a restructuring, an extracted abstraction, or a nitpick dressed up as a structural finding just to appear thorough.",
+      "files": [],
+      "expectations": [
+        "states that parseDuration's structure holds up / passes the review with no structural regression",
+        "explicitly declines to propose a restructuring, additional abstraction, or extraction for this function",
+        "notes that the function already uses a lookup table (UNIT_TO_MS) rather than a conditional chain, i.e. recognizes it avoids the spaghetti-condition pattern the skill guards against",
+        "does not manufacture a finding treating the regex, error message wording, or missing tests as a structural code-quality regression",
+        "does not invoke the 1000-line file-size rule or the spaghetti-condition rule, since neither applies to this diff",
+        "does not propose a change that would alter parseDuration's return value for any given input"
+      ]
+    }
+  ]
+}

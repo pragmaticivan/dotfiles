@@ -24,7 +24,8 @@
         "States why the cast is unsafe: nothing checked the shape, so the failure moves to runtime",
         "Derives the TypeScript type from the schema (e.g. z.infer) instead of keeping a hand-written twin alongside it",
         "Treats the webhook body as untrusted input and verifies the Stripe signature, not just the shape",
-        "Handles the async handler so a rejection cannot float (await plus try/catch, or an error-forwarding wrapper)"
+        "Handles the async handler so a rejection cannot float (await plus try/catch, or an error-forwarding wrapper)",
+        "Does not introduce a new `any`, `as`, `!`, or `@ts-ignore` anywhere in the rewritten handler"
       ]
     },
     {
@@ -60,10 +61,8 @@
       "expected_output": "A strict tsconfig, an Ultracite lint config that also names the floating-promise nursery rules, Vitest, and package scripts wiring all three gates. Explains the few settings that matter rather than dumping config.",
       "files": [],
       "expectations": [
-        "tsconfig enables `strict: true` plus flags beyond it, including `noUncheckedIndexedAccess`",
-        "Uses NodeNext/nodenext module resolution for a Node service rather than bundler resolution",
-        "Uses Ultracite as the lint entry point, extending ultracite/biome/core rather than hand-writing a rule list",
-        "Installs ultracite as a dev dependency, not only as an npx invocation, since Biome resolves extends from node_modules",
+        "tsconfig enables `strict: true` plus flags beyond it, including `noUncheckedIndexedAccess`, and uses NodeNext/nodenext module resolution for a Node service rather than bundler resolution",
+        "Uses Ultracite as the lint entry point (installed as a dev dependency, not only invoked via npx), extending ultracite/biome/core rather than hand-writing a rule list",
         "Names noFloatingPromises (at minimum) under linter.rules.nursery, because no Ultracite preset enables it",
         "Does not restate rules ultracite/biome/core already sets, such as noExplicitAny or noNonNullAssertion",
         "Package scripts cover all three gates separately: typecheck (tsc --noEmit), an ultracite check, and test",
@@ -78,10 +77,8 @@
       "files": [],
       "expectations": [
         "Identifies that comments in biome.json cause Biome to ignore the config silently, and says to rename it to biome.jsonc",
-        "Moves the config to extend ultracite/biome/core rather than keeping the hand-migrated rule list, and says most of those 40 rules are already in the preset",
-        "Says ultracite must be a dev dependency, because Biome resolves extends from the project node_modules",
-        "Checks that noFloatingPromises / noMisusedPromises are named under linter.rules.nursery, since no Ultracite preset enables them",
-        "Notes that neither a `types` domain nor the ultracite/biome/type-aware preset switches those nursery rules on",
+        "Moves the config to extend ultracite/biome/core (installed as a dev dependency) rather than keeping the hand-migrated rule list, and says most of those 40 rules are already in the preset",
+        "Checks that noFloatingPromises / noMisusedPromises are named under linter.rules.nursery, and notes that neither a `types` domain nor the ultracite/biome/type-aware preset switches those nursery rules on",
         "States that Ultracite does not replace tsc and confirms a `tsc --noEmit` gate still exists",
         "Does not tell the user to set formatter.indentStyle by hand once the config extends the preset, since core already sets it",
         "Recommends removing the leftover ESLint and Prettier config files and dependencies",
@@ -90,7 +87,7 @@
     },
     {
       "id": 7,
-      "prompt": "Add a function to our scheduler that returns the oldest instant any of a pipeline's daily sources still needs, or null when none has run. The tricky parts: sources advance independently so a stalled one widens the next run back to it; a source that has never run, or whose timestamp won't parse, should take whatever the others plan rather than dragging everyone back to the floor; and this only covers the daily track since backfills name their own range.",
+      "prompt": "In `src/scheduler/planNextRun.ts` we have `interface DailySource { id: string; lastRunAt: string | null }`. Add a function that takes `DailySource[]` for one pipeline and returns the oldest instant any of them still needs, or `null` when none has run. Sources advance independently, so a stalled one widens the next run back to it. A source that has never run (`lastRunAt === null`), or whose timestamp fails `Date.parse`, should take whatever the other sources plan rather than dragging everyone back to the epoch. This only covers the daily track — backfills name their own range in a separate function.",
       "expected_output": "A small function whose doc comment is at most three lines, keeping only the non-obvious invariant. The scope caveat goes into the name, the contract stays in the signature, and the never-ran rule is covered by a test rather than a paragraph.",
       "files": [],
       "expectations": [

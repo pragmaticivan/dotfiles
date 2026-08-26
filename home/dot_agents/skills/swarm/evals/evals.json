@@ -1,0 +1,49 @@
+{
+  "skill_name": "swarm",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "swarm this: we have 47 microservice repos under ~/work/services/*, each with its own Dockerfile. I need to know which ones still pull from the deprecated docker.internal/base:legacy image so I can file tickets. One report at the end, I don't want 47 separate messages.",
+      "expected_output": "A response that declares Cover mode in Phase A (since this is a breadth sweep across independent slices with no synthesis or grafting needed), sets N from the repo count or a sensible partition, opens a phase todolist (Frame, Fan out, Aggregate, Report), fans out workers with run_in_background against slices of the repo list, then returns exactly ONE consolidated report: a compact table of repos using the legacy base image plus any dropouts/gaps. It must not surface 47 individual worker transcripts or ask the user to pick a winner.",
+      "files": [],
+      "expectations": [
+        "response explicitly declares Cover mode (not Compete) before describing any spawning",
+        "response states the done predicate/artifact (a list or table of repos still on the deprecated base image) in the framing step",
+        "response opens or describes a todolist covering Frame, Fan out, Aggregate, Report",
+        "response describes partitioning the 47 repos into slices across N workers rather than one worker per repo with no aggregation plan",
+        "final output is a single consolidated report (one result table with issues/gaps), not one message per repo or per worker",
+        "response does not invoke a cross-judge, rubric, or 'pick a base' step, since those belong to Compete mode only",
+        "response does not spawn any worker before the mode and shape are declared"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Arena this. We need to pick the on-disk layout for a new event-sourcing log format that every downstream consumer will build on for years -- once we ship v1 we can't easily change the shape. Have candidates propose the format (header layout, framing, checksum placement, compaction strategy) and give me back one finished spec plus a rationale for the winner, not three competing docs I have to reconcile myself.",
+      "expected_output": "A response that declares Compete mode in Phase A because this is a one-way-door design decision, derives a concrete 3-6 criterion rubric (e.g. framing overhead, checksum recovery behavior, compaction cost, extensibility) before spawning, opens a todolist covering Frame, Fan out, Cross-judge, Pick, Graft, Verify, spawns N candidates each producing an artifact plus a mandatory rationale to separate output paths, then runs a single read-only cross-judge subagent on a different model after all candidates finish, picks a base with reasoning, grafts specific ported elements from losing candidates (naming source and rejections), and verifies the result. The deliverable is exactly one synthesized spec with a synthesis note -- not three separate proposals handed to the user unreconciled.",
+      "files": [],
+      "expectations": [
+        "response explicitly declares Compete mode and gives the rationale that a one-way-door design decision is being locked in",
+        "response derives a concrete gradeable rubric (3-6 criteria) in Phase A before any worker is spawned",
+        "response opens or describes a todolist with Frame, Fan out, Cross-judge, Pick, Graft, Verify phases",
+        "response describes spawning a single read-only cross-judge subagent only after all candidates have finished writing, not concurrently with candidate generation",
+        "response names a picked base candidate and records grafts from losing candidates with source attribution and rejection reasons",
+        "final deliverable is one synthesized artifact with a synthesis note, not multiple unreconciled candidate documents returned to the user",
+        "response does not skip straight to picking a winner without the cross-judge step"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/swarm arena this for me -- rename the `getUserByID` function to `getUserById` across the codebase for consistent casing.",
+      "expected_output": "A response that recognizes this is a mechanical, single-correct-answer rename with no genuine seams for coverage or competing design directions, and declines to fan out N workers or run an arena bakeoff. It should say so directly and either just do the rename itself or propose a minimal single-pass approach (e.g. one grep-based rename), rather than manufacturing artificial slices or spawning competing candidates for a task with one obvious correct outcome.",
+      "files": [],
+      "expectations": [
+        "response does not spawn multiple parallel workers or candidates for this task",
+        "response explicitly states or clearly implies that this task does not warrant a swarm/arena fan-out",
+        "response does not declare Compete mode or construct a grading rubric for a rename with one correct answer",
+        "response does not open a multi-phase swarm todolist (Frame/Fan out/Cross-judge/etc.) for this task",
+        "response either performs the rename directly or proposes a simple non-parallel approach",
+        "response does not fabricate artificial slices (e.g. splitting the codebase into N arbitrary chunks) just to justify using the skill"
+      ]
+    }
+  ]
+}

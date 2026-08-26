@@ -170,9 +170,16 @@ function lint_yaml() {
     (cd "${REPO_ROOT}" && yamllint_cmd -c .yamllint "${files[@]}") || FAILED=1
 }
 
+# Check each skill's frontmatter, description length, and evals. The rules and
+# the reason for each live in scripts/lint-skills.py.
+function lint_skills() {
+    (cd "${REPO_ROOT}" && python3 scripts/lint-skills.py) || FAILED=1
+}
+
 function main() {
     need shellcheck
     need chezmoi
+    need python3
     if ! command -v yamllint >/dev/null 2>&1; then
         need uvx
     fi
@@ -181,6 +188,7 @@ function main() {
     make_render_config
     lint_template_shell
     lint_yaml
+    lint_skills
 
     if [ "${FAILED}" -ne 0 ]; then
         echo "lint: FAILED" >&2

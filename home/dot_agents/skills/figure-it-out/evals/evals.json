@@ -1,0 +1,49 @@
+{
+  "skill_name": "figure-it-out",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "We have 140 call sites across the billing and quotes services still importing the deprecated `moment` date library, and security wants it gone before the Q3 audit freeze next Friday because of a transitive CVE. Figure it out and replace every call site with `date-fns`, keeping the formatting output byte-for-byte identical where it feeds the PDF invoice renderer. I want this landed as a stack I can review commit by commit.",
+      "expected_output": "The response opens with Phase A framing before touching any code: a falsifiable definition of done (e.g. zero remaining moment imports, build green, PDF invoice output byte-identical to a captured baseline), the scope quantified as 140 call sites across billing and quotes, and a rigor level pushed high because of the CVE deadline and the one-way-door risk of silently changing invoice output. Phase B follows with a verification harness (a script that diffs rendered PDFs against baseline output) built and a baseline captured before any call site is migrated, then the work decomposed into independently-landable units sequenced riskiest-unknown-first. It must not start editing call sites before that phase list is presented.",
+      "files": [],
+      "expectations": [
+        "States a falsifiable definition of done, e.g. all 140 call sites migrated with zero remaining moment imports and byte-identical PDF output, not a vague quality bar",
+        "Quantifies scope explicitly as 140 call sites across the billing and quotes services",
+        "Names a rigor level and ties it explicitly to the CVE deadline and/or the blast radius of changing invoice output",
+        "Describes capturing a baseline of current PDF output and building a diff-based verification harness before migrating any call site",
+        "Decomposes the migration into independently-landable units sequenced riskiest-unknown-first rather than one giant edit",
+        "Does not begin editing or migrating any call site before the phase list is presented",
+        "Does not state the verification harness is built after the migration work rather than before it"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "hey figure it out, i'm heading to bed. we need tenant-scoped rate limiting across the api gateway plus the 3 downstream worker services, with a fallback to a local in-memory limiter when the primary redis store is unreachable. build it out, i'll review the whole trail when i wake up around 7am, don't wait on me for anything reversible.",
+      "expected_output": "The response states a falsifiable definition of done up front (e.g. requests over the per-tenant threshold are rejected across the gateway and all 3 workers, and the redis-down path is exercised and falls back correctly) and quantifies scope as the gateway plus 3 worker services plus the fallback path. It proceeds without waiting for a checkpoint since the work is reversible, and it explicitly plans a running decision-trail log (per the show-me-your-work skill) rather than a summary written only at the end, so the log is there to review at 7am. It must not pause with a clarifying question on a reversible design choice and must not defer the verification harness until after the limiter is implemented.",
+      "files": [],
+      "expectations": [
+        "States a falsifiable definition of done for the rate limiter and its redis-down fallback before starting implementation",
+        "Quantifies scope as the api gateway plus the 3 downstream worker services plus the fallback path",
+        "Proceeds without asking the human to confirm a reversible design choice, citing that the work is reversible and the human is stepping away",
+        "Explicitly plans a decision-trail log written as the work proceeds rather than assembled only at the end",
+        "Notes the trail is meant to be read after the human returns, so it can be audited without them present",
+        "Does not ask a blocking clarifying question about a reversible implementation detail before proceeding",
+        "Does not describe building or exercising the verification harness only after the limiter code is written"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "figure it out: /checkout 500s whenever the cart has more than 20 items. fix it.",
+      "expected_output": "The response recognizes this as a single reported defect on one endpoint, not a large or cross-cutting change, and states that it routes to the Bug fix playbook instead of designing a bespoke figure-it-out workflow. It gives a one-line reason (a focused single-unit defect matches an existing playbook) rather than producing a Phase A through E plan, and it does not start editing checkout code before naming that routing decision.",
+      "files": [],
+      "expectations": [
+        "Explicitly identifies the task as a single focused bug fix rather than a large or cross-cutting change",
+        "States that the task routes to the Bug fix playbook instead of a bespoke figure-it-out workflow",
+        "Gives a concrete reason for the routing, e.g. single endpoint / single defect, not ambitious or multi-part",
+        "Does not produce a Phase A through E bespoke phase list for this task",
+        "Does not start editing the checkout code before stating the routing decision",
+        "Does not invent a falsifiable definition-of-done framing as if this were a figure-it-out run rather than a Bug fix"
+      ]
+    }
+  ]
+}
