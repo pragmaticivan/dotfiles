@@ -19,6 +19,15 @@ external_skills:
     repo: humanlayer/skills
     sha: 3c2629142c5d437428269b1b722b08c0b87f574d
     path: plugins/show-me/skills/show-me
+  impeccable:
+    repo: pbakaus/impeccable
+    sha: 63b04e2530f5c7b41ea83c133daab24f34912456
+    path: .agent/skills/impeccable
+  # The repo holds a roster of skills. Only the flagship one is installed.
+  taste-skill:
+    repo: Leonxlnx/taste-skill
+    sha: ccbc15639c97057cbfcf32ecebc38ef716e4bb37
+    path: skills/taste-skill
 
 agent_plugins:
   - name: compound-engineering
