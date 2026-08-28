@@ -1,0 +1,47 @@
+{
+  "skill_name": "blast-radius",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "what's the blast radius of this? we changed cache.evict() in src/cache.ts so it now also clears the dependent index entries, not just the key. the diff is 6 lines.",
+      "expected_output": "The agent does not hand back a plausible-sounding writeup. It names the single fact the change's safety rests on, such as that the dependent entries it now clears are already unreachable, then writes and runs a small script that calls the real cache code and fails loud if that fact is false, and pastes the output. It states which rung of the how-sure ladder each safety fact reached and marks anything below rung 4 as unproven rather than settled. It looks past grep for the breakage a symbol search misses, and it separates confirmed risks from the ones it checked and cleared.",
+      "files": [],
+      "expectations": [
+        "The response names one specific fact the change's safety depends on, rather than opening with a list of callers",
+        "The response writes and runs a script or test that exercises the real cache code, and pastes the actual output",
+        "Each safety fact is labeled with the rung it reached on the how-sure ladder, and anything below 'you ran it' is marked unproven rather than presented as settled",
+        "The response separates confirmed risks from the ones it checked and cleared, and each risk cites a real file:line",
+        "The response looks past what grep finds, naming at least one non-symbol channel such as a wire format, a DB column, a feature flag, or a downstream consumer",
+        "The response does not invent a caller, an API, or a file:line it did not read"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "review this diff, I don't trust it. bumped the pinned version of the date library in package.json from 2.30 to 3.0 and updated the two call sites that broke.",
+      "expected_output": "The agent treats the pinned dependency itself as the blast radius rather than the two edited call sites. It reads the library's own source at the new pinned version, checks for a local patch, and hunts the callers the two visible breaks did not surface, including formats crossing a wire or a database boundary. It proves the load-bearing fact by importing the same version the app ships and calling the exact function in question. It reports what it cleared as well as what it confirmed, and ends with the cheapest repro that would catch the real bug.",
+      "files": [],
+      "expectations": [
+        "The response reads the library's source at the new pinned version and checks for a local patch, rather than reasoning only from the changelog or the diff",
+        "The response runs real code that imports the shipped version and calls the function under suspicion, and reports what happened",
+        "The response hunts callers beyond the two the compiler or tests already surfaced, including at least one boundary such as serialized output, stored data, or another language reading the same bytes",
+        "The response ends with the cheapest test or repro that would catch the real bug, including the script it wrote",
+        "Risks are given both a likelihood and a cost, rather than an undifferentiated list of concerns",
+        "No em dash or en dash character appears anywhere in the output"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "blast radius of deleting the legacy /v1/orders endpoint? nothing in our repo calls it anymore, I grepped.",
+      "expected_output": "The agent accepts that the in-repo grep is clean and then does the part grep cannot do. It checks for consumers outside the repository, such as other services, mobile clients on old builds, scheduled jobs, webhooks, and dashboards, and it looks for real traffic evidence rather than asserting the endpoint is dead. A clean search is reported as a genuine answer with what was searched. Any claim that no live caller exists is either proven from traffic or logs, or marked unproven, and the agent never rounds an unproven claim up to safe.",
+      "files": [],
+      "expectations": [
+        "The response treats the clean in-repo grep as insufficient and looks for consumers outside the repository, naming specific channels such as other services, old mobile builds, scheduled jobs, webhooks, or dashboards",
+        "The response seeks traffic, log, or telemetry evidence for whether the endpoint is actually called, rather than asserting it is dead",
+        "A search that finds nothing is reported as an answer, stating what was searched",
+        "Any claim that no live caller exists is either proven with evidence or explicitly marked unproven, and is not rounded up to safe",
+        "The response does not fabricate a consumer, a dashboard, or a traffic number it did not observe",
+        "The reply states the one fact the deletion's safety depends on and which rung of the how-sure ladder it reached"
+      ]
+    }
+  ]
+}
