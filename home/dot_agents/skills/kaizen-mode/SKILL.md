@@ -7,6 +7,16 @@ disable-model-invocation: true
 
 # Kaizen mode
 
+## Routed skills
+
+This mode routes to sibling skills by name. Resolve each name against the host's available-skills list before you invoke it.
+
+Eight routed skills are user-invocable only. They carry `disable-model-invocation: true`, so they never appear in that list and the `Skill` tool refuses them: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`. Read `~/.claude/skills/<name>/SKILL.md` in full and follow it inline, the way `kaizen-agent` reads this file. That skill's own relative paths resolve against its own directory. A refused `Skill` call is not permission to skip a mandatory routing step, and it is not permission to improvise a substitute for the skill's method.
+
+The other routed skills resolve through the `Skill` tool as usual: `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `test-driven-development`, `creating-pull-requests`, `loop`.
+
+The two thermo-nuclear review skills are user-invocable only for the same reason. Reach them through their subagents, which are model-invocable and load the rubric themselves: `thermo-nuclear-review-subagent` and `thermo-nuclear-code-quality-review-subagent`.
+
 ## Non-negotiables
 
 **Start every multi-step task with a todolist whose first item is to read the Principles section below in full.** The principles ground every trigger here. In your reply, name each principle that shaped a decision and the specific choice it changed. A citation with no decision behind it means you skipped its `principles/` file; it must trace to a real choice that file's rule drove.
@@ -14,6 +24,7 @@ disable-model-invocation: true
 Remaining triggers:
 
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
+- A diff you do not trust, or one whose risk sits outside its own lines → the **blast-radius** skill. It names the one fact the change is safe because of and proves it by running real code, instead of listing callers a grep already found.
 - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle. The ask is the slow path. A throwaway probe usually answers faster, and it hands the human a result to react to instead of a decision to make.
 - Any code → name the data shape first, and choose its organizing structure per `principles/model-the-domain.md`.
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
@@ -126,6 +137,7 @@ A large or cross-cutting effort (a migration across many call sites, an ambitiou
 - **Eval.** Testing how a skill, structure, or prompt change affects agent behavior before promoting it. `playbooks/eval.md`.
 - **Babysit.** Driving a PR or a stack to merge-ready: conflicts, review threads, CI. `playbooks/babysit.md`.
 - **Shipping.** The half after Babysit. Independently verifying a green stack, then landing the contiguous verified run with Graphite merge-when-ready. `playbooks/shipping.md`.
+- **One-shot.** One coherent change carried from a description to an open draft PR in a single run with no check-in, each step behind a stated gate ("one-shot this", "take it all the way", "build it and open the PR"). Distinct from Autonomous run, which loops against a predicate rather than walking a fixed chain, and from the autopilots, which run a queue. `playbooks/one-shot.md`.
 - **Autonomous run.** A long task to drive to completion without stopping ("run until done", "/loop until X"). `playbooks/autonomous-run.md`.
 - **Orchestrate.** A standing project handed to one coordinator chat: multi-day, many stacked PRs, dozens to hundreds of subagents, minimal human turns ("run this whole project", "own this migration until it lands"). Distinct from Autonomous run, which drives one task to a predicate; work one agent could finish inside the session's budget routes there, not here, however program-shaped the phrasing sounds. `playbooks/orchestrate.md`.
 - **Autopilot-full.** A queue of independent PRs run to merged with full autonomy: one owner per PR carries build through merge, and the root swarm-verifies each merge-ready head before its owner merges ("autopilot this queue", "full autopilot", one-owner-per-PR programs). `playbooks/autopilot-full.md`.
