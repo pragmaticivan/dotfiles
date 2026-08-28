@@ -12,7 +12,7 @@
       "prompt": "ok so /tmp/stacked-pr-split-fixtures/layered-feature has a branch feat/user-auth that has completely gotten away from me. it's the whole user auth feature in one go - schema, session store, the token stuff, endpoints, sign-in page, tests. i already know what our reviewers are going to say because they said it last time. can you break it into a stack of smaller PRs? nothing is pushed yet so just get the branches built locally, don't create anything on github.",
       "expected_output": "A 3-5 layer plan ordered schema -> store/auth -> api -> ui, presented for approval, then built as local branches that pass the losslessness and linearity gates. The rename stays in one layer and the lockfile does not get a layer of its own.",
       "files": [],
-      "assertions": [
+      "expectations": [
         "A layer plan was written as machine-readable JSON",
         "Every changed file is assigned to exactly one layer",
         "Splits into 3-5 layers (the diff has four natural dependency levels)",
@@ -38,7 +38,7 @@
       "prompt": "same deal as before - /tmp/stacked-pr-split-fixtures/straddling-file, branch feat/user-auth, one giant auth feature. split it into a stack. local branches only. heads up that router.go is a bit of a mess in this one, it's had a few people in it.",
       "expected_output": "Recognizes that internal/api/router.go carries both a schema-adjacent concern (RunMigrations) and a layer-3 concern (the auth route), so no file-level assignment splits it cleanly. Resolves by assigning the whole file to one layer or moving a boundary, states the compromise, and still produces a lossless stack.",
       "files": [],
-      "assertions": [
+      "expectations": [
         "A layer plan was written as machine-readable JSON",
         "Every changed file is assigned to exactly one layer",
         "The straddling file (internal/api/router.go) is assigned to exactly one layer, not duplicated",
@@ -65,7 +65,7 @@
       "prompt": "/tmp/stacked-pr-split-fixtures/mostly-generated, branch chore/regen-deps. github says +1900 lines and our team has a soft rule that anything over 400 gets split. can you stack this up for me? local branches is fine.",
       "expected_output": "Pushes back: once the regenerated package-lock.json and service.pb.go are excluded, the diff is ~146 reviewable lines and does not need splitting. Does not build layer branches without the user overriding.",
       "files": [],
-      "assertions": [
+      "expectations": [
         "Does not split the branch: no layer branches were created",
         "Reported weighted review size is below the 200-line split threshold",
         "Recommends against splitting and gives the reason: nearly all of the diff is regenerated content that costs no review attention",

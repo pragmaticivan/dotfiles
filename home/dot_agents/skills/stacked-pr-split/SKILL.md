@@ -1,6 +1,6 @@
 ---
 name: stacked-pr-split
-description: 'Split one oversized pull request or branch into a chain of small, dependent pull requests using GitHub''s native stacked pull requests (the `gh stack` CLI extension, public preview). Analyzes the diff into a reviewer-weighted budget, proposes a dependency-ordered layer plan for approval, builds each layer as a provably lossless cumulative snapshot, submits the linked stack, and carries the original PR''s review threads over to the right layer. Trigger for: stacked PRs, stacked pull requests, stacked diffs, gh stack, gh-stack, split this PR, split my branch, break up this PR, make this PR smaller, this PR is too big, PR too large to review, stack of PRs, dependent pull requests, restack, retarget PR base, gh stack submit, gh stack merge. Implicit queries: ''reviewers say this PR is unreviewable'', ''can you break this branch into reviewable chunks'', ''how do I ship this feature in layers'', ''turn my existing PR into a stack'', ''this diff is 2000 lines and nobody will review it''.'
+description: "Split one oversized pull request or branch into a chain of small, dependent pull requests using GitHub's native stacked pull requests and the `gh stack` CLI. Use for 'split this PR', 'this PR is too big', 'stacked PRs', or 'break up this branch'."
 allowed-tools: Read, Write, Edit, Grep, Glob, Bash(git:*), Bash(gh:*), Bash(jq:*), Bash(bash:*), AskUserQuestion
 ---
 
@@ -19,6 +19,12 @@ main (trunk)
 **Why the work is worth it:** review quality collapses with diff size. A 300-line PR gets architectural feedback; a 2,000-line PR gets skimmed. Splitting does not reduce the total code — it converts one unreviewable artifact into several reviewable ones.
 
 **The one invariant that makes this safe:** each layer branch holds the *cumulative* final content of layers 1..k, so the top layer's tree is byte-identical to the original branch. `build-stack.sh` refuses to finish unless `git diff <top-layer> <original-branch>` is empty. If that gate passes, nothing was dropped, duplicated, or mangled — you never have to eyeball a rebase to trust the split.
+
+## When this fires
+
+Explicit: stacked PRs, stacked pull requests, stacked diffs, `gh stack`, split this PR, split my branch, break up this PR, make this PR smaller, this PR is too big, PR too large to review, dependent pull requests, restack, retarget PR base.
+
+Implicit: "reviewers say this PR is unreviewable", "can you break this branch into reviewable chunks", "how do I ship this feature in layers", "turn my existing PR into a stack", "this diff is 2000 lines and nobody will review it".
 
 Announce at the start: *"Using the stacked-pr-split skill — I'll analyze the diff, propose a layer plan for your approval, then build and submit the stack."*
 
