@@ -1,0 +1,78 @@
+{
+  "skill_name": "stacked-pr-split",
+  "grading": "Assertions whose text matches evals/grade.sh output verbatim are graded mechanically by that script against the fixture repo the run leaves behind. The remaining assertions are judgment-shaped and graded by a human or grader model reading the transcript. Run `bash evals/fixtures/make-fixture.sh <fixture>` before each eval; see evals/README.md.",
+  "scope_note": "Fixtures have no git remote, so these evals exercise Phases 0-5 (preflight, ingest, measure, plan, build, verify). Phase 6+ (`gh stack init/submit`, review-thread migration) needs a real GitHub repo with stacked PRs enabled and is not covered here.",
+  "evals": [
+    {
+      "id": 0,
+      "name": "layered-feature-happy-path",
+      "fixture": "layered-feature",
+      "setup": "bash evals/fixtures/make-fixture.sh layered-feature",
+      "repo_dir": "/tmp/stacked-pr-split-fixtures/layered-feature",
+      "prompt": "ok so /tmp/stacked-pr-split-fixtures/layered-feature has a branch feat/user-auth that has completely gotten away from me. it's the whole user auth feature in one go - schema, session store, the token stuff, endpoints, sign-in page, tests. i already know what our reviewers are going to say because they said it last time. can you break it into a stack of smaller PRs? nothing is pushed yet so just get the branches built locally, don't create anything on github.",
+      "expected_output": "A 3-5 layer plan ordered schema -> store/auth -> api -> ui, presented for approval, then built as local branches that pass the losslessness and linearity gates. The rename stays in one layer and the lockfile does not get a layer of its own.",
+      "files": [],
+      "assertions": [
+        "A layer plan was written as machine-readable JSON",
+        "Every changed file is assigned to exactly one layer",
+        "Splits into 3-5 layers (the diff has four natural dependency levels)",
+        "Layers are ordered by dependency: schema <= store/auth <= api <= ui",
+        "The rename's old and new paths land in the same layer",
+        "The regenerated lockfile did not get a layer of its own",
+        "Every layer has a PR body carrying stack-position context",
+        "Built stack is lossless and linear (top layer's tree matches the original branch)",
+        "No layer exceeds the 600-weighted-line hard cap",
+        "The original branch still exists and was not rewritten",
+        "Presents the layer plan and waits for explicit user approval before running any git command that creates a branch",
+        "Explains for each layer what it depends on and why it sits at that position, rather than just listing file groups",
+        "Reports the reviewer-weighted size (~887) rather than only the raw line count, and notes that the ~303 lockfile lines were excluded from the budget",
+        "Reports the losslessness gate result explicitly, so the user knows the split is provably complete rather than being asked to trust it"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "straddling-file-trap",
+      "fixture": "straddling-file",
+      "setup": "bash evals/fixtures/make-fixture.sh straddling-file",
+      "repo_dir": "/tmp/stacked-pr-split-fixtures/straddling-file",
+      "prompt": "same deal as before - /tmp/stacked-pr-split-fixtures/straddling-file, branch feat/user-auth, one giant auth feature. split it into a stack. local branches only. heads up that router.go is a bit of a mess in this one, it's had a few people in it.",
+      "expected_output": "Recognizes that internal/api/router.go carries both a schema-adjacent concern (RunMigrations) and a layer-3 concern (the auth route), so no file-level assignment splits it cleanly. Resolves by assigning the whole file to one layer or moving a boundary, states the compromise, and still produces a lossless stack.",
+      "files": [],
+      "assertions": [
+        "A layer plan was written as machine-readable JSON",
+        "Every changed file is assigned to exactly one layer",
+        "The straddling file (internal/api/router.go) is assigned to exactly one layer, not duplicated",
+        "Built stack is lossless and linear (top layer's tree matches the original branch)",
+        "The original branch still exists and was not rewritten",
+        "Layers are ordered by dependency: schema <= store/auth <= api <= ui",
+        "The rename's old and new paths land in the same layer",
+        "Splits into 3-5 layers (the diff has four natural dependency levels)",
+        "The regenerated lockfile did not get a layer of its own",
+        "Every layer has a PR body carrying stack-position context",
+        "No layer exceeds the 600-weighted-line hard cap",
+        "Identifies that internal/api/router.go contains changes belonging to two different dependency levels (the migration runner and the auth route)",
+        "Resolves the straddle by moving a layer boundary or assigning the whole file to one layer, and does NOT duplicate the file across layers or edit it to satisfy the tool",
+        "Surfaces the compromise to the user in the plan rather than resolving it silently",
+        "Does not respond to a plan-validation error by working around it — if build-stack.sh rejects a duplicate assignment, the boundary is changed rather than the file split or the check bypassed"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "generated-diff-should-not-split",
+      "fixture": "mostly-generated",
+      "setup": "bash evals/fixtures/make-fixture.sh mostly-generated",
+      "repo_dir": "/tmp/stacked-pr-split-fixtures/mostly-generated",
+      "prompt": "/tmp/stacked-pr-split-fixtures/mostly-generated, branch chore/regen-deps. github says +1900 lines and our team has a soft rule that anything over 400 gets split. can you stack this up for me? local branches is fine.",
+      "expected_output": "Pushes back: once the regenerated package-lock.json and service.pb.go are excluded, the diff is ~146 reviewable lines and does not need splitting. Does not build layer branches without the user overriding.",
+      "files": [],
+      "assertions": [
+        "Does not split the branch: no layer branches were created",
+        "Reported weighted review size is below the 200-line split threshold",
+        "Recommends against splitting and gives the reason: nearly all of the diff is regenerated content that costs no review attention",
+        "Correctly attributes the bulk of the diff to package-lock.json and internal/api/gen/service.pb.go specifically, rather than vaguely citing 'generated files'",
+        "Distinguishes the raw line count (~1,900) from the reviewer-weighted count (~146) and explains why the team's 400-line rule does not fire here",
+        "Asks whether to proceed anyway instead of either splitting silently or refusing outright"
+      ]
+    }
+  ]
+}
