@@ -96,7 +96,7 @@ jq '{weighted_review_lines, suggested_layer_count, split_recommended,
      groups: [.groups[] | select(.weighted > 0)], warnings}' /tmp/analyze.json
 ```
 
-`weighted_review_lines` counts source at 1×, tests at 0.5×, and generated/vendored/lockfile content at 0× — because those are what actually consume reviewer attention. A 3,000-line diff that is 2,800 lines of regenerated lockfile does not need splitting, and a raw line count would tell you it does.
+`weighted_review_lines` counts source at 1×, tests at 0.5×, prose and documentation at 0.25×, and generated/vendored/lockfile content at 0× — because those are what actually consume reviewer attention. A 3,000-line diff that is 2,800 lines of regenerated lockfile does not need splitting, and a raw line count would tell you it does.
 
 If `split_recommended` is `false` (under ~200 weighted lines), say so and ask whether to proceed anyway rather than splitting something that is already reviewable.
 

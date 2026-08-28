@@ -163,9 +163,10 @@ verify_and_report() {
         NF>=3 && $1!="-" {
           if (exclude_re != "" && $3 ~ exclude_re) next
           l = $1 + $2
-          if ($3 ~ /(^|\/)(tests?|specs?|__tests__|testdata|fixtures)\// || $3 ~ /\.(test|spec)\.[a-zA-Z]+$/ || $3 ~ /(_test|Test|_spec)\.[a-zA-Z]+$/) t += l
+          if ($3 ~ /^docs?\// || $3 ~ /\.(md|mdx|rst|adoc|txt)$/) d += l
+          else if ($3 ~ /(^|\/)(tests?|specs?|__tests__|testdata|fixtures)\// || $3 ~ /\.(test|spec)\.[a-zA-Z]+$/ || $3 ~ /(_test|Test|_spec)\.[a-zA-Z]+$/) t += l
           else s += l
-        } END { print s + int(t/2) }')"
+        } END { print s + int(t/2) + int(d/4) }')"
       files="$(printf '%s\n' "$ns" | grep -c . || true)"
       [[ -n "$w" ]] || w=0
     fi

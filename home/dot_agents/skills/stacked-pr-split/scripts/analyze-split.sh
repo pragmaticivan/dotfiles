@@ -58,7 +58,9 @@ COMMITS="$(git rev-list --count "$MERGE_BASE..$SOURCE")"
 MERGE_COMMITS="$(git rev-list --merges --count "$MERGE_BASE..$SOURCE")"
 
 WARNINGS=""
-add_warning() { WARNINGS="${WARNINGS}${1}"$'\n'; }
+# Unit separator, not a newline. `awk -v` rejects a literal newline in a value,
+# so a newline here aborted the whole run as soon as any warning fired.
+add_warning() { WARNINGS="${WARNINGS}${1}"$'\037'; }
 
 git diff --quiet                  || add_warning "working tree has unstaged changes — commit or stash before splitting"
 git diff --cached --quiet         || add_warning "index has staged uncommitted changes — commit or stash before splitting"
@@ -75,6 +77,9 @@ printf '%s\n' "$NUMSTAT" | awk -F'\t' \
   function jesc(s) { gsub(/\\/, "\\\\", s); gsub(/"/, "\\\"", s); gsub(/\t/, "\\t", s); return s }
   function classify(fp) {
     if (exclude_re != "" && fp ~ exclude_re) return "excluded"
+    # Prose before tests. A documentation tree named docs/specs/ matched the
+    # specs?/ test pattern below and got counted as a test suite.
+    if (fp ~ /^docs?\// || fp ~ /\.(md|mdx|rst|adoc|txt)$/) return "docs"
     if (fp ~ /(^|\/)(tests?|specs?|__tests__|testdata|fixtures)\//) return "test"
     if (fp ~ /\.(test|spec)\.[a-zA-Z]+$/) return "test"
     if (fp ~ /(_test|Test|_spec)\.[a-zA-Z]+$/) return "test"
@@ -97,6 +102,7 @@ printf '%s\n' "$NUMSTAT" | awk -F'\t' \
     f_path[nf] = fp; f_add[nf] = $1; f_del[nf] = $2; f_kind[nf] = kind; f_lines[nf] = lines
     if (kind == "binary") { binaries[++nb] = fp }
     if (kind == "excluded") { excl[++nx] = fp; tot_excluded += lines }
+    else if (kind == "docs") { tot_docs += lines }
     else if (kind == "test") { tot_test += lines }
     else if (kind == "source") { tot_source += lines }
     if ($1 != "-") { tot_add += $1; tot_del += $2 }
@@ -104,11 +110,12 @@ printf '%s\n' "$NUMSTAT" | awk -F'\t' \
     if (!(g in g_seen)) { g_seen[g] = 1; g_order[++ng] = g }
     g_src[g] += (kind == "source") ? lines : 0
     g_tst[g] += (kind == "test")   ? lines : 0
+    g_doc[g] += (kind == "docs")   ? lines : 0
     g_exc[g] += (kind == "excluded") ? lines : 0
     g_cnt[g] += 1
   }
   END {
-    weighted = tot_source + int(tot_test / 2)
+    weighted = tot_source + int(tot_test / 2) + int(tot_docs / 4)
     # Ceiling division: how many layers the budget implies.
     suggested = (weighted <= target) ? 1 : int((weighted + target - 1) / target)
 
@@ -123,6 +130,7 @@ printf '%s\n' "$NUMSTAT" | awk -F'\t' \
     printf "  \"lines_deleted\": %d,\n", tot_del + 0
     printf "  \"source_lines\": %d,\n", tot_source + 0
     printf "  \"test_lines\": %d,\n", tot_test + 0
+    printf "  \"docs_lines\": %d,\n", tot_docs + 0
     printf "  \"excluded_lines\": %d,\n", tot_excluded + 0
     printf "  \"weighted_review_lines\": %d,\n", weighted
     printf "  \"target_lines_per_layer\": %d,\n", target
@@ -132,8 +140,8 @@ printf '%s\n' "$NUMSTAT" | awk -F'\t' \
     printf "  \"groups\": [\n"
     for (i = 1; i <= ng; i++) {
       g = g_order[i]
-      printf "    { \"group\": \"%s\", \"source_lines\": %d, \"test_lines\": %d, \"excluded_lines\": %d, \"weighted\": %d, \"file_count\": %d }%s\n", \
-        jesc(g), g_src[g], g_tst[g], g_exc[g], g_src[g] + int(g_tst[g] / 2), g_cnt[g], (i < ng ? "," : "")
+      printf "    { \"group\": \"%s\", \"source_lines\": %d, \"test_lines\": %d, \"docs_lines\": %d, \"excluded_lines\": %d, \"weighted\": %d, \"file_count\": %d }%s\n", \
+        jesc(g), g_src[g], g_tst[g], g_doc[g], g_exc[g], g_src[g] + int(g_tst[g] / 2) + int(g_doc[g] / 4), g_cnt[g], (i < ng ? "," : "")
     }
     printf "  ],\n"
 
@@ -153,7 +161,7 @@ printf '%s\n' "$NUMSTAT" | awk -F'\t' \
     printf "],\n"
 
     printf "  \"warnings\": ["
-    n = split(warnings, w, "\n"); first = 1
+    n = split(warnings, w, "\037"); first = 1
     for (i = 1; i <= n; i++) {
       if (w[i] == "") continue
       printf "%s\"%s\"", (first ? "" : ", "), jesc(w[i]); first = 0
