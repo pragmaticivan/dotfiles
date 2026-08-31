@@ -14,13 +14,14 @@ fi
 
 canonical="$HOME/.agents/skills"
 
+# Copilot reads $canonical itself, thus only Claude needs the symlinks.
+agent_dir="$HOME/.claude/skills"
+mkdir -p "$agent_dir"
+
 for name in "${skills[@]}"; do
   if [ ! -d "$canonical/$name" ]; then
     echo "external skill '$name' missing from $canonical — check its path in .chezmoidata/skills.yaml" >&2
     exit 1
   fi
-  for agent_dir in "$HOME/.claude/skills" "$HOME/.copilot/skills"; do
-    mkdir -p "$agent_dir"
-    ln -sfn "$canonical/$name" "$agent_dir/$name"
-  done
+  ln -sfn "$canonical/$name" "$agent_dir/$name"
 done

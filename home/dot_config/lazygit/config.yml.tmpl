@@ -1,4 +1,4 @@
-{{- $palette := index .catppuccin.palettes .catppuccinFlavor }}
+{{- $palette := index .catppuccin.palettes .catppuccinFlavor -}}
 #reference from https://github.com/scottmckendry/Windots/blob/main/lazygit/config.yml
 notARepository: skip
 disableStartupPopups: true
@@ -36,8 +36,8 @@ gui:
     '*': '{{ $palette.lavender }}'
 git:
   parseEmoji: true
-  pagers:
-    - pager: delta --paging=never
+  diffRenderers:
+    - command: delta --paging=never
       colorArg: always
 customCommands:
   - key: 'E'
