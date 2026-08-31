@@ -1,8 +1,19 @@
-{{- /* The Pixoo keys arrive with `chezmoi init`. Keep apply usable before that. */ -}}
-{{- $pixooEnabled := false -}}
-{{- $pixooAddress := "" -}}
-{{- if hasKey . "pixooEnabled" }}{{ $pixooEnabled = .pixooEnabled }}{{ end -}}
-{{- if hasKey . "pixooAddress" }}{{ $pixooAddress = .pixooAddress }}{{ end -}}
+#!/usr/bin/env bash
+# Claude Code rewrites ~/.claude/settings.json in its own key order each time a
+# setting changes. A plain template thus shows a large diff after each change,
+# although the two files hold the same data. This script merges the managed keys
+# into the live file. If the live file is already correct, the script writes it
+# out with no change, thus the key order of Claude Code stays.
+#
+# Keys that Claude Code adds by itself stay in the file. The managed keys below
+# always win.
+set -euo pipefail
+{{ $pixooEnabled := false }}
+{{ $pixooAddress := "" }}
+{{ if hasKey . "pixooEnabled" }}{{ $pixooEnabled = .pixooEnabled }}{{ end }}
+{{ if hasKey . "pixooAddress" }}{{ $pixooAddress = .pixooAddress }}{{ end }}
+managed=$(
+    cat <<'MANAGED_JSON'
 {
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
@@ -420,3 +431,28 @@
     ]
   }
 }
+MANAGED_JSON
+)
+
+current=$(cat)
+
+# `brew bundle` runs after chezmoi writes the files, thus the first apply on a
+# new machine has no jq. Write the managed keys, and merge at the next apply.
+if ! command -v jq >/dev/null 2>&1; then
+    printf '%s\n' "$managed"
+    exit 0
+fi
+
+if ! printf '%s' "$current" | jq -e . >/dev/null 2>&1; then
+    current='{}'
+fi
+
+merged=$(jq -n --argjson cur "$current" --argjson man "$managed" '$cur + $man')
+
+# The live file already holds the managed keys. Keep it, thus the key order of
+# Claude Code makes no diff.
+if [ "$(printf '%s' "$current" | jq -Sc .)" = "$(printf '%s' "$merged" | jq -Sc .)" ]; then
+    printf '%s\n' "$current"
+else
+    printf '%s\n' "$merged"
+fi
