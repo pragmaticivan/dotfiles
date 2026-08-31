@@ -105,13 +105,18 @@ shorten_model() {
 }
 MODEL=$(shorten_model "$raw_model")
 
-# Context window
+# Context window. The bar measures against a fixed budget, not the model window,
+# to keep one scale for all models.
+CTX_LIMIT=350000
+CTX_LIMIT_LABEL="$((CTX_LIMIT / 1000))k"
+
 CTX_PCT=$(jqr '(.context_window.used_percentage // 0) | floor')
 CTX_USED=$(jqr '.context_window.current_tokens // .context_window.used // 0')
 is_num "$CTX_PCT"  || CTX_PCT=0
 is_num "$CTX_USED" || CTX_USED=0
 
-EXCEEDS_200K=$(jqr '.exceeds_200k_tokens // false')
+# Token count is the better signal. Use the reported percentage only without it.
+[ "$CTX_USED" -gt 0 ] && CTX_PCT=$(( CTX_USED * 100 / CTX_LIMIT ))
 
 # Cost (official schema: cost.total_cost_usd; fall back to flat fields for other versions)
 COST_RAW=$(jqr '.cost.total_cost_usd // .cost_usd // .session_cost_usd // 0')
@@ -193,8 +198,8 @@ fi
 [ -n "$OUTPUT_STYLE" ] && PARTS+=("${C_PINK}${OUTPUT_STYLE}${R}")
 
 # Context window
-if [ "$EXCEEDS_200K" = "true" ]; then
-  PARTS+=("${B}${C_RED}████████ 200k+${R}")
+if [ "$CTX_USED" -ge "$CTX_LIMIT" ]; then
+  PARTS+=("${B}${C_RED}████████ ${CTX_LIMIT_LABEL}+${R}")
 elif [ "$CTX_PCT" -ge 95 ]; then
   PARTS+=("${B}${C_RED}████████ ${CTX_PCT}%${R}")
 else
