@@ -3,7 +3,7 @@
 # Commands not listed here still run inside the selected permission profile.
 # These rules only decide whether a command may escape that sandbox.
 
-# Privilege escalation and destructive system administration are forbidden.
+# Privilege escalation and catastrophic system administration are forbidden.
 forbidden_commands = [
     ["sudo"],
     ["su"],
@@ -12,14 +12,6 @@ forbidden_commands = [
     ["runas"],
     ["mkfs"],
     ["diskutil", "eraseDisk"],
-    ["dd"],
-    ["shred"],
-    ["launchctl"],
-    ["systemctl"],
-    ["service"],
-    ["crontab"],
-    ["at"],
-    ["chown"],
     ["visudo"],
     ["passwd"],
 ]
@@ -31,8 +23,9 @@ for command in forbidden_commands:
         justification = "This command is blocked by the global Codex safety policy.",
     )
 
-# Direct network, remote-access, cloud, and infrastructure clients are blocked.
-forbidden_network_commands = [
+# Direct network, remote-access, cloud, and infrastructure clients require
+# approval before they can leave the network-disabled command sandbox.
+prompt_network_commands = [
     ["curl"],
     ["wget"],
     ["nc"],
@@ -54,15 +47,15 @@ forbidden_network_commands = [
     ["helm"],
 ]
 
-for command in forbidden_network_commands:
+for command in prompt_network_commands:
     prefix_rule(
         pattern = command,
-        decision = "forbidden",
-        justification = "Direct network and infrastructure clients are disabled; use an approved scoped tool instead.",
+        decision = "prompt",
+        justification = "This command can access remote systems and requires explicit approval.",
     )
 
-# Global package installation is forbidden.
-forbidden_install_commands = [
+# Package and system installation requires approval.
+prompt_install_commands = [
     ["npm", "install", "-g"],
     ["npm", "i", "-g"],
     ["pip", "install"],
@@ -74,14 +67,14 @@ forbidden_install_commands = [
     ["dnf", "install"],
 ]
 
-for command in forbidden_install_commands:
+for command in prompt_install_commands:
     prefix_rule(
         pattern = command,
-        decision = "forbidden",
-        justification = "Global package installation is disabled; use the project's declared dependency workflow.",
+        decision = "prompt",
+        justification = "Installing packages can execute third-party code and requires explicit approval.",
     )
 
-# Preserve the Claude policy's hard stops for the most dangerous rm/chmod forms.
+# Preserve hard stops for commands that target the filesystem root or home.
 forbidden_destructive_commands = [
     ["rm", "-rf", "/"],
     ["rm", "-fr", "/"],
@@ -91,7 +84,6 @@ forbidden_destructive_commands = [
     ["rm", "-fr", "~"],
     ["rm", "-rf", "~*"],
     ["rm", "-fr", "~*"],
-    ["chmod", "777"],
 ]
 
 for command in forbidden_destructive_commands:
@@ -111,6 +103,14 @@ prompt_commands = [
     ["git", "stash", "drop"],
     ["rm"],
     ["chmod"],
+    ["chown"],
+    ["dd"],
+    ["shred"],
+    ["launchctl"],
+    ["systemctl"],
+    ["service"],
+    ["crontab"],
+    ["at"],
     ["make", "deploy"],
     ["make", "release"],
     ["npm", "run", "deploy"],
@@ -139,4 +139,11 @@ prefix_rule(
     pattern = ["git", "fetch"],
     decision = "allow",
     justification = "Fetching remote refs is read-only and explicitly allowed by the global policy.",
+)
+
+# Preserve the previously approved project-scoped Context7 documentation helper.
+prefix_rule(
+    pattern = ["python3", "scripts/context7.py"],
+    decision = "allow",
+    justification = "The repository-scoped Context7 helper is explicitly approved.",
 )

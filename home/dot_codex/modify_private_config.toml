@@ -13,20 +13,26 @@ overlay_file=$(mktemp "${TMPDIR:-/tmp}/codex-config.XXXXXX")
 trap 'rm -f "$overlay_file"' EXIT HUP INT TERM
 
 cat >"$overlay_file" <<'EOF'
-# Match the default Claude Code posture: work freely in the current project,
-# request approval for elevated actions, and keep network access disabled.
+# Work freely in trusted projects, protect home-level credentials, and request
+# approval for elevated shell commands and state-changing app actions.
 approval_policy = "on-request"
 default_permissions = "project-workspace"
-web_search = "disabled"
+web_search = "indexed"
 allow_login_shell = true
 
 [permissions.project-workspace]
-description = "Workspace editing with secret files and network access denied."
+description = "Trusted workspace editing with approval-gated network access."
 extends = ":workspace"
 
 [permissions.project-workspace.filesystem]
 glob_scan_max_depth = 8
-"~/.ssh" = "deny"
+"~/.ssh" = "read"
+"~/.ssh/id_dsa" = "deny"
+"~/.ssh/id_ecdsa" = "deny"
+"~/.ssh/id_ecdsa_sk" = "deny"
+"~/.ssh/id_ed25519" = "deny"
+"~/.ssh/id_ed25519_sk" = "deny"
+"~/.ssh/id_rsa" = "deny"
 "~/.aws" = "deny"
 "~/.config/gcloud" = "deny"
 "~/.kube" = "deny"
@@ -36,27 +42,10 @@ glob_scan_max_depth = 8
 "~/vault-token" = "deny"
 
 [permissions.project-workspace.filesystem.":workspace_roots"]
-".env" = "deny"
-".env.*" = "deny"
-"**/.env" = "deny"
-"**/.env.*" = "deny"
-"secrets/**" = "deny"
-"**/secrets/**" = "deny"
-"**/*.pem" = "deny"
-"**/*.key" = "deny"
-"**/*.p12" = "deny"
-"**/*.pfx" = "deny"
-"**/*.cer" = "deny"
-"**/*.crt" = "deny"
-"**/id_rsa" = "deny"
-"**/id_ed25519" = "deny"
-"**/vault-token" = "deny"
-"**/.netrc" = "deny"
-"**/.npmrc" = "deny"
-"**/.pypirc" = "deny"
+".git" = "write"
 
 [permissions.project-workspace.network]
-enabled = false
+enabled = true
 
 [shell_environment_policy]
 inherit = "all"
@@ -64,8 +53,8 @@ ignore_default_excludes = false
 
 [apps._default]
 default_tools_approval_mode = "writes"
-destructive_enabled = false
-open_world_enabled = false
+destructive_enabled = true
+open_world_enabled = true
 
 [analytics]
 enabled = false
@@ -87,5 +76,10 @@ EOF
 yq eval-all \
     --input-format toml \
     --output-format toml \
-    '. as $item ireduce ({}; . * $item) | del(.sandbox_mode, .sandbox_workspace_write)' \
-    - "$overlay_file"
+    '. as $item ireduce ({}; . * $item)' \
+    - "$overlay_file" | \
+    yq eval \
+        --input-format toml \
+        --output-format toml \
+        'del(.sandbox_mode, .sandbox_workspace_write) |
+        .permissions."project-workspace".filesystem.":workspace_roots" = {".git": "write"}'

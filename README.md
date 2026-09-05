@@ -84,6 +84,18 @@ The `Update pins` workflow does the same each month, and it opens a `pull reques
 `pull request` before the merge. It moves a pin to the upstream head, which can be an untested
 commit, and it does not change the `# pin:` comment.
 
+### OpenCode V2
+
+Chezmoi manages OpenCode V2's global server config, CLI preferences, instructions, and portable
+agents under `~/.config/opencode`. OpenCode discovers the canonical skills in `~/.agents/skills`
+without extra symlinks or a duplicate `skills` config entry. Project-specific guidance belongs in
+an `AGENTS.md`; project-specific providers, MCP servers, and references belong in
+`opencode.jsonc` or `.opencode/opencode.jsonc`.
+
+The global `opencode.jsonc` uses a chezmoi modifier. Add machine-local providers or MCP servers
+directly to `~/.config/opencode/opencode.jsonc`; `chezmoi apply` preserves unrelated top-level
+keys. Chezmoi owns `$schema`, `shell`, `update`, `snapshots`, `watcher`, and `permissions`.
+
 ### 🔀 macOS install profiles (personal vs restricted)
 
 On macOS, Homebrew apps are installed from a templated `Brewfile` that respects a profile:

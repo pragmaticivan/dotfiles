@@ -6,9 +6,9 @@
 # that tool's native frontmatter.
 #
 # To add an agent: write the body, add an entry here, then add one two-line
-# wrapper per target under dot_claude/agents, dot_copilot/agents, and
-# dot_codex/agents. To remove one: delete those files and add the destination
-# paths to .chezmoiremove.
+# wrapper per target under dot_claude/agents, dot_copilot/agents,
+# dot_codex/agents, and dot_config/opencode/agents. To remove one: delete those
+# files and add the destination paths to .chezmoiremove.
 #
 # `write` is explicit rather than derived from the Claude tool list, because
 # Codex has no tool allowlist. It expresses permission as a sandbox mode, so
@@ -24,7 +24,7 @@ agents:
       relevant failure links. Use when waiting for CI results or when CI has
       failed. Use proactively to monitor branch CI.
     write: false
-    targets: [claude, copilot, codex]
+    targets: [claude, copilot, codex, opencode]
     claude:
       model: haiku
       tools: Bash
@@ -38,7 +38,7 @@ agents:
       code. Use before review to strip narration, commented-out code, and
       suppression comments, and to flag the symbols that need reshaping.
     write: true
-    targets: [claude, copilot, codex]
+    targets: [claude, copilot, codex, opencode]
     claude:
       model: opus
       tools: Bash, Read, Edit, Glob, Grep
@@ -53,7 +53,7 @@ agents:
       references and concrete rewrites. Does not rewrite the document. Use for
       RFC drafts, PR descriptions, design docs, and any prose others will read.
     write: false
-    targets: [claude, copilot, codex]
+    targets: [claude, copilot, codex, opencode]
     claude:
       model: opus
       tools: Read, Grep
@@ -68,7 +68,7 @@ agents:
       disbelief, and the burden of proof sits on the claim. Use for RFC
       validation, design critique, and code correctness verification.
     write: false
-    targets: [claude, copilot, codex]
+    targets: [claude, copilot, codex, opencode]
     claude:
       model: opus
       tools: Bash, Read, Glob, Grep
@@ -82,7 +82,7 @@ agents:
       idiomatic style. Use when new logic needs coverage, when a bug needs a
       regression test, or when existing tests are weak or missing.
     write: true
-    targets: [claude, copilot, codex]
+    targets: [claude, copilot, codex, opencode]
     claude:
       model: sonnet
       tools: Read, Write, Edit, Grep, Glob, Bash
@@ -98,7 +98,7 @@ agents:
       API endpoints, or sensitive data. Flags secrets, SSRF, injection, unsafe
       crypto, and OWASP Top 10 vulnerabilities.
     write: true
-    targets: [claude, copilot, codex]
+    targets: [claude, copilot, codex, opencode]
     claude:
       model: opus
       tools: Read, Write, Edit, Bash, Grep, Glob

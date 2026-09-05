@@ -1,0 +1,28 @@
+{{- /*
+Renders a complete OpenCode V2 subagent file for ~/.config/opencode/agents.
+Call with (dict "ctx" . "id" "<agent-id>" "body" <rendered body>).
+
+OpenCode agents inherit the active session model so they work with any provider.
+The portable registry's write flag and Claude shell allowlist provide the
+permission metadata that maps cleanly to OpenCode.
+*/ -}}
+{{- $a := index .ctx.agents .id -}}
+---
+description: {{ $a.description | quote }}
+mode: subagent
+{{- if or (not $a.write) (not (contains "Bash" $a.claude.tools)) }}
+permissions:
+{{- if not $a.write }}
+  - action: edit
+    resource: "*"
+    effect: deny
+{{- end }}
+{{- if not (contains "Bash" $a.claude.tools) }}
+  - action: shell
+    resource: "*"
+    effect: deny
+{{- end }}
+{{- end }}
+---
+
+{{ .body }}
