@@ -3,9 +3,9 @@ set -euo pipefail
 
 # package hash: {{ include (joinPath .chezmoi.sourceDir "dot_config/opencode/package.json") | sha256sum }}
 
-if ! command -v bun >/dev/null 2>&1; then
-  echo "bun is required to install OpenCode plugin dependencies" >&2
+if ! command -v mise >/dev/null 2>&1; then
+  echo "mise is required to install OpenCode plugin dependencies" >&2
   exit 1
 fi
 
-bun install --cwd "${HOME}/.config/opencode"
+mise exec -- bun install --cwd "${HOME}/.config/opencode"
