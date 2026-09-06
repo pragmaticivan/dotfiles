@@ -1,0 +1,6 @@
+{
+  "private": true,
+  "dependencies": {
+    "@opencode-ai/plugin": "0.0.0-beta-19059"
+  }
+}

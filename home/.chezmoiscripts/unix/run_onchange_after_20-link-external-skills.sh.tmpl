@@ -14,7 +14,8 @@ fi
 
 canonical="$HOME/.agents/skills"
 
-# Copilot reads $canonical itself, thus only Claude needs the symlinks.
+# Copilot and OpenCode V2 read $canonical themselves, thus only Claude needs
+# the symlinks.
 agent_dir="$HOME/.claude/skills"
 mkdir -p "$agent_dir"
 

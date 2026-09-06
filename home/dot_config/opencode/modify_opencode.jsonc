@@ -1,0 +1,301 @@
+#!/bin/sh
+set -eu
+
+# OpenCode can add provider and MCP settings to this file. Merge the managed
+# policy into that live state instead of replacing unrelated local settings.
+if ! command -v python3 >/dev/null 2>&1; then
+    echo "python3 is required to merge the managed OpenCode configuration" >&2
+    exit 1
+fi
+
+current_file=$(mktemp "${TMPDIR:-/tmp}/opencode-current.XXXXXX")
+managed_file=$(mktemp "${TMPDIR:-/tmp}/opencode-managed.XXXXXX")
+trap 'rm -f "$current_file" "$managed_file"' EXIT HUP INT TERM
+
+cat >"$current_file"
+cat >"$managed_file" <<'EOF'
+{
+  "$schema": "https://opencode.ai/config.json",
+  "shell": "/bin/zsh",
+  "update": "notify",
+  "snapshots": true,
+  "lsp": true,
+  "watcher": {
+    "ignore": [
+      ".git/**",
+      "node_modules/**",
+      "dist/**",
+      "coverage/**"
+    ]
+  },
+  "plugins": ["./plugins/rtk","opencode-cursor-provider"],
+  "permissions": [
+    { "action": "external_directory", "resource": "~/.agents/skills/*", "effect": "allow" },
+    { "action": "shell", "resource": "git push --force *", "effect": "ask" },
+    { "action": "shell", "resource": "git push -f *", "effect": "ask" },
+    { "action": "shell", "resource": "gh pr merge *", "effect": "ask" },
+    { "action": "shell", "resource": "git rebase *", "effect": "ask" },
+    { "action": "shell", "resource": "git reset --hard *", "effect": "ask" },
+    { "action": "shell", "resource": "git clean -fd *", "effect": "ask" },
+    { "action": "shell", "resource": "git tag *", "effect": "ask" },
+    { "action": "shell", "resource": "git stash drop *", "effect": "ask" },
+    { "action": "shell", "resource": "chmod *", "effect": "ask" },
+    { "action": "shell", "resource": "make deploy *", "effect": "ask" },
+    { "action": "shell", "resource": "make release *", "effect": "ask" },
+    { "action": "shell", "resource": "npm run deploy *", "effect": "ask" },
+    { "action": "shell", "resource": "npm run release *", "effect": "ask" },
+    { "action": "shell", "resource": "docker rm *", "effect": "ask" },
+    { "action": "shell", "resource": "docker rmi *", "effect": "ask" },
+    { "action": "shell", "resource": "docker system prune *", "effect": "ask" },
+    { "action": "shell", "resource": "docker-compose down *", "effect": "ask" },
+    { "action": "shell", "resource": "psql *", "effect": "ask" },
+    { "action": "shell", "resource": "mysql *", "effect": "ask" },
+    { "action": "shell", "resource": "mongosh *", "effect": "ask" },
+    { "action": "shell", "resource": "redis-cli *", "effect": "ask" },
+    { "action": "shell", "resource": "sqlite3 *", "effect": "ask" },
+    { "action": "shell", "resource": "sudo *", "effect": "deny" },
+    { "action": "shell", "resource": "su *", "effect": "deny" },
+    { "action": "shell", "resource": "doas *", "effect": "deny" },
+    { "action": "shell", "resource": "pkexec *", "effect": "deny" },
+    { "action": "shell", "resource": "runas *", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf /", "effect": "deny" },
+    { "action": "shell", "resource": "rm -fr /", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf ~*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf /Users*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -fr /Users*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf $HOME*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -fr $HOME*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf ${HOME}*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -fr ${HOME}*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -rf ..*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -fr ..*", "effect": "deny" },
+    { "action": "shell", "resource": "rm -r ..*", "effect": "deny" },
+    { "action": "shell", "resource": "mkfs *", "effect": "deny" },
+    { "action": "shell", "resource": "diskutil eraseDisk *", "effect": "deny" },
+    { "action": "shell", "resource": "dd if=/dev/zero *", "effect": "deny" },
+    { "action": "shell", "resource": "shred *", "effect": "deny" },
+    { "action": "shell", "resource": "curl *", "effect": "deny" },
+    { "action": "shell", "resource": "wget *", "effect": "deny" },
+    { "action": "shell", "resource": "nc *", "effect": "deny" },
+    { "action": "shell", "resource": "ncat *", "effect": "deny" },
+    { "action": "shell", "resource": "netcat *", "effect": "deny" },
+    { "action": "shell", "resource": "ssh *", "effect": "deny" },
+    { "action": "shell", "resource": "scp *", "effect": "deny" },
+    { "action": "shell", "resource": "sftp *", "effect": "deny" },
+    { "action": "shell", "resource": "rsync *", "effect": "deny" },
+    { "action": "shell", "resource": "ngrok *", "effect": "deny" },
+    { "action": "shell", "resource": "cloudflared *", "effect": "deny" },
+    { "action": "shell", "resource": "aws *", "effect": "deny" },
+    { "action": "shell", "resource": "gcloud *", "effect": "deny" },
+    { "action": "shell", "resource": "az *", "effect": "deny" },
+    { "action": "shell", "resource": "gsutil *", "effect": "deny" },
+    { "action": "shell", "resource": "terraform *", "effect": "deny" },
+    { "action": "shell", "resource": "pulumi *", "effect": "deny" },
+    { "action": "shell", "resource": "kubectl *", "effect": "deny" },
+    { "action": "shell", "resource": "helm *", "effect": "deny" },
+    { "action": "read", "resource": "*.env", "effect": "deny" },
+    { "action": "read", "resource": "*.env.local", "effect": "deny" },
+    { "action": "read", "resource": "*.env.*.local", "effect": "deny" },
+    { "action": "read", "resource": "*.env.development", "effect": "deny" },
+    { "action": "read", "resource": "*.env.production", "effect": "deny" },
+    { "action": "read", "resource": "*.env.prod", "effect": "deny" },
+    { "action": "read", "resource": "*.env.staging", "effect": "deny" },
+    { "action": "read", "resource": "*.env.test", "effect": "deny" },
+    { "action": "read", "resource": "*.env.secret*", "effect": "deny" },
+    { "action": "read", "resource": "*.env.vault", "effect": "deny" },
+    { "action": "read", "resource": "*.envrc", "effect": "deny" },
+    { "action": "read", "resource": "*secrets/*", "effect": "deny" },
+    { "action": "read", "resource": "*.pem", "effect": "deny" },
+    { "action": "read", "resource": "*.key", "effect": "deny" },
+    { "action": "read", "resource": "*.p12", "effect": "deny" },
+    { "action": "read", "resource": "*.pfx", "effect": "deny" },
+    { "action": "read", "resource": "*.cer", "effect": "deny" },
+    { "action": "read", "resource": "*.crt", "effect": "deny" },
+    { "action": "read", "resource": "*id_rsa", "effect": "deny" },
+    { "action": "read", "resource": "*id_ed25519", "effect": "deny" },
+    { "action": "read", "resource": "*.ssh/*", "effect": "deny" },
+    { "action": "read", "resource": "*.aws/credentials", "effect": "deny" },
+    { "action": "read", "resource": "*.aws/config", "effect": "deny" },
+    { "action": "read", "resource": "*.config/gcloud/*", "effect": "deny" },
+    { "action": "read", "resource": "*.kube/config", "effect": "deny" },
+    { "action": "read", "resource": "*vault-token", "effect": "deny" },
+    { "action": "read", "resource": "*.netrc", "effect": "deny" },
+    { "action": "read", "resource": "*.npmrc", "effect": "deny" },
+    { "action": "read", "resource": "*.pypirc", "effect": "deny" },
+    { "action": "edit", "resource": "*.env", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.local", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.*.local", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.development", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.production", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.prod", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.staging", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.test", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.secret*", "effect": "deny" },
+    { "action": "edit", "resource": "*.env.vault", "effect": "deny" },
+    { "action": "edit", "resource": "*.envrc", "effect": "deny" },
+    { "action": "edit", "resource": "*secrets/*", "effect": "deny" },
+    { "action": "edit", "resource": "*.pem", "effect": "deny" },
+    { "action": "edit", "resource": "*.key", "effect": "deny" },
+    { "action": "edit", "resource": "*.p12", "effect": "deny" },
+    { "action": "edit", "resource": "*.pfx", "effect": "deny" },
+    { "action": "edit", "resource": "*.cer", "effect": "deny" },
+    { "action": "edit", "resource": "*.crt", "effect": "deny" },
+    { "action": "edit", "resource": "*id_rsa", "effect": "deny" },
+    { "action": "edit", "resource": "*id_ed25519", "effect": "deny" },
+    { "action": "edit", "resource": "*.ssh/*", "effect": "deny" },
+    { "action": "edit", "resource": "*.aws/credentials", "effect": "deny" },
+    { "action": "edit", "resource": "*.aws/config", "effect": "deny" },
+    { "action": "edit", "resource": "*.config/gcloud/*", "effect": "deny" },
+    { "action": "edit", "resource": "*.kube/config", "effect": "deny" },
+    { "action": "edit", "resource": "*vault-token", "effect": "deny" },
+    { "action": "edit", "resource": "*.netrc", "effect": "deny" },
+    { "action": "edit", "resource": "*.npmrc", "effect": "deny" },
+    { "action": "edit", "resource": "*.pypirc", "effect": "deny" },
+    { "action": "edit", "resource": "*.aws/*", "effect": "deny" },
+    { "action": "edit", "resource": "*.kube/*", "effect": "deny" },
+    { "action": "shell", "resource": "launchctl *", "effect": "deny" },
+    { "action": "shell", "resource": "systemctl *", "effect": "deny" },
+    { "action": "shell", "resource": "service *", "effect": "deny" },
+    { "action": "shell", "resource": "crontab *", "effect": "deny" },
+    { "action": "shell", "resource": "at *", "effect": "deny" },
+    { "action": "shell", "resource": "chown *", "effect": "deny" },
+    { "action": "shell", "resource": "chmod 777 *", "effect": "deny" },
+    { "action": "shell", "resource": "visudo *", "effect": "deny" },
+    { "action": "shell", "resource": "passwd *", "effect": "deny" },
+    { "action": "shell", "resource": "git push origin main *", "effect": "deny" },
+    { "action": "shell", "resource": "git push origin master *", "effect": "deny" },
+    { "action": "shell", "resource": "git push -u origin main *", "effect": "deny" },
+    { "action": "shell", "resource": "git push -u origin master *", "effect": "deny" },
+    { "action": "shell", "resource": "git push --set-upstream origin main *", "effect": "deny" },
+    { "action": "shell", "resource": "git push --set-upstream origin master *", "effect": "deny" },
+    { "action": "shell", "resource": "git push -f origin main *", "effect": "deny" },
+    { "action": "shell", "resource": "git push -f origin master *", "effect": "deny" },
+    { "action": "shell", "resource": "git push --force origin main *", "effect": "deny" },
+    { "action": "shell", "resource": "git push --force origin master *", "effect": "deny" },
+    { "action": "shell", "resource": "git push origin HEAD:main", "effect": "deny" },
+    { "action": "shell", "resource": "git push origin HEAD:master", "effect": "deny" },
+    { "action": "shell", "resource": "npm install -g *", "effect": "deny" },
+    { "action": "shell", "resource": "pip install *", "effect": "deny" },
+    { "action": "shell", "resource": "pip3 install *", "effect": "deny" },
+    { "action": "shell", "resource": "brew install *", "effect": "deny" },
+    { "action": "shell", "resource": "apt-get install *", "effect": "deny" },
+    { "action": "shell", "resource": "apt install *", "effect": "deny" },
+    { "action": "shell", "resource": "yum install *", "effect": "deny" },
+    { "action": "shell", "resource": "dnf install *", "effect": "deny" }
+  ]
+}
+EOF
+
+python3 - "$current_file" "$managed_file" <<'PY'
+import json
+import pathlib
+import sys
+
+
+def parse_jsonc(text: str):
+    without_comments = []
+    index = 0
+    in_string = False
+    escaped = False
+
+    while index < len(text):
+        char = text[index]
+
+        if in_string:
+            without_comments.append(char)
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            index += 1
+            continue
+
+        if char == '"':
+            in_string = True
+            without_comments.append(char)
+            index += 1
+            continue
+
+        if text.startswith("//", index):
+            without_comments.extend("  ")
+            index += 2
+            while index < len(text) and text[index] not in "\r\n":
+                without_comments.append(" ")
+                index += 1
+            continue
+
+        if text.startswith("/*", index):
+            without_comments.extend("  ")
+            index += 2
+            while index < len(text) and not text.startswith("*/", index):
+                without_comments.append(text[index] if text[index] in "\r\n" else " ")
+                index += 1
+            if index == len(text):
+                raise ValueError("unterminated block comment")
+            without_comments.extend("  ")
+            index += 2
+            continue
+
+        without_comments.append(char)
+        index += 1
+
+    cleaned = "".join(without_comments)
+    without_trailing_commas = []
+    index = 0
+    in_string = False
+    escaped = False
+
+    while index < len(cleaned):
+        char = cleaned[index]
+
+        if in_string:
+            without_trailing_commas.append(char)
+            if escaped:
+                escaped = False
+            elif char == "\\":
+                escaped = True
+            elif char == '"':
+                in_string = False
+            index += 1
+            continue
+
+        if char == '"':
+            in_string = True
+        elif char == ",":
+            lookahead = index + 1
+            while lookahead < len(cleaned) and cleaned[lookahead].isspace():
+                lookahead += 1
+            if lookahead < len(cleaned) and cleaned[lookahead] in "}]":
+                index += 1
+                continue
+
+        without_trailing_commas.append(char)
+        index += 1
+
+    return json.loads("".join(without_trailing_commas))
+
+
+current_path, managed_path = map(pathlib.Path, sys.argv[1:])
+current_text = current_path.read_text()
+
+try:
+    current = parse_jsonc(current_text) if current_text.strip() else {}
+    managed = json.loads(managed_path.read_text())
+except (json.JSONDecodeError, ValueError) as error:
+    raise SystemExit(f"cannot merge OpenCode config: {error}")
+
+if not isinstance(current, dict):
+    raise SystemExit("cannot merge OpenCode config: root must be an object")
+
+merged = current | managed
+
+if current == merged:
+    sys.stdout.write(current_text)
+    if current_text and not current_text.endswith("\n"):
+        sys.stdout.write("\n")
+else:
+    json.dump(merged, sys.stdout, indent=2, ensure_ascii=False)
+    sys.stdout.write("\n")
+PY

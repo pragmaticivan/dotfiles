@@ -1,0 +1,23 @@
+{
+  "$schema": "https://opencode.ai/v2/cli.json",
+  "attention": {
+    "enabled": true,
+    "notifications": true,
+    "sound": false
+  },
+  "diffs": {
+    "source": "branch",
+    "wrap": "word",
+    "tree": true,
+    "single": false,
+    "view": "auto"
+  },
+  "terminal": {
+    "title": true,
+    "copy": "select"
+  },
+  "theme": {
+    "name": "catppuccin-macchiato",
+    "mode": "system"
+  }
+}
