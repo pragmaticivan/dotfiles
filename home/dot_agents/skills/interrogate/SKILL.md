@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/SKILL.md
 name: interrogate
 description: "Adversarially review a change with one reviewer per configured model, then synthesize the verdict. Agreement across models is the signal."
-disable-model-invocation: true
 ---
 
 # Interrogate

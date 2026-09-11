@@ -7,6 +7,11 @@
 #
 # Keys that Claude Code adds by itself stay in the file. The managed keys below
 # always win.
+#
+# CLAUDE_CODE_ENABLE_TODO_TOOLS=1 restores TaskCreate, TaskGet, TaskUpdate and
+# TaskList. Claude Code 2.1.233 and later leave them out on Opus 4.8, Sonnet 5,
+# Fable 5, Mythos 5 and newer, thus a session on Opus 5 shows no task list and no
+# progress. A subagent gets the tools only when the session has them.
 set -euo pipefail
 {{ $pixooEnabled := false }}
 {{ $pixooAddress := "" }}
@@ -17,6 +22,7 @@ managed=$(
 {
   "env": {
     "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "CLAUDE_CODE_ENABLE_TODO_TOOLS": "1",
     "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
   },
   "statusLine": {
@@ -166,7 +172,26 @@ managed=$(
       "Bash(gcloud:*)",
       "Bash(az:*)",
       "Bash(gsutil:*)",
-      "Bash(terraform:*)",
+      "Bash(terraform apply:*)",
+      "Bash(terraform console:*)",
+      "Bash(terraform destroy:*)",
+      "Bash(terraform force-unlock:*)",
+      "Bash(terraform get:*)",
+      "Bash(terraform graph:*)",
+      "Bash(terraform import:*)",
+      "Bash(terraform login:*)",
+      "Bash(terraform logout:*)",
+      "Bash(terraform metadata:*)",
+      "Bash(terraform modules:*)",
+      "Bash(terraform output:*)",
+      "Bash(terraform plan:*)",
+      "Bash(terraform query:*)",
+      "Bash(terraform refresh:*)",
+      "Bash(terraform stacks:*)",
+      "Bash(terraform state:*)",
+      "Bash(terraform taint:*)",
+      "Bash(terraform untaint:*)",
+      "Bash(terraform workspace:*)",
       "Bash(pulumi:*)",
       "Bash(kubectl:*)",
       "Bash(helm:*)",
@@ -236,7 +261,6 @@ managed=$(
       "Bash(git push --force:*)",
       "Bash(git push -f:*)",
       "Bash(gh pr merge:*)",
-      "Bash(git rebase:*)",
       "Bash(git reset --hard:*)",
       "Bash(git clean -fd:*)",
       "Bash(git tag:*)",
@@ -301,6 +325,13 @@ managed=$(
       "Bash(yq:*)",
       "Bash(echo:*)",
       "Bash(printf:*)",
+      "Bash(terraform fmt:*)",
+      "Bash(terraform init:*)",
+      "Bash(terraform providers:*)",
+      "Bash(terraform show:*)",
+      "Bash(terraform test:*)",
+      "Bash(terraform validate:*)",
+      "Bash(terraform version:*)",
       "Bash(git status:*)",
       "Bash(git log:*)",
       "Bash(git diff:*)",
@@ -315,6 +346,7 @@ managed=$(
       "Bash(git checkout:*)",
       "Bash(git switch:*)",
       "Bash(git merge:*)",
+      "Bash(git rebase:*)",
       "Bash(git stash:*)",
       "Bash(git stash pop:*)",
       "Bash(git push:*)",

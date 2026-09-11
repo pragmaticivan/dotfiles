@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/blob/main/thermos/skills/thermo-nuclear-code-quality-review/SKILL.md
 name: thermo-nuclear-code-quality-review
 description: "Extremely strict maintainability audit of a branch: abstraction quality, giant files, spaghetti conditions, and ambitious code-judo restructurings."
-disable-model-invocation: true
 ---
 
 # Thermo-Nuclear Code Quality Review

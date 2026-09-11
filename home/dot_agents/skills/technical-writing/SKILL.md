@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/technical-writing/SKILL.md
 name: technical-writing
 description: "Structure and sentence standard for docs: Diataxis mode selection, Google developer style, and Global English syntax. Use when writing or reviewing a doc, RFC, readme, or PR description."
-disable-model-invocation: true
 ---
 
 # Technical writing

@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/show-me-your-work/SKILL.md
 name: show-me-your-work
 description: "Keep a reviewable decision trail as a TSV log, one row per decision: what, why, evidence, result. For autonomous, multi-phase, or unattended work."
-disable-model-invocation: true
 ---
 
 # Show me your work

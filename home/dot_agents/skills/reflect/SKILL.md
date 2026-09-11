@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/reflect/SKILL.md
 name: reflect
 description: "Mine the active transcript for durable learnings with three parallel reviewers, then route each one to a concrete edit on an existing skill."
-disable-model-invocation: true
 ---
 
 # Reflect
