@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/architect/SKILL.md
 name: architect
 description: "Sketch types, signatures, and module boundaries before code, then stay in the loop while the implementation fills them in."
-disable-model-invocation: true
 ---
 
 # Architect

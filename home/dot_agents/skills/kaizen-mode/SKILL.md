@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/tree/main/pstack/skills/poteto-mode (renamed poteto-mode to kaizen-mode)
 name: kaizen-mode
 description: "Kaizen agent style: concise replies, deliberate subagents, unslopped prose, simple code, and verified work. Routes each task to a playbook and a set of principles."
-disable-model-invocation: true
 ---
 
 # Kaizen mode
@@ -11,11 +10,11 @@ disable-model-invocation: true
 
 This mode routes to sibling skills by name. Resolve each name against the host's available-skills list before you invoke it.
 
-Eight routed skills are user-invocable only. They carry `disable-model-invocation: true`, so they never appear in that list and the `Skill` tool refuses them: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`. Read `~/.claude/skills/<name>/SKILL.md` in full and follow it inline, the way `kaizen-agent` reads this file. That skill's own relative paths resolve against its own directory. A refused `Skill` call is not permission to skip a mandatory routing step, and it is not permission to improvise a substitute for the skill's method.
+Every routed skill resolves through the `Skill` tool: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`, `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `test-driven-development`, `creating-pull-requests`, `loop`.
 
-The other routed skills resolve through the `Skill` tool as usual: `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `test-driven-development`, `creating-pull-requests`, `loop`.
+The two thermo-nuclear review skills also resolve through the `Skill` tool. Their subagents load the same rubric, thus you can reach them that way instead: `thermo-nuclear-review-subagent` and `thermo-nuclear-code-quality-review-subagent`.
 
-The two thermo-nuclear review skills are user-invocable only for the same reason. Reach them through their subagents, which are model-invocable and load the rubric themselves: `thermo-nuclear-review-subagent` and `thermo-nuclear-code-quality-review-subagent`.
+If a host refuses the `Skill` call, read `~/.claude/skills/<name>/SKILL.md` in full and follow it inline. Read it the way `kaizen-agent` reads this file. That skill's own relative paths resolve against its own directory. A refused call does not let you skip a mandatory routing step. It also does not let you improvise a substitute for the skill's method.
 
 ## Non-negotiables
 

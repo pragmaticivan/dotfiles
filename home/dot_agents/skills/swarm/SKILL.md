@@ -3,7 +3,6 @@
 # Merged in: https://github.com/cursor/plugins/blob/main/pstack/skills/arena/SKILL.md (compete mode)
 name: swarm
 description: "Fan out N parallel workers at one task. Cover mode returns one report from slices and races. Compete mode cross-judges N candidates, picks a base, and grafts in the best of the losers."
-disable-model-invocation: true
 ---
 
 # Swarm

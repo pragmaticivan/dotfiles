@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/blob/main/thermos/skills/thermos/SKILL.md
 name: thermos
 description: "Run both thermo-nuclear reviews in parallel, then synthesize one deduplicated verdict."
-disable-model-invocation: true
 ---
 
 # Thermos

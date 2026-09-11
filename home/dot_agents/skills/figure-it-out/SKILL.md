@@ -2,7 +2,6 @@
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/figure-it-out/SKILL.md
 name: figure-it-out
 description: "Design an auditable playbook when no narrower one fits: a large migration, an ambitious multi-part change, or work a human reviews after stepping away."
-disable-model-invocation: true
 ---
 
 # Figure it out
