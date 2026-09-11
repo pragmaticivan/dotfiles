@@ -24,7 +24,10 @@ permissions:
 
 jobs:
   build:
-    runs-on: macos-14 # M1 Mac
+    # Apple Silicon, and macOS 26 to match the machine that this repository
+    # sets up. Homebrew calls macOS 14 a Tier 3 configuration and builds no
+    # bottle for it, thus mise and rtk had no bottle and the build failed.
+    runs-on: macos-26
 
     steps:
       # Test the checked-out tree, not the pushed branch. A remote clone cannot

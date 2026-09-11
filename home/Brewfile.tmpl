@@ -30,7 +30,11 @@ cask "visual-studio-code"
 cask "clocker" # Menubar World Clock
 cask "notion"
 cask "netnewswire"
-cask "homebrew/cask/transmission"
+# BitTorrent client. The `args` keep this entry out of the batched `brew
+# install`: that batch sends the bare token, and `transmission` is the old name
+# of the formula transmission-cli, thus brew installs the formula and the cask
+# stays absent. Alone, the entry installs with `--cask`.
+cask "transmission", args: { adopt: true }
 {{- end }}
 
 
