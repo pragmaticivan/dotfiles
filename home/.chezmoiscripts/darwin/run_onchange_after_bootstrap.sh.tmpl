@@ -67,6 +67,12 @@ install_brew_packages() {
         return 0
     fi
 
+    # Update before the install, or brew reads stale metadata and asks a vendor
+    # for a version that the vendor deleted. A GitHub runner has an old
+    # homebrew/cask tap, thus brew tried to get Little Snitch 6.4.1 and got a
+    # 404. A failure here must not stop the script.
+    brew update || echo "brew update failed."
+
     # brew bundle fetches each package before it installs any of them, so one
     # bad checksum in one tap stops all of them. Record that and continue, or
     # a third-party tap can stop mise and each later step too. The script then
@@ -78,7 +84,6 @@ install_brew_packages() {
     fi
 
     # These steps only tidy up or report, so a failure must not stop the script.
-    brew update || echo "brew update failed."
     brew upgrade || echo "brew upgrade failed."
     brew autoremove || echo "brew autoremove failed."
     brew cleanup || echo "brew cleanup failed."
