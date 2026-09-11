@@ -141,6 +141,25 @@ prefix_rule(
     justification = "Fetching remote refs is read-only and explicitly allowed by the global policy.",
 )
 
+# Terraform subcommands that read local files or local state. The broad terraform
+# rule above keeps every other subcommand behind a prompt.
+allow_terraform_commands = [
+    ["terraform", "fmt"],
+    ["terraform", "init"],
+    ["terraform", "providers"],
+    ["terraform", "show"],
+    ["terraform", "test"],
+    ["terraform", "validate"],
+    ["terraform", "version"],
+]
+
+for command in allow_terraform_commands:
+    prefix_rule(
+        pattern = command,
+        decision = "allow",
+        justification = "This Terraform subcommand is approved by the global policy.",
+    )
+
 # Preserve the previously approved project-scoped Context7 documentation helper.
 prefix_rule(
     pattern = ["python3", "scripts/context7.py"],
