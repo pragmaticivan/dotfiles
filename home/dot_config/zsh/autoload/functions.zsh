@@ -8,6 +8,10 @@ function yy() {
 	rm -f -- "$tmp"
 }
 
+function opencode2() {
+	"$HOME/.local/bin/opencode2" "$@"
+}
+
 function kexec() {
   local choice=$(kubectl get pods -o custom-columns=NAME:.metadata.name --no-headers=true | fzf)
   kubectl exec -it $choice -- sh

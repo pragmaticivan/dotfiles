@@ -1,6 +1,11 @@
 {
   "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test plugins/statusline/*.test.ts plugins/worktrunk/*.test.ts"
+  },
   "dependencies": {
-    "@opencode-ai/plugin": "0.0.0-beta-19059"
+    "@opencode-ai/plugin": "0.0.0-beta-19151",
+    "zod": "4.1.8"
   }
 }

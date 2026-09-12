@@ -1,0 +1,206 @@
+#!/usr/bin/env bash
+
+set -Eeuo pipefail
+
+real_opencode2=$(mise which opencode2)
+if [[ ! -x "${real_opencode2}" ]]; then
+    echo "Mise did not return the OpenCode 2 executable" >&2
+    exit 127
+fi
+worktree_requested=false
+for argument in "$@"; do
+    case "${argument}" in
+        -w|--worktree|--worktree=*) worktree_requested=true ;;
+    esac
+done
+
+if [[ "${worktree_requested}" == false ]]; then
+    exec "${real_opencode2}" "$@"
+fi
+
+worktree_name=""
+session_id=""
+source_directory="${PWD}"
+source_found=false
+declare -a forwarded=()
+
+while (($#)); do
+    case "$1" in
+        -w|--worktree)
+            if (($# > 1)) && [[ "$2" != -* ]]; then
+                worktree_name=$2
+                shift
+            fi
+            ;;
+        --worktree=*)
+            worktree_name=${1#*=}
+            ;;
+        --server|--prompt|--log-level)
+            forwarded+=("$1")
+            option=$1
+            shift
+            if (($# == 0)); then
+                echo "${option} needs a value" >&2
+                exit 2
+            fi
+            forwarded+=("$1")
+            ;;
+        --session|-s)
+            forwarded+=("$1")
+            option=$1
+            shift
+            if (($# == 0)); then
+                echo "${option} needs a value" >&2
+                exit 2
+            fi
+            session_id=$1
+            forwarded+=("$1")
+            ;;
+        --session=*)
+            session_id=${1#*=}
+            if [[ -z "${session_id}" ]]; then
+                echo "--session needs a value" >&2
+                exit 2
+            fi
+            forwarded+=("$1")
+            ;;
+        *)
+            if [[ "$1" != -* && -d "$1" && "${source_found}" == false ]]; then
+                source_directory=$(cd "$1" && pwd -P)
+                source_found=true
+            else
+                forwarded+=("$1")
+            fi
+            ;;
+    esac
+    shift
+done
+
+location="location[directory]=${source_directory}"
+inventory=$("${real_opencode2}" api v2.worktree.list --param "${location}")
+worktree_directory=""
+worktree_created=false
+
+if [[ -n "${session_id}" ]]; then
+    session=$("${real_opencode2}" api v2.session.get --param "sessionID=${session_id}")
+    session_directory=$(python3 -c '
+import json
+import sys
+
+directory = json.load(sys.stdin).get("data", {}).get("location", {}).get("directory")
+if not isinstance(directory, str) or not directory:
+    raise SystemExit("OpenCode did not return the session directory")
+print(directory)
+' <<<"${session}")
+    session_worktree=$(python3 -c '
+import json
+import os
+import sys
+
+directory = os.path.normpath(sys.argv[1])
+for item in json.load(sys.stdin):
+    root = os.path.normpath(item["directory"])
+    if item.get("strategy") == "worktrunk" and os.path.commonpath([directory, root]) == root:
+        print(root)
+        break
+' "${session_directory}" <<<"${inventory}")
+
+    if [[ -z "${session_worktree}" ]]; then
+        if [[ -d "${session_directory}" ]]; then
+            echo "Session ${session_id} does not belong to a managed worktree" >&2
+        else
+            echo "The worktree for session ${session_id} no longer exists: ${session_directory}" >&2
+        fi
+        exit 2
+    fi
+
+    session_worktree_name=$(basename "${session_worktree}")
+    if [[ -n "${worktree_name}" && "${worktree_name}" != "${session_worktree_name}" ]]; then
+        echo "Session ${session_id} belongs to worktree ${session_worktree_name}, not ${worktree_name}" >&2
+        exit 2
+    fi
+    worktree_directory=${session_directory}
+elif [[ -n "${worktree_name}" ]]; then
+    worktree_directory=$(python3 -c '
+import json
+import os
+import sys
+
+name = sys.argv[1]
+for item in json.load(sys.stdin):
+    directory = item["directory"]
+    if item.get("strategy") == "worktrunk" and os.path.basename(os.path.normpath(directory)) == name:
+        print(directory)
+        break
+' "${worktree_name}" <<<"${inventory}")
+fi
+
+if [[ -z "${worktree_directory}" ]]; then
+    worktree_parent=$(wt -C "${source_directory}" step eval '{{ repo_path }}/.worktrees')
+    request=$(python3 -c '
+import json
+import sys
+
+request = {"directory": sys.argv[2]}
+if sys.argv[1]:
+    request["name"] = sys.argv[1]
+print(json.dumps(request, separators=(",", ":")))
+' "${worktree_name}" "${worktree_parent}")
+    created=$("${real_opencode2}" api v2.worktree.create --param "${location}" --data "${request}")
+    worktree_directory=$(python3 -c '
+import json
+import sys
+
+directory = json.load(sys.stdin).get("directory")
+if not isinstance(directory, str) or not directory:
+    raise SystemExit("OpenCode did not return a worktree directory")
+print(directory)
+' <<<"${created}")
+    worktree_created=true
+fi
+
+if [[ "${worktree_created}" == false ]]; then
+    if ((${#forwarded[@]})); then
+        exec "${real_opencode2}" "${forwarded[@]}" "${worktree_directory}"
+    fi
+    exec "${real_opencode2}" "${worktree_directory}"
+fi
+
+status=0
+if ((${#forwarded[@]})); then
+    "${real_opencode2}" "${forwarded[@]}" "${worktree_directory}" || status=$?
+else
+    "${real_opencode2}" "${worktree_directory}" || status=$?
+fi
+
+if worktree_state=$(wt -C "${worktree_directory}" list --format=json 2>/dev/null) && python3 -c '
+import json
+import os
+import sys
+
+target = os.path.normpath(sys.argv[1])
+for item in json.load(sys.stdin).get("items", []):
+    worktree = item.get("worktree") or {}
+    if os.path.normpath(worktree.get("path", "")) != target:
+        continue
+    changes = worktree.get("changes") or {}
+    clean = not any(changes.get(key, False) for key in (
+        "staged", "modified", "untracked", "renamed", "deleted", "conflicted"
+    ))
+    safe = (item.get("display") or {}).get("state") in ("empty", "integrated")
+    raise SystemExit(0 if clean and safe else 1)
+raise SystemExit(1)
+' "${worktree_directory}" <<<"${worktree_state}"
+then
+    request=$(python3 -c '
+import json
+import sys
+
+print(json.dumps({"directory": sys.argv[1], "force": False}, separators=(",", ":")))
+' "${worktree_directory}")
+    if ! "${real_opencode2}" api v2.worktree.remove --param "${location}" --data "${request}" >/dev/null; then
+        echo "Worktrunk could not remove the unchanged worktree: ${worktree_directory}" >&2
+    fi
+fi
+
+exit "${status}"
