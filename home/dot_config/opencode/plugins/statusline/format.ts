@@ -17,6 +17,36 @@ export const color = {
 
 export const FALLBACK_CONTEXT_LIMIT = 200_000
 
+export type CheckoutLabel =
+  | { kind: "root"; name: string }
+  | { kind: "worktree"; name: string }
+
+function normalizedPath(path: string): string {
+  return path.replace(/\/+$/, "") || "/"
+}
+
+function basename(path: string): string {
+  const parts = normalizedPath(path).split("/").filter(Boolean)
+  return parts[parts.length - 1] ?? "/"
+}
+
+export function checkoutLabel(projectDirectory: string, canonicalDirectory: string): CheckoutLabel {
+  const project = normalizedPath(projectDirectory)
+  const canonical = normalizedPath(canonicalDirectory)
+  return {
+    kind: project === canonical ? "root" : "worktree",
+    name: basename(project),
+  }
+}
+
+export function relativeCheckoutPath(projectDirectory: string, canonicalDirectory: string): string {
+  const project = normalizedPath(projectDirectory)
+  const canonical = normalizedPath(canonicalDirectory)
+  if (project === canonical) return "."
+  const prefix = canonical === "/" ? "/" : `${canonical}/`
+  return project.startsWith(prefix) ? project.slice(prefix.length) : project
+}
+
 function clamp(value: number, min: number, max: number): number {
   if (!Number.isFinite(value)) return min
   return Math.min(Math.max(value, min), max)

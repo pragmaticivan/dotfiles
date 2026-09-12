@@ -3,6 +3,9 @@
 # Worktrees stay in the repository. The global gitignore holds `.worktrees/`.
 worktree-path = "{{ repo_path }}/.worktrees/{{ branch | sanitize }}"
 
+[pre-start]
+copy-ignored = "wt step copy-ignored --require-include"
+
 [list]
 # Pin the JSON output schema. A future release changes the default to 2.
 json-schema = 2

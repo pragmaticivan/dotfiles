@@ -19,5 +19,8 @@
   "theme": {
     "name": "catppuccin-macchiato",
     "mode": "system"
+  },
+  "session": {
+    "sidebar": "auto"
   }
 }

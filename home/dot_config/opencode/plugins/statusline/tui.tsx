@@ -1,6 +1,7 @@
 import { Plugin, usePlugin } from "@opencode-ai/plugin/tui"
-import { For, createEffect, createMemo, createSignal, onCleanup } from "solid-js"
+import { For, createEffect, createMemo, createResource, createSignal, onCleanup } from "solid-js"
 import {
+  checkoutLabel,
   contextBar,
   contextPercent,
   contextUsed,
@@ -8,6 +9,7 @@ import {
   formatDuration,
   formatTokens,
   prettyModel,
+  relativeCheckoutPath,
   truncate,
   color,
   FALLBACK_CONTEXT_LIMIT,
@@ -20,15 +22,22 @@ type Props = {
 }
 
 type Token = { text: string; fg: string; bold?: boolean }
-
-function basename(path: string): string {
-  const parts = path.split("/").filter(Boolean)
-  return parts[parts.length - 1] ?? ""
-}
+type SidebarRow = { label: string; value: string; fg: string; bold?: boolean }
 
 function StatusLine(props: Props) {
   const ctx = usePlugin()
   const location = ctx.location ?? ctx.data.location.default()
+  const [checkout] = createResource(
+    () => location,
+    async (current) => {
+      try {
+        const info = await ctx.client.location.get({ location: current })
+        return checkoutLabel(info.project.directory, info.project.canonical)
+      } catch {
+        return current.directory ? checkoutLabel(current.directory, current.directory) : undefined
+      }
+    },
+  )
 
   const [now, setNow] = createSignal(Date.now())
   const timer = setInterval(() => setNow(Date.now()), 1000)
@@ -124,7 +133,12 @@ function StatusLine(props: Props) {
       if (subs > 0) add({ text: `⊕ ${subs} sub`, fg: color.teal })
     }
 
-    if (location?.directory) add({ text: truncate(basename(location.directory), 24), fg: color.lavender })
+    const checkoutInfo = checkout()
+    if (checkoutInfo?.kind === "worktree") {
+      add({ text: `wt ${truncate(checkoutInfo.name, 24)}`, fg: color.pink, bold: true })
+    } else if (checkoutInfo) {
+      add({ text: truncate(checkoutInfo.name, 24), fg: color.lavender })
+    }
     const branch = ctx.data.location.vcs.info(location)?.branch?.current
     if (branch && branch !== "HEAD") add({ text: `⎇ ${truncate(branch, 24)}`, fg: color.blue })
 
@@ -138,14 +152,85 @@ function StatusLine(props: Props) {
   )
 }
 
+function CheckoutSidebar(props: { sessionID: string }) {
+  const ctx = usePlugin()
+  const location = createMemo(() =>
+    ctx.data.session.get(props.sessionID)?.location ?? ctx.location ?? ctx.data.location.default()
+  )
+  const [checkout] = createResource(
+    location,
+    async (current) => {
+      try {
+        const info = await ctx.client.location.get({ location: current })
+        return {
+          label: checkoutLabel(info.project.directory, info.project.canonical),
+          path: relativeCheckoutPath(info.project.directory, info.project.canonical),
+        }
+      } catch {
+        return {
+          label: checkoutLabel(current.directory, current.directory),
+          path: ".",
+        }
+      }
+    },
+  )
+
+  createEffect(() => {
+    void ctx.data.session.sync(props.sessionID)
+    void ctx.data.location.vcs.sync(location())
+  })
+
+  const rows = createMemo<SidebarRow[]>(() => {
+    const info = checkout()
+    if (!info) return []
+
+    const worktree = info.label.kind === "worktree"
+    const rows: SidebarRow[] = [{
+      label: worktree ? "worktree" : "checkout",
+      value: info.label.name,
+      fg: worktree ? color.pink : color.lavender,
+      bold: worktree,
+    }]
+    const branch = ctx.data.location.vcs.info(location())?.branch
+    if (branch?.current && branch.current !== "HEAD") {
+      rows.push({ label: "branch", value: branch.current, fg: color.blue })
+    }
+    if (branch?.default && branch.default !== branch.current) {
+      rows.push({ label: "base", value: branch.default, fg: color.teal })
+    }
+    rows.push({ label: "path", value: info.path, fg: color.overlay })
+    return rows
+  })
+
+  return (
+    <box flexDirection="column" paddingTop={1}>
+      <text fg={color.overlay} bold>CHECKOUT</text>
+      <For each={rows()}>{(row) => (
+        <box flexDirection="row">
+          <text fg={color.overlay}>{row.label.padEnd(9)}</text>
+          <text fg={row.fg} bold={row.bold}>{truncate(row.value, 28)}</text>
+        </box>
+      )}</For>
+    </box>
+  )
+}
+
 export default Plugin.define({
   id: "statusline",
   setup(ctx) {
-    return ctx.ui.slot({
+    const stopStatusLine = ctx.ui.slot({
       replace: "prompt.footer",
       render: (input) => (
         <StatusLine sessionID={input.sessionID} mode={input.mode} showDetails={input.showDetails} />
       ),
     })
+    const stopSidebar = ctx.ui.slot({
+      before: "sidebar.footer",
+      render: (input) => <CheckoutSidebar sessionID={input.sessionID} />,
+    })
+    return () => {
+      stopSidebar()
+      stopStatusLine()
+    }
   },
 })
