@@ -1,0 +1,26 @@
+{
+  "theme": "opencode-macchiato",
+  "defaultProvider": "openai-codex",
+  "defaultModel": "gpt-5.6-sol",
+  "defaultThinkingLevel": "medium",
+  "hideThinkingBlock": true,
+  "quietStartup": true,
+  "tuiMode": "fullscreen",
+  "fullscreenExitOutput": "resume-hint",
+  "fullscreenScrollbar": "hidden",
+  "outputPad": 0,
+  "packages": [
+    "npm:@aliou/pi-guardrails",
+    "npm:@tintinweb/pi-subagents",
+    "npm:@tintinweb/pi-tasks",
+    "npm:catppuccin-pi-theme",
+    "npm:pi-markdown-preview",
+    "npm:pi-mcp-adapter",
+    "npm:pi-web-access",
+    "npm:@ff-labs/pi-fff",
+    "npm:pi-ghostty",
+    "npm:pi-btw",
+    "npm:@vndv/pi-codegraph@0.1.10"
+  ],
+  "lastChangelogVersion": "0.85.1"
+}
