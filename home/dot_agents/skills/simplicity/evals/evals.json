@@ -1,0 +1,51 @@
+{
+  "skill_name": "simplicity",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "I need to add a 'notify on failure' step to our nightly export job. Here's what's there now in exporter/notify.ts:\n\n```ts\nexport interface NotificationChannel {\n  send(msg: string): Promise<void>\n}\n\nexport class SlackChannel implements NotificationChannel {\n  async send(msg: string) { await postToSlack(msg) }\n}\n\nexport class NotificationChannelFactory {\n  static create(kind: string): NotificationChannel {\n    if (kind === 'slack') return new SlackChannel()\n    throw new Error('Invalid input')\n  }\n}\n\nexport class NotificationService {\n  constructor(private channel: NotificationChannel) {}\n  async notify(msg: string) { await this.channel.send(msg) }\n}\n```\n\nSlack is the only channel we have and there's no plan for another. Wire it into the job so ops gets a message when the export fails.",
+      "expected_output": "The wiring gets added, and the speculative layers get removed rather than extended. The interface with one implementation, the factory that builds one type, and the pass-through NotificationService collapse toward a single function that posts to Slack. The 'Invalid input' error either disappears with the factory or names the field and the accepted values. The response says in one sentence what the change does, and does not add a config flag for choosing a channel.",
+      "files": [],
+      "expectations": [
+        "The one-implementation NotificationChannel interface, the NotificationChannelFactory, or both are deleted rather than extended",
+        "The NotificationService pass-through wrapper is collapsed instead of kept, because it renames arguments and hides no decision",
+        "No new config flag, parameter, or environment variable is added for selecting a notification channel",
+        "The failure notification is actually wired into the nightly export job, so the requested behavior ships",
+        "Any remaining error message names the offending value or field instead of reading 'Invalid input'",
+        "The response states what the change does in a single sentence without the word 'and' joining two separate changes",
+        "The response does not golf the code into an unreadable one-liner in the name of being shorter"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Can you tighten up this PR description before I send it for review? It's a 60-line change that adds a per-tenant rate limit to the public API.\n\n\"# Overview\\nThis PR introduces a comprehensive rate limiting solution for our public API surface.\\n\\n## Background\\nAs our platform has continued to scale, we have observed increasing pressure on our shared infrastructure. Rate limiting represents a foundational capability for any mature API platform.\\n\\n## Motivation\\nThe motivation for this change is to introduce rate limiting.\\n\\n## Implementation\\nWe have implemented a robust, scalable, and extensible rate limiting layer. The implementation leverages a token bucket algorithm, which was selected after careful consideration of the available options. A new RateLimiterStrategy interface has been added to allow for future flexibility should we need to support alternative algorithms down the line. Configuration is exposed via three new environment variables (RATE_LIMIT_ALGO, RATE_LIMIT_BURST_MULTIPLIER, RATE_LIMIT_ENABLED) to ensure maximum operational control.\\n\\n## Testing\\nTesting was performed.\\n\\n## Conclusion\\nThis change sets the stage for a more resilient platform going forward.\"",
+      "expected_output": "A short description that leads with what a caller now experiences, states the actual limit and window, and says how it was verified. The Motivation section that only restates its heading, the Background paragraph with no facts, and the Conclusion are cut. The response also flags the over-engineering visible in the description itself: the RateLimiterStrategy interface with one algorithm and the three speculative environment variables, and says plainly that 'Testing was performed' is not a verification claim.",
+      "files": [],
+      "expectations": [
+        "The 'Motivation' section that only restates its own heading is deleted",
+        "The 'Conclusion' section and the 'sets the stage for' puffery are deleted",
+        "The rewritten description leads with what changes for the API caller rather than with background",
+        "The response flags the RateLimiterStrategy interface as a speculative abstraction with one implementation",
+        "The response flags the three new environment variables as options added before any caller needs them",
+        "The response identifies 'Testing was performed' as an unverifiable claim and asks for or marks the missing evidence",
+        "The response asks for the concrete numbers (the limit and the window) rather than silently inventing them",
+        "The rewrite keeps a human voice and does not flatten into a bare bullet list stripped of the author's point"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Please simplify this. Reviewers keep saying our upload path is too complicated. It's in storage/upload.ts, about 180 lines. It does a multipart upload to S3, tracks which parts succeeded in Redis so a retry after a crash resumes instead of restarting, holds a lease so two workers can't upload the same object concurrently, and reconciles orphaned parts on startup. All four of those behaviors have tests and all of them fired in production in the last month.",
+      "expected_output": "A restructuring that reduces reader load without deleting behavior that production depends on. The correct move is to name the irreducible part (crash-safe resumable concurrent upload), put the ordering and lease invariants in one owner with the invariant stated at the boundary, and keep the main path short with the hard cases in named functions. The response must not delete the resume tracking, the lease, or the reconciliation on the grounds that they look speculative, because the prompt says each one fired in production. It should also offer to split the restructuring into separately reviewable steps.",
+      "files": [],
+      "expectations": [
+        "None of the four behaviors (multipart upload, resume tracking, concurrency lease, orphan reconciliation) is proposed for deletion",
+        "The response explicitly names the part that cannot be made simple and says why, instead of claiming the result is now simple",
+        "The proposal concentrates the ordering and lease invariants in one owner rather than spreading them across call sites",
+        "The invariant is stated once at a boundary rather than repeated in every consumer",
+        "The response proposes splitting the work into separately reviewable steps, each ending in a check",
+        "The response asks to run the existing tests, or otherwise names how it will prove behavior is preserved",
+        "The response does not mistake the existing complexity for over-engineering given the stated production evidence"
+      ]
+    }
+  ]
+}

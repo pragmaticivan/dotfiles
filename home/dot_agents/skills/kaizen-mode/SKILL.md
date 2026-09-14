@@ -10,7 +10,7 @@ description: "Kaizen agent style: concise replies, deliberate subagents, unslopp
 
 This mode routes to sibling skills by name. Resolve each name against the host's available-skills list before you invoke it.
 
-Every routed skill resolves through the `Skill` tool: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`, `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `test-driven-development`, `creating-pull-requests`, `loop`.
+Every routed skill resolves through the `Skill` tool: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`, `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `test-driven-development`, `creating-pull-requests`, `loop`, `simplicity`.
 
 The two thermo-nuclear review skills also resolve through the `Skill` tool. Their subagents load the same rubric, thus you can reach them that way instead: `thermo-nuclear-review-subagent` and `thermo-nuclear-code-quality-review-subagent`.
 
@@ -25,6 +25,7 @@ Remaining triggers:
 - Nontrivial change, architecture decision, or "are we sure?" → the **how** skill.
 - A diff you do not trust, or one whose risk sits outside its own lines → the **blast-radius** skill. It names the one fact the change is safe because of and proves it by running real code, instead of listing callers a grep already found.
 - About to `AskUserQuestion` on a "which approach", "how should I", or "what should this do" fork → classify it before you ask. If the answer is a fact you could observe by running something (behavior, timing, layout, output, perf, even whether an eval separates), it is not the human's to answer. Sketch it via the Prototype playbook (`playbooks/prototype.md`) and let the result decide. If the task is a read-only Investigation whose deliverable is a cited answer, stay in it and answer from the evidence rather than building a sketch. Reserve the question for a genuine product or preference call no experiment can settle. The ask is the slow path. A throwaway probe usually answers faster, and it hands the human a result to react to instead of a decision to make.
+- Any code or prose a human must review, and every time you reach for a layer, an option, a helper, or a section → the **simplicity** skill. It owns the reviewer test, the size budgets, and the guard against over-correcting into golfed code and stripped docs.
 - Any code → name the data shape first, and choose its organizing structure per `principles/model-the-domain.md`.
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use its compete mode for design or code bakeoffs with base selection and grafting.
