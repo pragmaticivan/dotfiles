@@ -1,0 +1,45 @@
+{
+  "skill_name": "improve-crap",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Find the worst CRAP hotspot in this TypeScript service and improve it. Use the coverage and complexity tooling already in the repository. Keep the behavior unchanged.",
+      "expected_output": "The agent establishes comparable function-level complexity and coverage measurements, ranks the functions, improves one justified hotspot with behavior tests, and reports verified before and after values.",
+      "files": ["evals/fixtures/pricing-service"],
+      "expectations": [
+        "Runs the existing tests and records a baseline before changing production code",
+        "Uses function-level cyclomatic complexity and coverage from the same source revision",
+        "Ranks normalized records with scripts/rank_crap.py or an equivalent exact calculation",
+        "Adds behavior assertions for the selected function before or with the refactor",
+        "Runs focused and full tests after the change",
+        "Reports comparable complexity, coverage, and CRAP values before and after"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Coverage is only 68%. Add tests until it reaches 80%, starting with every uncovered getter and DTO mapper.",
+      "expected_output": "The agent challenges the blanket coverage target, measures change risk, and directs effort toward complex uncovered functions instead of trivial uncovered lines.",
+      "files": ["evals/fixtures/pricing-service"],
+      "expectations": [
+        "Does not treat 80 percent repository coverage as sufficient evidence of lower change risk",
+        "Combines function-level complexity and coverage before choosing test targets",
+        "Leaves low-complexity uncovered functions alone unless change frequency or impact justifies tests",
+        "Prioritizes assertions for decisions and outcomes instead of line execution",
+        "Explains the selected hotspot with its measured CRAP score"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Our coverage tool gives one percentage per file and our linter gives complexity per function. Calculate CRAP for every function, refactor anything over 30, and show the improvement.",
+      "expected_output": "The agent refuses to combine file coverage with function complexity as if it were function coverage, explains the measurement gap, and proposes the smallest compatible measurement step without fabricating scores.",
+      "files": ["evals/fixtures/file-level-only"],
+      "expectations": [
+        "States that file-level coverage cannot support a function-level CRAP calculation",
+        "Does not assign the file coverage percentage to each function",
+        "Does not refactor against fabricated CRAP scores",
+        "Identifies a function-level coverage report or compatible analyzer as the missing input",
+        "Treats 30 as a triage hint rather than an automatic refactoring gate"
+      ]
+    }
+  ]
+}

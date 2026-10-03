@@ -1,0 +1,14 @@
+[
+  {
+    "symbol": "addTax",
+    "path": "src/pricing.ts",
+    "line": 1,
+    "complexity": 1
+  },
+  {
+    "symbol": "calculatePrice",
+    "path": "src/pricing.ts",
+    "line": 9,
+    "complexity": 7
+  }
+]

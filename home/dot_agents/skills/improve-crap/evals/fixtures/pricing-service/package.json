@@ -1,0 +1,10 @@
+{
+  "name": "pricing-service",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.ts",
+    "coverage": "rm -rf .coverage && mkdir .coverage && NODE_V8_COVERAGE=.coverage node --test tests/*.test.ts",
+    "measure": "npm run coverage >/dev/null && python3 tools/measure.py .coverage > measurements.json"
+  }
+}
