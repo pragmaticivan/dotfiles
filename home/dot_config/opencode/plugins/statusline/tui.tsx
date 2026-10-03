@@ -1,4 +1,4 @@
-import { Plugin, usePlugin } from "@opencode-ai/plugin/tui"
+import { Plugin, usePlugin } from "@opencode/plugin/tui"
 import { For, createEffect, createMemo, createResource, createSignal, onCleanup } from "solid-js"
 import {
   checkoutLabel,
@@ -147,7 +147,9 @@ function StatusLine(props: Props) {
 
   return (
     <box flexDirection="row">
-      <For each={tokens()}>{(t) => <text fg={t.fg} bold={t.bold}>{t.text}</text>}</For>
+      <For each={tokens()}>{(t) => (
+        <text fg={t.fg}>{t.bold ? <strong>{t.text}</strong> : t.text}</text>
+      )}</For>
     </box>
   )
 }
@@ -204,11 +206,13 @@ function CheckoutSidebar(props: { sessionID: string }) {
 
   return (
     <box flexDirection="column" paddingTop={1}>
-      <text fg={color.overlay} bold>CHECKOUT</text>
+      <text fg={color.overlay}><strong>CHECKOUT</strong></text>
       <For each={rows()}>{(row) => (
         <box flexDirection="row">
           <text fg={color.overlay}>{row.label.padEnd(9)}</text>
-          <text fg={row.fg} bold={row.bold}>{truncate(row.value, 28)}</text>
+          <text fg={row.fg}>
+            {row.bold ? <strong>{truncate(row.value, 28)}</strong> : truncate(row.value, 28)}
+          </text>
         </box>
       )}</For>
     </box>
