@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "@opencode-ai/plugin": "0.0.0-beta-19151",
+    "@opencode/plugin": "2.0.22",
     "zod": "4.1.8"
   }
 }
