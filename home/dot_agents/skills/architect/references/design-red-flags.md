@@ -49,3 +49,27 @@ Ask how a caller migrates off each part of the interface, and what signals the r
 Avoid a shape that makes consumers pick between two versions of the same thing. Diamond dependencies follow, where different callers need different versions at once.
 
 Design as if one version exists. Extend the interface rather than forking it.
+
+## Split ownership
+
+More than one module writes the same state or keeps its own copy of it. An agent that edits one writer cannot see the others, so their rules diverge.
+
+Give each piece of state one owner. Other modules read it or ask the owner to change it.
+
+## Two ways to do one task
+
+The design supports more than one way to do the same task. An agent copies the first way it finds, so each way keeps getting new callers.
+
+Keep one way. Move callers off the others and delete them in the same change.
+
+## Importable internals
+
+A caller can import the internals of a module. An agent takes the shortest path that compiles, so it imports them directly and they become part of the interface.
+
+Make internals unreachable from outside the module, so that an import from outside fails the build.
+
+## Hand-synced list
+
+Two or more places list the same items, and to add an item you must edit each list. An agent that sees one list updates only that list.
+
+Keep one list and derive the others from it. If you cannot derive a list, make the build fail when the lists do not agree.
