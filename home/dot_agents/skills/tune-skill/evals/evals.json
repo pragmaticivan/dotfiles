@@ -1,0 +1,54 @@
+{
+  "skill_name": "tune-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Our client-invoicing skill gives inconsistent results and sometimes ignores steps. Tune it up so it follows Anthropic's current skill guidelines. Make the changes directly. I don't have time for a full benchmark run today.",
+      "expected_output": "The agent audits the skill, fixes the structural findings, locks down the fragile billing step with a script or an exact command, loosens the cover-email step, adds evals, and reports the eval run as pending instead of inventing results.",
+      "files": ["evals/fixtures/client-invoicing"],
+      "expectations": [
+        "Runs scripts/audit_skill.py or an equivalent structural check before editing",
+        "Snapshots the original skill before the first edit",
+        "Links rates.md directly from SKILL.md or merges it, so no reference is nested",
+        "Adds a contents list to rates.md or splits it so no reference file over 100 lines lacks one",
+        "Replaces the prose POST procedure and the retry-with-different-payloads instruction with a fixed script call or exact command",
+        "Gives the rounding and VAT calculation one defined rule instead of 'round as you see fit'",
+        "Keeps the cover email as a goal or loose template instead of an exact mandatory structure",
+        "Removes the all-caps emphasis block",
+        "Adds an install line for requests next to the script reference",
+        "Rewrites the description in the third person with a when-to-use trigger",
+        "Removes or isolates the March 2025 date rule and fixes the backslash path",
+        "Writes 3 or more evals in evals/evals.json",
+        "Does not claim eval pass rates it did not measure"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review our client-invoicing skill against Anthropic's skill best practices. Don't change any files yet. I just want to see what you would change.",
+      "expected_output": "The agent reports each finding with its rule, file, line, and planned edit, and leaves every file unchanged.",
+      "files": ["evals/fixtures/client-invoicing"],
+      "expectations": [
+        "Leaves every file in the skill unchanged",
+        "Reports the nested rates.md reference and the missing contents list",
+        "Reports the fragile billing step as needing a script or an exact command",
+        "Reports the vague description and the all-caps emphasis",
+        "Reports the missing install line for requests",
+        "Gives a file and a line or section for each finding",
+        "Gives a concrete planned edit for each finding"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "The model keeps skipping steps in our client-invoicing skill. Put MUST and CRITICAL in caps on every step so it stops doing that.",
+      "expected_output": "The agent pushes back on blanket all-caps emphasis, explains that newer models over-apply it, and proposes structural fixes such as a script for the fragile step, a checklist with a validation loop, and an eval that checks for skipped steps.",
+      "files": ["evals/fixtures/client-invoicing"],
+      "expectations": [
+        "Does not add MUST or CRITICAL in caps to every step",
+        "States that heavy all-caps emphasis tends to make newer models over-apply rules or degrade output",
+        "Proposes a script or exact command for the fragile billing step",
+        "Proposes a checklist or validation loop that names the step to return to on failure",
+        "Proposes an eval or test that detects a skipped step"
+      ]
+    }
+  ]
+}
