@@ -167,7 +167,7 @@ The synthesizer gets:
 2. The code anchor from Step 2 (file paths, symbols, commit hashes, PR numbers, ticket IDs)
 3. The user's original question
 4. The epistemics framework from `references/epistemics.md`
-5. The synthesizer prompt template from [`references/synthesizer-prompt.md`](references/synthesizer-prompt.md), which holds the output format
+5. The synthesizer prompt template from [`references/synthesizer-prompt.md`](references/synthesizer-prompt.md)
 
 Its job is the final output: a confidence-weighted, evidence-cited narrative with clearly separated "what we know" and "what we're inferring" sections, plus honest acknowledgment of gaps and null-result sources.
 
@@ -175,7 +175,36 @@ Its job is the final output: a confidence-weighted, evidence-cited narrative wit
 
 Take the synthesizer's output and present it to the user. You may lightly edit for clarity or add context from the conversation, but **do not rewrite the confidence language**. The epistemic framing is the product. Dropping the hedges to sound more authoritative is the exact failure mode this skill exists to prevent.
 
-If the user's `why` question is a precursor to changing this code, convert the lineage findings into a Preserve / Change / Avoid / Risk constraint set suitable for planning the change.
+## Output Format
+
+The final output uses this structure. Adapt as needed, but keep the confidence separation intact.
+
+**The Question**. Restate what the user asked, concisely.
+
+**The Code in Question**. File paths, line ranges, and key symbols. One or two lines so the reader is anchored.
+
+**What We Found (direct evidence)**. Claims with explicit citations (PR #, ticket ID, doc URL, chat permalink, commit hash, code comment with file:line). Each bullet is a thing we have textual evidence for. Use present tense and quote or paraphrase the source.
+
+**What We Can Reasonably Infer**. Claims well-supported by indirect evidence or combinations of signals, but not explicitly stated anywhere. Each bullet must explain the inference chain: "Given A and B, it's likely that C." Use hedged language ("appears to", "likely", "suggests").
+
+**Competing Hypotheses**. If the evidence fits multiple stories, list them. For each, give the hypothesis, the evidence for it, and the evidence against it. Don't force a winner when the record doesn't support one. (Skip this section if there's a clear answer.)
+
+**What We Don't Know**. Explicit gaps. Questions the user asked that the evidence didn't answer. Sources we searched and came up empty. Be specific. "We searched the issue tracker for 'rate limit' and found no ticket discussing this specific threshold" is more useful than "we don't know why."
+
+**Sources Consulted**. One line per investigator, including the ones that returned nothing. The reader should see at a glance (a) which MCPs were queried, (b) which came back empty, and (c) which were skipped and why. This coverage map lets the user judge breadth and redirect if something obvious was missed.
+
+Format each line as: `- <Source>: <what was searched>. <what was found, or "no relevant results," or "skipped. reason">.`
+
+Example:
+- Source control (git/gh): `git log --follow backend/retry.ts`, PRs #49074, #47812. Found PR #49074 introduced exponential backoff and linked ENG-4421.
+- Issue tracker (Linear): searched for "retry" and ENG-4421. Found ENG-4421 parent issue but no discussion of backoff parameters.
+- Long-form docs (Notion): searched for "retry policy," "backend retries," "ENG-4421." No relevant results.
+- Real-time team chat (Slack): skipped. No matching MCP available in this environment. Gap: conversational record not searched.
+- Infrastructure observability (Datadog): searched for `retry_count` metric and monitors around 2024-08-14. Found monitor "Upstream 5xx rate > 1%" created same day as PR #49074.
+- Error / exception tracking (Sentry): searched for issues first-seen in Aug 2024 with stack through `retry.ts`. Found issue SENTRY-3821 spiking in the week before the PR.
+- Product analytics warehouse (Databricks): queried `<your_analytics_db>.<schema>.stg_backend_upstream_retry` for the 30-day window around 2024-08-14. Daily failure-classified event count fell from ~1.2k/day pre-PR to <50/day post-PR. Also checked `system.query.history` for relevant migration queries. None found.
+
+After the Sources Consulted block, if the user's `why` question is a precursor to actually changing this code, convert the lineage findings into a Preserve / Change / Avoid / Risk constraint set suitable for planning the change.
 
 ## Common Failure Modes to Avoid
 
