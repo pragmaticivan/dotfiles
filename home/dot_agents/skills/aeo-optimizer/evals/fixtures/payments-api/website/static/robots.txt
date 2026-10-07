@@ -1,0 +1,3 @@
+# copied from staging during the v2 launch
+User-agent: *
+Disallow: /

@@ -1,0 +1,10 @@
+site_name: Ledgerly Docs
+repo_url: https://github.com/ledgerly/ledgerly
+theme:
+  name: material
+  features:
+    - navigation.instant
+nav:
+  - Home: index.md
+  - Getting started: getting-started.md
+  - Webhooks: webhooks.md

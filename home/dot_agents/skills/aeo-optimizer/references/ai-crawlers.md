@@ -16,7 +16,8 @@ Classify every bot before writing rules — the AEO impact differs sharply:
 | `PerplexityBot` | Perplexity | Search |
 | `Perplexity-User` | Perplexity | User-agent |
 | `ClaudeBot` | Anthropic | Training |
-| `Claude-Web` / `Claude-User` | Anthropic | User-agent |
+| `Claude-SearchBot` | Anthropic | Search |
+| `Claude-User` | Anthropic | User-agent (`Claude-Web` is a legacy token) |
 | `Googlebot` | Google | Search (feeds AI Overviews) |
 | `Google-Extended` | Google | Training opt-in token (controls Gemini use of Googlebot data; not a crawler) |
 | `Applebot` / `Applebot-Extended` | Apple | Search / Training |
@@ -24,7 +25,7 @@ Classify every bot before writing rules — the AEO impact differs sharply:
 | `CCBot` | Common Crawl | Training (open dataset, feeds many models) |
 | `Amazonbot`, `Meta-ExternalAgent`, `cohere-ai`, `Diffbot`, `Timpibot`, `YouBot`, `DuckAssistBot`, `PetalBot` | various | Search/Training |
 
-(~27 named AI crawlers exist across these operators; the above are the high-impact ones. Match user-agents case-insensitively.)
+(The above are the high-impact AI crawlers, not a full list. Match user-agents case-insensitively.)
 
 ## robots.txt strategy
 - To **maximize AEO**: allow all **search** + **user-agent** bots — these surface citations. Never block them silently.
