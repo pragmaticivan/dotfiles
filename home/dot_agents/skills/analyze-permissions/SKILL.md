@@ -29,9 +29,11 @@ Example invocations:
    chezmoi source-path ~/.claude/settings.json
    ```
 
-   Expected: `~/.local/share/chezmoi/home/dot_claude/settings.json`. If the command fails, chezmoi is not managing the file — stop and tell the user.
+   If the command fails, chezmoi is not managing the file — stop and tell the user. The result is one of two shapes:
+   - A plain `dot_claude/settings.json`: the whole file is the JSON to read and edit.
+   - A modify script such as `dot_claude/modify_settings.json.tmpl` (this machine): a shell script that merges a managed JSON object into the live file. The permissions sit in the JSON between the `MANAGED_JSON` heredoc markers. Read and edit only that block, and leave the script and any `{{ }}` template lines around it alone.
 
-2. Read that source file — this is the source of truth for global permissions (`permissions.allow`, `permissions.deny`, `permissions.ask`).
+2. Read the permissions in that source file — this is the source of truth for global permissions (`permissions.allow`, `permissions.deny`, `permissions.ask`).
 3. Read the project-local file: `<project-root>/.claude/settings.local.json` — accumulated "Always allow" entries. Per-project, **not** chezmoi-managed, edited in place.
 
 The global file is shared across all projects and all machines that run this chezmoi config.
@@ -70,7 +72,7 @@ Output a structured report:
 
 ### Settings Overview
 - settings.local.json: X entries
-- chezmoi source settings.json: Y allow / Z deny entries
+- chezmoi source (`<path printed by chezmoi source-path>`): Y allow / Z deny entries
 
 ### Already Covered (can be removed)
 These entries in settings.local.json are redundant:
@@ -109,14 +111,14 @@ These entries don't fit a pattern (one-offs):
 **apply:**
 
 1. Confirm each suggested pattern with the user before writing it.
-2. Add global patterns to `permissions.allow` in the **chezmoi source file** resolved in Step 1. Keep the existing formatting (2-space indent, one entry per line) and append near related entries.
-3. Validate the JSON before applying — the file has no trailing-comma tolerance:
+2. Add global patterns to `permissions.allow` in the **chezmoi source file** resolved in Step 1 (inside the `MANAGED_JSON` block for a modify script). Keep the existing formatting (2-space indent, one entry per line) and append near related entries.
+3. Validate the JSON that the source produces before applying. `chezmoi cat` renders the template or runs the modify script, thus this check works for both shapes. Running `jq` on the source file itself fails for a script or a template.
 
    ```bash
-   jq empty "$(chezmoi source-path ~/.claude/settings.json)"
+   chezmoi cat ~/.claude/settings.json | jq -e .permissions >/dev/null && echo valid
    ```
 
-   If this fails, fix the JSON before continuing. A broken settings.json makes Claude Code fall back to defaults.
+   If this fails, fix the JSON before continuing (a trailing comma is the usual cause). A broken settings.json makes Claude Code fall back to defaults.
 4. Show the pending change, then apply it to the home directory:
 
    ```bash
