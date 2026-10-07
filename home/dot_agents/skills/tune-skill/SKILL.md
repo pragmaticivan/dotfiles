@@ -54,10 +54,10 @@ The audit cannot check these rules. Read the full skill and record each finding 
 | Rule | Check |
 | --- | --- |
 | Concise | Delete each sentence that tells the model a fact it already knows. Keep project facts, conventions, and gotchas. |
-| Degrees of freedom | For each step, ask what breaks if the model does it differently. Give a goal when nothing breaks. Give a template when the shape matters. Give an exact command or a script when the step is fragile, such as money, deletion, or a migration. One skill can mix the three levels. |
+| Degrees of freedom | For each step, ask what breaks if the model does it differently. Give a goal when nothing breaks. Give a template when the shape matters, and drop words such as `exact` or `never deviate` unless a parser or a fixed format needs that shape. Give an exact command or a script when the step is fragile, such as money, deletion, or a migration. One skill can mix the three levels. |
 | Scripts for fragile steps | Replace a long prose procedure for a fragile step with a script. The model runs a script and does not load its text into context. |
 | Prescription level | Look for all-caps rules, repeated warnings, and step lists for work where the order does not matter. Newer models over-apply them. Cut them and let the evals decide. |
-| Checklists | Use a checklist only when the order matters. A validation step must name the step to return to on failure. |
+| Checklists | Use a checklist only when the order matters. When a model skips steps in an ordered procedure, add a checklist that it copies and updates. A validation step must name the step to return to on failure. |
 | Feedback loop | A quality-critical output must have a check, fix, and repeat loop. The check can be a script or a written standard. |
 | Progressive disclosure | Keep the body under 500 lines. Split references by domain so that one task loads one file. Link every reference from SKILL.md. |
 | Dependencies | Put the install command next to each script that needs a package. Do not assume a tool is present. |
@@ -80,6 +80,7 @@ Read `evals/evals.json` in the skill. Write the missing cases in this shape:
 ```
 
 Base each case on a real request or a real failure, not on the rule you plan to add.
+When the user reports a symptom, such as a skipped step, write a case whose expectations detect that symptom.
 Include one case where the skill must decline or push back.
 When the skill reads files or a repository, put a small fixture under `evals/fixtures/` and list it in `files`.
 Without a fixture, a grader cannot check an assertion about evidence from a file.
@@ -99,7 +100,7 @@ mkdir -p $WS && cp -R <skill-dir> $WS/skill-snapshot
 ```
 
 Change how the skill instructs, not what the skill does. Ask the user before you add or remove a behavior.
-Make the edits. Run the audit again, and also run the repository's own lint, which can be stricter. Return to the edit when an error remains.
+Make the edits. Run the audit again, and also run the repository's own lint, which can be stricter. Return to the edit when an error remains, or when a warn that you planned to fix remains.
 
 ### 6. Run the evals old against new on each target model
 
