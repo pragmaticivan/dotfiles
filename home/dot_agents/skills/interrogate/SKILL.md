@@ -1,14 +1,14 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/SKILL.md
 name: interrogate
-description: "Adversarially review a change with one reviewer per configured model, then synthesize the verdict. Agreement across models is the signal. Use for /interrogate, 'stress test this', 'find the blind spots', or a contested design."
+description: "Adversarially review a change with one reviewer per configured model, then synthesize the verdict. Agreement across models is the signal."
 ---
 
 # Interrogate
 
-Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Agreement across models is high-confidence signal; lone-model findings are worth reading but lower confidence.
+Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Models differ in blind spots, priors, and reasoning patterns. Agreement across models is high-confidence signal; lone-model findings are worth reading but lower confidence.
 
-The deliverable is a synthesized verdict. Do not apply the changes yourself.
+The deliverable is a synthesized verdict. Do NOT auto-apply changes.
 
 ## Step 1, Determine Scope
 
@@ -55,6 +55,10 @@ Read `references/reviewer-prompt.md` and fill in the template with:
 3. The review rubric from `references/rubric.md`
 4. The code-quality lens from `references/code-quality-review.md`
 
+The same filled template goes to all reviewers, so every model applies the code-quality lens.
+
+Each reviewer produces structured findings as described in the prompt template.
+
 ## Step 4, Synthesize
 
 As results come back, build a unified picture:
@@ -80,6 +84,7 @@ Categorize every finding using these buckets:
 
 For each finding, include:
 - Which model(s) raised it
+- The category (act on / consider / noted / dismissed)
 - A one-line rationale for the categorization
 
 ## Output Format

@@ -12,7 +12,7 @@ The author's stated intent for this change:
 
 > {INTENT}
 
-You are reviewing whether the code achieves this intent well. Do not question the intent itself. Assume the goal is correct and challenge the execution.
+You are reviewing whether the code achieves this intent well. Do NOT question the intent itself. Assume the goal is correct and challenge the execution.
 
 ## Code Under Review
 
@@ -43,7 +43,7 @@ For each finding, provide:
 ## What Makes a Good Finding
 
 - It references specific code, not vague concerns ("this could be better")
-- It explains why something is a problem, not only that it is one
+- It explains WHY something is a problem, not just THAT it is
 - It distinguishes between "this is broken" and "I would have done this differently"
 - It considers the stated intent. A finding that ignores the context of what's being built is a bad finding
 
@@ -56,7 +56,7 @@ For each finding, provide:
 
 ## Output
 
-Return your findings as a structured list. An empty review is a valid outcome.
+Return your findings as a structured list. If you have zero findings, say so. An empty review is a valid outcome.
 
 ```
 ## Findings
