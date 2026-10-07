@@ -15,19 +15,24 @@ below serves that test. When two rules fight, the test decides.
 
 ## Procedure
 
-1. **Name the one thing.** One sentence for the change. If it needs *and*, split it.
+1. **Name the one thing.** One sentence for the change. If it needs *and*, split it. A
+   restructure with several moves goes out as steps a reviewer checks alone, each ending in a test.
 2. **Subtract first.** Delete before you add. One-caller wrapper, unused option, speculative
-   guard, paragraph that restates its heading.
+   guard, paragraph that restates its heading. Delete what your change routes around in the same
+   change. Code left in place with no caller misleads the next reader.
 3. **Organize what is left.** Conditionals become one table, paragraphs one answer-first section.
+   The first sentence of a PR or doc says what changes for the user of the code, before background.
 4. **Hide behind a boundary only if it pays.** Hiding a decision earns a layer. Renaming does not.
 5. **Name what cannot be simple.** Say which part is irreducible and why, in the PR body or doc.
+   Give it one owner, and state its invariant once at that owner's boundary, not in each caller.
 6. **Read it as the reviewer.** If you cannot explain it back, return to step 1 with less scope.
 
 ## Budgets
 
 Defaults. Exceed one only by naming the reason in the PR body. One claim a PR. One new name or
 abstraction a change. Three file hops to any answer. One screen and two nesting levels a function.
-One instruction a sentence. Zero new flags until a caller needs one today.
+One instruction a sentence. Zero new flags until a caller needs one today. Ask that of each new
+flag, option, and environment variable by itself, also in a description of code you cannot see.
 
 ## Simplicity is not
 
