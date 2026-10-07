@@ -1,0 +1,7 @@
+import os
+
+TIMEOUT_SECONDS = float(os.environ.get("HTTPWRAP_TIMEOUT_SECONDS", "10"))
+MAX_RETRIES = int(os.environ.get("HTTPWRAP_MAX_RETRIES", "3"))
+RETRY_DELAY_SECONDS = float(os.environ.get("HTTPWRAP_RETRY_DELAY_SECONDS", "0.5"))
+MAX_RETRY_DELAY_SECONDS = 8.0
+RETRYABLE_STATUS = frozenset({429, 502, 503, 504})

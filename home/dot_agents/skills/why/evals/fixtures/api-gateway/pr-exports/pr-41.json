@@ -1,0 +1,9 @@
+{
+  "number": 41,
+  "title": "feat(api): add per-key rate limiter",
+  "author": {"login": "lfischer"},
+  "mergedAt": "2023-04-11T09:00:00Z",
+  "body": "First pass at rate limiting for /v1. 100/min per key is a placeholder until we have real traffic numbers.",
+  "comments": [],
+  "reviews": [{"author": {"login": "tbecker"}, "state": "APPROVED", "body": ""}]
+}

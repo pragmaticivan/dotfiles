@@ -1,0 +1,22 @@
+import { queue, type Payload } from "../lib/queue.ts";
+
+export const ledgerEntryPosted = (p: Payload) => queue.publish("ledger.entry_posted", p);
+export const ledgerEntryReversed = (p: Payload) => queue.publish("ledger.entry_reversed", p);
+export const ledgerPeriodOpened = (p: Payload) => queue.publish("ledger.period_opened", p);
+export const ledgerPeriodClosed = (p: Payload) => queue.publish("ledger.period_closed", p);
+export const ledgerPeriodReopened = (p: Payload) => queue.publish("ledger.period_reopened", p);
+export const ledgerJournalCreated = (p: Payload) => queue.publish("ledger.journal_created", p);
+export const ledgerJournalApproved = (p: Payload) => queue.publish("ledger.journal_approved", p);
+export const ledgerJournalRejected = (p: Payload) => queue.publish("ledger.journal_rejected", p);
+export const ledgerReconciled = (p: Payload) => queue.publish("ledger.reconciled", p);
+export const ledgerUnreconciled = (p: Payload) => queue.publish("ledger.unreconciled", p);
+export const ledgerFxRateSet = (p: Payload) => queue.publish("ledger.fx_rate_set", p);
+export const ledgerFxRemeasured = (p: Payload) => queue.publish("ledger.fx_remeasured", p);
+export const ledgerAccrualPosted = (p: Payload) => queue.publish("ledger.accrual_posted", p);
+export const ledgerAccrualReversed = (p: Payload) => queue.publish("ledger.accrual_reversed", p);
+export const ledgerDeferralPosted = (p: Payload) => queue.publish("ledger.deferral_posted", p);
+export const ledgerDeferralReleased = (p: Payload) => queue.publish("ledger.deferral_released", p);
+export const ledgerBalanceChecked = (p: Payload) => queue.publish("ledger.balance_checked", p);
+export const ledgerMismatchFound = (p: Payload) => queue.publish("ledger.mismatch_found", p);
+export const ledgerExportDone = (p: Payload) => queue.publish("ledger.export_done", p);
+export const ledgerSnapshotTaken = (p: Payload) => queue.publish("ledger.snapshot_taken", p);

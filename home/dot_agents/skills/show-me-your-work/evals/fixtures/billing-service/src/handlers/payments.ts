@@ -1,0 +1,22 @@
+import { queue, type Payload } from "../lib/queue.ts";
+
+export const paymentAuthorized = (p: Payload) => queue.publish("payment.authorized", p);
+export const paymentCaptured = (p: Payload) => queue.publish("payment.captured", p);
+export const paymentFailed = (p: Payload) => queue.publish("payment.failed", p);
+export const paymentRefunded = (p: Payload) => queue.publish("payment.refunded", p);
+export const paymentPartiallyRefunded = (p: Payload) => queue.publish("payment.partially_refunded", p);
+export const paymentDisputed = (p: Payload) => queue.publish("payment.disputed", p);
+export const paymentDisputeWon = (p: Payload) => queue.publish("payment.dispute_won", p);
+export const paymentDisputeLost = (p: Payload) => queue.publish("payment.dispute_lost", p);
+export const paymentMethodAdded = (p: Payload) => queue.publish("payment.method_added", p);
+export const paymentMethodRemoved = (p: Payload) => queue.publish("payment.method_removed", p);
+export const paymentMethodExpired = (p: Payload) => queue.publish("payment.method_expired", p);
+export const paymentRetryScheduled = (p: Payload) => queue.publish("payment.retry_scheduled", p);
+export const paymentRetrySucceeded = (p: Payload) => queue.publish("payment.retry_succeeded", p);
+export const paymentRetryFailed = (p: Payload) => queue.publish("payment.retry_failed", p);
+export const paymentReceiptSent = (p: Payload) => queue.publish("payment.receipt_sent", p);
+export const paymentChargebackOpened = (p: Payload) => queue.publish("payment.chargeback_opened", p);
+export const paymentChargebackClosed = (p: Payload) => queue.publish("payment.chargeback_closed", p);
+export const paymentSettled = (p: Payload) => queue.publish("payment.settled", p);
+export const paymentReversed = (p: Payload) => queue.publish("payment.reversed", p);
+export const paymentHeld = (p: Payload) => queue.publish("payment.held", p);

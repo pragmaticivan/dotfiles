@@ -1,0 +1,9 @@
+{
+  "name": "orders-api",
+  "version": "1.4.0",
+  "private": true,
+  "scripts": {
+    "start": "node server/index.js",
+    "test": "node --test"
+  }
+}

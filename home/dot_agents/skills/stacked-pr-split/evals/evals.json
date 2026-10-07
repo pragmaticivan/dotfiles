@@ -35,7 +35,7 @@
       "fixture": "straddling-file",
       "setup": "bash evals/fixtures/make-fixture.sh straddling-file",
       "repo_dir": "/tmp/stacked-pr-split-fixtures/straddling-file",
-      "prompt": "same deal as before - /tmp/stacked-pr-split-fixtures/straddling-file, branch feat/user-auth, one giant auth feature. split it into a stack. local branches only. heads up that router.go is a bit of a mess in this one, it's had a few people in it.",
+      "prompt": "same deal as before - /tmp/stacked-pr-split-fixtures/straddling-file, branch feat/user-auth, one giant auth feature. split it into a stack. local branches only. heads up that router.go is a bit of a mess in this one, it's had a few people in it. i'm stepping away and won't be around to approve, so take this message as the go-ahead: build the branches once the plan checks out, and put the plan plus anything you had to compromise on in your reply so i can review it when i'm back.",
       "expected_output": "Recognizes that internal/api/router.go carries both a schema-adjacent concern (RunMigrations) and a layer-3 concern (the auth route), so no file-level assignment splits it cleanly. Resolves by assigning the whole file to one layer or moving a boundary, states the compromise, and still produces a lossless stack.",
       "files": [],
       "expectations": [

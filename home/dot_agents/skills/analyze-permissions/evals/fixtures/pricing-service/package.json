@@ -1,0 +1,12 @@
+{
+  "name": "pricing-service",
+  "private": true,
+  "scripts": {
+    "test:unit": "node --test test/unit",
+    "test:integration": "node --test test/integration",
+    "lint": "eslint src",
+    "build": "tsc -p .",
+    "db:migrate": "node scripts/migrate.js",
+    "db:reset": "dropdb --if-exists pricing_dev && createdb pricing_dev && node scripts/migrate.js && node scripts/seed.js"
+  }
+}

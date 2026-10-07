@@ -1,0 +1,42 @@
+[
+  {
+    "id": 1849301,
+    "pull_request_review_id": 701,
+    "user": {"login": "priya-r", "type": "User"},
+    "path": "retry_client.py",
+    "line": 2,
+    "body": "nit: `random` is never used, drop the import.",
+    "created_at": "2026-10-06T09:12:44Z",
+    "in_reply_to_id": null
+  },
+  {
+    "id": 1849302,
+    "pull_request_review_id": 701,
+    "user": {"login": "priya-r", "type": "User"},
+    "path": "retry_client.py",
+    "line": 12,
+    "body": "nit: typo in the docstring, `requets` -> `requests`.",
+    "created_at": "2026-10-06T09:13:10Z",
+    "in_reply_to_id": null
+  },
+  {
+    "id": 1849355,
+    "pull_request_review_id": 702,
+    "user": {"login": "dave-k", "type": "User"},
+    "path": "retry_client.py",
+    "line": 32,
+    "body": "This retries every HTTPError, 4xx included, so a 400 for bad input gets sent four times. Worse, `submit_quote` is a POST. If the first attempt times out after the quote service already wrote the quote, the retry creates a duplicate. Should we only retry idempotent methods plus 5xx and connection errors, or send an idempotency key on the POST? Want to talk this through before it merges.",
+    "created_at": "2026-10-06T11:40:02Z",
+    "in_reply_to_id": null
+  },
+  {
+    "id": 1849360,
+    "pull_request_review_id": 704,
+    "user": {"login": "jlee", "type": "User"},
+    "path": "retry_client.py",
+    "line": 35,
+    "body": "Note to self: confirm the 0.2s base delay with SRE before release.",
+    "created_at": "2026-10-06T12:02:19Z",
+    "in_reply_to_id": null
+  }
+]

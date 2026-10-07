@@ -3,14 +3,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "I need to add a 'notify on failure' step to our nightly export job. Here's what's there now in exporter/notify.ts:\n\n```ts\nexport interface NotificationChannel {\n  send(msg: string): Promise<void>\n}\n\nexport class SlackChannel implements NotificationChannel {\n  async send(msg: string) { await postToSlack(msg) }\n}\n\nexport class NotificationChannelFactory {\n  static create(kind: string): NotificationChannel {\n    if (kind === 'slack') return new SlackChannel()\n    throw new Error('Invalid input')\n  }\n}\n\nexport class NotificationService {\n  constructor(private channel: NotificationChannel) {}\n  async notify(msg: string) { await this.channel.send(msg) }\n}\n```\n\nSlack is the only channel we have and there's no plan for another. Wire it into the job so ops gets a message when the export fails.",
+      "prompt": "I need to add a 'notify on failure' step to our nightly export job. The repo is in evals/fixtures/export-job. Here's what's there now in exporter/notify.ts:\n\n```ts\nexport interface NotificationChannel {\n  send(msg: string): Promise<void>\n}\n\nexport class SlackChannel implements NotificationChannel {\n  async send(msg: string) { await postToSlack(msg) }\n}\n\nexport class NotificationChannelFactory {\n  static create(kind: string): NotificationChannel {\n    if (kind === 'slack') return new SlackChannel()\n    throw new Error('Invalid input')\n  }\n}\n\nexport class NotificationService {\n  constructor(private channel: NotificationChannel) {}\n  async notify(msg: string) { await this.channel.send(msg) }\n}\n```\n\nSlack is the only channel we have and there's no plan for another. Wire it into the job so ops gets a message when the export fails.",
       "expected_output": "The wiring gets added, and the speculative layers get removed rather than extended. The interface with one implementation, the factory that builds one type, and the pass-through NotificationService collapse toward a single function that posts to Slack. The 'Invalid input' error either disappears with the factory or names the field and the accepted values. The response says in one sentence what the change does, and does not add a config flag for choosing a channel.",
-      "files": [],
+      "files": [
+        "evals/fixtures/export-job"
+      ],
       "expectations": [
         "The one-implementation NotificationChannel interface, the NotificationChannelFactory, or both are deleted rather than extended",
         "The NotificationService pass-through wrapper is collapsed instead of kept, because it renames arguments and hides no decision",
         "No new config flag, parameter, or environment variable is added for selecting a notification channel",
-        "The failure notification is actually wired into the nightly export job, so the requested behavior ships",
+        "The failure notification is actually wired into the nightly export job (the failure path of main() in exporter/job.ts), so the requested behavior ships",
         "Any remaining error message names the offending value or field instead of reading 'Invalid input'",
         "The response states what the change does in a single sentence without the word 'and' joining two separate changes",
         "The response does not golf the code into an unreadable one-liner in the name of being shorter"
@@ -34,16 +36,18 @@
     },
     {
       "id": 3,
-      "prompt": "Please simplify this. Reviewers keep saying our upload path is too complicated. It's in storage/upload.ts, about 180 lines. It does a multipart upload to S3, tracks which parts succeeded in Redis so a retry after a crash resumes instead of restarting, holds a lease so two workers can't upload the same object concurrently, and reconciles orphaned parts on startup. All four of those behaviors have tests and all of them fired in production in the last month.",
+      "prompt": "Please simplify this. Reviewers keep saying our upload path is too complicated. The repo is in evals/fixtures/upload-service, and the code is in storage/upload.ts, about 180 lines. It does a multipart upload to S3, tracks which parts succeeded in Redis so a retry after a crash resumes instead of restarting, holds a lease so two workers can't upload the same object concurrently, and reconciles orphaned parts on startup. All four of those behaviors have tests and all of them fired in production in the last month.",
       "expected_output": "A restructuring that reduces reader load without deleting behavior that production depends on. The correct move is to name the irreducible part (crash-safe resumable concurrent upload), put the ordering and lease invariants in one owner with the invariant stated at the boundary, and keep the main path short with the hard cases in named functions. The response must not delete the resume tracking, the lease, or the reconciliation on the grounds that they look speculative, because the prompt says each one fired in production. It should also offer to split the restructuring into separately reviewable steps.",
-      "files": [],
+      "files": [
+        "evals/fixtures/upload-service"
+      ],
       "expectations": [
         "None of the four behaviors (multipart upload, resume tracking, concurrency lease, orphan reconciliation) is proposed for deletion",
         "The response explicitly names the part that cannot be made simple and says why, instead of claiming the result is now simple",
         "The proposal concentrates the ordering and lease invariants in one owner rather than spreading them across call sites",
         "The invariant is stated once at a boundary rather than repeated in every consumer",
         "The response proposes splitting the work into separately reviewable steps, each ending in a check",
-        "The response asks to run the existing tests, or otherwise names how it will prove behavior is preserved",
+        "The response asks to run the existing tests (storage/upload.test.ts, run with npm test), or otherwise names how it will prove behavior is preserved",
         "The response does not mistake the existing complexity for over-engineering given the stated production evidence"
       ]
     }

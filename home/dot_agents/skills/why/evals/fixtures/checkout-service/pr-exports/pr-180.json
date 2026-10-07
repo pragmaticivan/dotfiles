@@ -1,0 +1,10 @@
+{
+  "number": 180,
+  "title": "feat(cart): add cart update service",
+  "author": {"login": "marco-d"},
+  "createdAt": "2024-02-02T15:20:11Z",
+  "mergedAt": "2024-02-05T15:12:00Z",
+  "body": "Adds updateCart. Locks the cart row with SELECT ... FOR UPDATE so two tabs cannot clobber each other's lines.",
+  "comments": [],
+  "reviews": [{"author": {"login": "ana-o"}, "state": "APPROVED", "body": "LGTM"}]
+}

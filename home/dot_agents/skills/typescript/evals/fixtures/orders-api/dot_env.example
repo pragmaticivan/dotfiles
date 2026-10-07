@@ -1,0 +1,4 @@
+DATABASE_URL=postgres://localhost:5432/orders
+STRIPE_SECRET_KEY=sk_test_replace_me
+STRIPE_WEBHOOK_SECRET=whsec_replace_me
+SHIPPO_WEBHOOK_SECRET=replace_me

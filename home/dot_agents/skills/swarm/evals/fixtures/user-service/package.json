@@ -1,0 +1,6 @@
+{
+  "name": "user-service",
+  "private": true,
+  "type": "module",
+  "scripts": { "test": "node --test src/*.test.ts" }
+}

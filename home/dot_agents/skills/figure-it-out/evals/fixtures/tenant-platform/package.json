@@ -1,0 +1,9 @@
+{
+  "name": "tenant-platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node main.ts",
+    "test": "node --test"
+  }
+}

@@ -1,0 +1,6 @@
+[
+  { "team": "checkout", "requests": 182340, "errors": 912 },
+  { "team": "search", "requests": 950211, "errors": 1403 },
+  { "team": "accounts", "requests": 40120, "errors": 0 },
+  { "team": "notifications", "requests": 77815, "errors": 2210 }
+]

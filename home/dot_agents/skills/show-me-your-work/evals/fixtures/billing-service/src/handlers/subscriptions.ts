@@ -1,0 +1,22 @@
+import { queue, type Payload } from "../lib/queue.ts";
+
+export const subscriptionCreated = (p: Payload) => queue.publish("subscription.created", p);
+export const subscriptionActivated = (p: Payload) => queue.publish("subscription.activated", p);
+export const subscriptionRenewed = (p: Payload) => queue.publish("subscription.renewed", p);
+export const subscriptionCanceled = (p: Payload) => queue.publish("subscription.canceled", p);
+export const subscriptionPaused = (p: Payload) => queue.publish("subscription.paused", p);
+export const subscriptionResumed = (p: Payload) => queue.publish("subscription.resumed", p);
+export const subscriptionUpgraded = (p: Payload) => queue.publish("subscription.upgraded", p);
+export const subscriptionDowngraded = (p: Payload) => queue.publish("subscription.downgraded", p);
+export const subscriptionTrialStarted = (p: Payload) => queue.publish("subscription.trial_started", p);
+export const subscriptionTrialEnding = (p: Payload) => queue.publish("subscription.trial_ending", p);
+export const subscriptionTrialEnded = (p: Payload) => queue.publish("subscription.trial_ended", p);
+export const subscriptionPastDue = (p: Payload) => queue.publish("subscription.past_due", p);
+export const subscriptionUnpaid = (p: Payload) => queue.publish("subscription.unpaid", p);
+export const subscriptionQuantityChanged = (p: Payload) => queue.publish("subscription.quantity_changed", p);
+export const subscriptionCouponApplied = (p: Payload) => queue.publish("subscription.coupon_applied", p);
+export const subscriptionCouponRemoved = (p: Payload) => queue.publish("subscription.coupon_removed", p);
+export const subscriptionPlanChanged = (p: Payload) => queue.publish("subscription.plan_changed", p);
+export const subscriptionBillingAnchorChanged = (p: Payload) => queue.publish("subscription.billing_anchor_changed", p);
+export const subscriptionScheduledChange = (p: Payload) => queue.publish("subscription.scheduled_change", p);
+export const subscriptionExpired = (p: Payload) => queue.publish("subscription.expired", p);

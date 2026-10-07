@@ -1,0 +1,9 @@
+{
+  "name": "nightly-export",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "export": "node --experimental-transform-types exporter/job.ts",
+    "test": "node --experimental-transform-types --test 'exporter/*.test.ts'"
+  }
+}

@@ -1,0 +1,6 @@
+[
+  {"id": 701, "user": {"login": "priya-r", "type": "User"}, "state": "COMMENTED", "body": "A couple of nits, otherwise looks fine.", "submitted_at": "2026-10-06T09:14:01Z"},
+  {"id": 702, "user": {"login": "dave-k", "type": "User"}, "state": "CHANGES_REQUESTED", "body": "See my comment on the retry loop.", "submitted_at": "2026-10-06T11:40:30Z"},
+  {"id": 703, "user": {"login": "marco-b", "type": "User"}, "state": "APPROVED", "body": "LGTM", "submitted_at": "2026-10-06T11:55:12Z"},
+  {"id": 704, "user": {"login": "jlee", "type": "User"}, "state": "COMMENTED", "body": "", "submitted_at": "2026-10-06T12:02:20Z"}
+]

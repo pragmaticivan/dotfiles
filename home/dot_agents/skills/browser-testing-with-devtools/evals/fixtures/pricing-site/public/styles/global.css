@@ -1,0 +1,9 @@
+body { margin: 32px; color: #1f2328; }
+h1 { font-family: system-ui, sans-serif; }
+
+/* Spring campaign: make the featured plan stand out */
+.highlight {
+  border-color: #0b5fff;
+  box-shadow: 0 4px 16px rgba(11, 95, 255, 0.15);
+  padding-bottom: 39px;
+}

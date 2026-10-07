@@ -1,0 +1,5 @@
+body { font-family: system-ui, sans-serif; max-width: 40rem; margin: 2rem auto; }
+#tasks { list-style: none; padding: 0; }
+#tasks li { display: flex; justify-content: space-between; gap: 1rem; padding: .5rem 0; border-bottom: 1px solid #ddd; }
+#tasks li.done .title { text-decoration: line-through; color: #888; }
+#tasks li.done button { display: none; }

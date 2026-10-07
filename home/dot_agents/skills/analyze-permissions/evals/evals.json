@@ -3,11 +3,13 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "/analyze-permissions — I've been approving a bunch of stuff in this repo's settings.local.json, can you check if any of it should be promoted to global patterns?",
+      "prompt": "/analyze-permissions — I've been approving a bunch of stuff in this repo's settings.local.json (the repo is in evals/fixtures/orders-api), can you check if any of it should be promoted to global patterns?",
       "expected_output": "A structured markdown report (Settings Overview, Already Covered, Blocked by Global Deny, Suggested New Patterns, Uncategorized) with no files modified, since the default action is analyze.",
-      "files": [],
+      "files": [
+        "evals/fixtures/orders-api"
+      ],
       "expectations": [
-        "Resolves the chezmoi source path via `chezmoi source-path` rather than hardcoding ~/.claude/settings.json",
+        "The reply shows the `chezmoi source-path ~/.claude/settings.json` command or the path that it prints (ending in `dot_claude/modify_settings.json.tmpl`), and does not name `~/.claude/settings.json` as the file that holds the global permissions",
         "Reads both the chezmoi source settings.json and the project's settings.local.json",
         "Checks candidate patterns against the global deny list before suggesting them as allow patterns",
         "Output follows the report structure with sections: Settings Overview, Already Covered, Blocked by Global Deny, Suggested New Patterns, Uncategorized",
@@ -16,30 +18,35 @@
     },
     {
       "id": 2,
-      "prompt": "/analyze-permissions apply — I ran the analyze pass earlier and want to actually apply the safe global patterns now (the docker:* and gh pr view:* ones), just don't touch anything that overlaps the deny list.",
-      "expected_output": "The agent resolves the chezmoi source path, confirms the specific patterns to write, appends them to the chezmoi source settings.json (never to ~/.claude/settings.json directly), validates the JSON with `jq empty`, shows `chezmoi diff` then runs `chezmoi apply`, verifies `chezmoi status` is clean, removes the now-redundant entries from settings.local.json, and tells the user the chezmoi repo has an uncommitted change without committing it.",
-      "files": [],
+      "prompt": "/analyze-permissions apply — the repo is evals/fixtures/orders-api. I ran the analyze pass earlier and want to actually apply the safe global patterns now (the docker:* and gh pr view:* ones), just don't touch anything that overlaps the deny list. Use my sandbox copy of the dotfiles, not the real ones: it's in evals/fixtures/dotfiles-sandbox, with the chezmoi source in src/, the home dir in home/, and the config in chezmoi.toml. Pass --config, --source and --destination with those absolute paths to every chezmoi command, and treat home/.claude/settings.json as ~/.claude/settings.json. Stop before chezmoi apply, I'll run that myself after I read the diff.",
+      "expected_output": "The agent resolves the sandbox source with `chezmoi source-path`, finds that it is a modify script, adds `Bash(docker:*)` and `Bash(gh pr view:*)` to `permissions.allow` inside its MANAGED_JSON block, validates the rendered JSON with `chezmoi cat ... | jq`, shows `chezmoi diff`, does not run `chezmoi apply` and gives the user the command, leaves settings.local.json unchanged because apply has not run, lists the exact docker and gh pr view entries to remove from it after the user applies, and says the sandbox source repo has an uncommitted change without committing it.",
+      "files": [
+        "evals/fixtures/orders-api",
+        "evals/fixtures/dotfiles-sandbox"
+      ],
       "expectations": [
-        "Writes new allow patterns to the chezmoi source file resolved via `chezmoi source-path`, not directly to ~/.claude/settings.json",
-        "Runs `chezmoi apply` (e.g. `chezmoi apply ~/.claude/settings.json`) to propagate the change to the home directory",
-        "Validates the source file's JSON syntax (e.g. `jq empty`) before or after the edit",
-        "Does not hardcode the chezmoi source path instead of resolving it with `chezmoi source-path`",
-        "Removes the now-redundant entries from the project's settings.local.json after applying",
-        "States that the chezmoi repo now has an uncommitted change and does not run `chezmoi apply` to commit or otherwise commit it without being asked",
-        "Does not edit ~/.claude/settings.json directly"
+        "Adds `Bash(docker:*)` and `Bash(gh pr view:*)` to `permissions.allow` inside the MANAGED_JSON block of `evals/fixtures/dotfiles-sandbox/src/dot_claude/modify_settings.json`, the file that `chezmoi source-path` resolves",
+        "Shows the pending change with `chezmoi diff`, does not run `chezmoi apply`, and gives the user the `chezmoi apply` command to run",
+        "Validates the JSON that the source produces (for example `chezmoi cat <target> | jq`) after the edit and reports the result, rather than running `jq` on the script file itself",
+        "The reply shows the `chezmoi source-path` command with the sandbox `--config`, `--source` and `--destination` flags, or the path that it prints (ending in `dotfiles-sandbox/src/dot_claude/modify_settings.json`)",
+        "Does not change the project's settings.local.json, because `chezmoi apply` has not run, and lists by exact text all seven entries to remove from it after the user applies: the five docker entries (`docker compose up -d`, `docker compose logs api`, `docker compose ps`, `docker volume ls`, `docker network ls`) and the two `gh pr view 482` entries",
+        "States that the sandbox chezmoi source repo now has an uncommitted change and does not commit it",
+        "Does not edit `evals/fixtures/dotfiles-sandbox/home/.claude/settings.json` directly"
       ]
     },
     {
       "id": 3,
-      "prompt": "been getting prompted nonstop for npm run stuff in the pricing-service repo so i want to clean up settings.local.json before it gets out of hand. it's got like six entries: npm run test:unit, npm run test:integration, npm run lint, npm run build, npm run db:migrate, and npm run db:reset (that last one wipes the local postgres and reseeds fixtures, so i really don't want that one silently auto-approved for everyone). can you look at what should get promoted to a wildcard?",
-      "expected_output": "The report groups test/lint/build/migrate under a candidate wildcard such as `Bash(npm run:*)` but explicitly calls out that a plain `npm run:*` wildcard would also auto-approve `npm run db:reset`, which is destructive, and therefore refuses to fold it into that pattern — recommending it stay a specific, non-wildcarded, per-project entry instead. No files are modified, since this is the default analyze action.",
-      "files": [],
+      "prompt": "been getting prompted nonstop for npm run stuff in the pricing-service repo (it's in evals/fixtures/pricing-service) so i want to clean up settings.local.json before it gets out of hand. it's got like six entries: npm run test:unit, npm run test:integration, npm run lint, npm run build, npm run db:migrate, and npm run db:reset (that last one wipes the local postgres and reseeds fixtures, so i really don't want that one silently auto-approved for everyone). can you look at what should get promoted to a wildcard?",
+      "expected_output": "The report finds that the global chezmoi source already allows `Bash(npm:*)`, thus all six npm run entries are already covered and no new wildcard is necessary. It flags that this existing global wildcard already auto-approves the destructive `npm run db:reset` today, and it recommends a change that makes db:reset prompt again, for example a `Bash(npm run db:reset)` entry in `permissions.ask`, because `ask` takes precedence over `allow`. No files are modified, since this is the default analyze action.",
+      "files": [
+        "evals/fixtures/pricing-service"
+      ],
       "expectations": [
-        "Identifies npm run test/lint/build entries as candidates for consolidation into a wildcard pattern",
-        "Explicitly flags that `npm run db:reset` must not be folded into a `Bash(npm run:*)` wildcard because it is destructive",
-        "Does not propose any wildcard pattern broad enough to auto-approve `npm run db:reset`",
-        "Recommends keeping the destructive db:reset entry specific and reviewed rather than auto-approved",
-        "Resolves the chezmoi source path via `chezmoi source-path` rather than hardcoding it",
+        "States that the global `Bash(npm:*)` allow entry already covers all six npm run entries in settings.local.json (for example, in the Already Covered table), and does not present a new npm wildcard as necessary",
+        "Explicitly flags that the existing global `Bash(npm:*)` already auto-approves `npm run db:reset` today, rather than treating that as a risk only of a future wildcard",
+        "Does not propose any new allow pattern that would auto-approve `npm run db:reset`",
+        "Recommends a concrete change that makes `npm run db:reset` prompt despite the global wildcard, for example a `Bash(npm run db:reset)` entry in `permissions.ask` (or `deny`), and does not claim that keeping it as a specific local allow entry stops auto-approval",
+        "The reply shows the `chezmoi source-path ~/.claude/settings.json` command or the path that it prints (ending in `dot_claude/modify_settings.json.tmpl`), and does not name `~/.claude/settings.json` as the file that holds the global permissions",
         "Does not modify any files, since the default action is analyze, not apply"
       ]
     }

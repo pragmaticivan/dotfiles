@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git commit -m \"fix: retry order sync on 503\")",
+      "Bash(npm run build)",
+      "Bash(npm test -- --watch=false)",
+      "Bash(kubectl get pods -n orders)",
+      "Bash(kubectl logs deploy/orders-api -n orders)",
+      "Bash(helm list -n orders)",
+      "Bash(curl -s http://localhost:8080/health)",
+      "Bash(docker compose up -d)",
+      "Bash(docker compose logs api)",
+      "Bash(docker compose ps)",
+      "Bash(docker volume ls)",
+      "Bash(docker network ls)",
+      "Bash(gh pr view 482)",
+      "Bash(gh pr view 482 --comments)",
+      "Bash(buf lint)",
+      "Bash(buf generate)",
+      "Bash(buf breaking --against .git#branch=main)",
+      "Bash(./scripts/seed-dev.sh)",
+      "Bash(sqlc generate)"
+    ]
+  }
+}

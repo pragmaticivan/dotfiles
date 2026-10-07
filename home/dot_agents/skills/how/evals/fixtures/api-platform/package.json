@@ -1,0 +1,8 @@
+{
+  "name": "api-platform",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test gateway/gateway.test.ts"
+  }
+}

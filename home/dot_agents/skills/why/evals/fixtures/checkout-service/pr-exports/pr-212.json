@@ -1,0 +1,14 @@
+{
+  "number": 212,
+  "title": "fix(cart): replace FOR UPDATE with row_version check",
+  "author": {"login": "marco-d"},
+  "createdAt": "2024-06-17T19:02:44Z",
+  "mergedAt": "2024-06-18T20:40:00Z",
+  "closingIssuesReferences": [{"identifier": "CHK-318"}],
+  "body": "During the June 14 promo, cart writes queued behind row locks. updateCart held the FOR UPDATE lock while it waited on the tax service (p99 about 3.8s that day), and we hit `lock wait timeout exceeded` on about 2% of cart updates. Connection pool also saturated.\n\nThis moves the tax quote outside any lock and uses a row_version compare-and-set on the write. Losers get CartVersionConflict.\n\nMigration 0007 adds the column.",
+  "comments": [
+    {"author": {"login": "priya-n"}, "createdAt": "2024-06-18T13:11:02Z", "body": "Would this also explain the deadlocks we saw in May on checkout? Those were on carts too I think."},
+    {"author": {"login": "marco-d"}, "createdAt": "2024-06-18T14:30:47Z", "body": "Possibly, but I couldn't reproduce a deadlock locally. The lock-wait timeouts are what I actually measured. Let's see if the May thing comes back."}
+  ],
+  "reviews": [{"author": {"login": "priya-n"}, "state": "APPROVED", "body": "Ship it, we need this before the July promo."}]
+}

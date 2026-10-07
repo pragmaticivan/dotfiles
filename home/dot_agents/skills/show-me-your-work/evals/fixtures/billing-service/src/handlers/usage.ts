@@ -1,0 +1,22 @@
+import { queue, type Payload } from "../lib/queue.ts";
+
+export const usageRecorded = (p: Payload) => queue.publish("usage.recorded", p);
+export const usageAggregated = (p: Payload) => queue.publish("usage.aggregated", p);
+export const usageRated = (p: Payload) => queue.publish("usage.rated", p);
+export const usageBilled = (p: Payload) => queue.publish("usage.billed", p);
+export const usageCorrected = (p: Payload) => queue.publish("usage.corrected", p);
+export const usageLateArrival = (p: Payload) => queue.publish("usage.late_arrival", p);
+export const usageDropped = (p: Payload) => queue.publish("usage.dropped", p);
+export const usageDuplicated = (p: Payload) => queue.publish("usage.duplicated", p);
+export const usageThresholdHit = (p: Payload) => queue.publish("usage.threshold_hit", p);
+export const usageCapReached = (p: Payload) => queue.publish("usage.cap_reached", p);
+export const usageCapRaised = (p: Payload) => queue.publish("usage.cap_raised", p);
+export const usageMeterAdded = (p: Payload) => queue.publish("usage.meter_added", p);
+export const usageMeterRemoved = (p: Payload) => queue.publish("usage.meter_removed", p);
+export const usageMeterReset = (p: Payload) => queue.publish("usage.meter_reset", p);
+export const usageExportStarted = (p: Payload) => queue.publish("usage.export_started", p);
+export const usageExportDone = (p: Payload) => queue.publish("usage.export_done", p);
+export const usageImportStarted = (p: Payload) => queue.publish("usage.import_started", p);
+export const usageImportDone = (p: Payload) => queue.publish("usage.import_done", p);
+export const usageRollupDone = (p: Payload) => queue.publish("usage.rollup_done", p);
+export const usageAlertSent = (p: Payload) => queue.publish("usage.alert_sent", p);

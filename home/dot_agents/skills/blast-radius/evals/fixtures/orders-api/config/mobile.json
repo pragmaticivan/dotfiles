@@ -1,0 +1,7 @@
+{
+  "min_supported_version": {
+    "ios": "4.6.0",
+    "android": "4.6.0"
+  },
+  "force_upgrade": false
+}

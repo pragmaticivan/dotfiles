@@ -1,0 +1,22 @@
+import { queue, type Payload } from "../lib/queue.ts";
+
+export const creditIssued = (p: Payload) => queue.publish("credit.issued", p);
+export const creditApplied = (p: Payload) => queue.publish("credit.applied", p);
+export const creditExpired = (p: Payload) => queue.publish("credit.expired", p);
+export const creditRevoked = (p: Payload) => queue.publish("credit.revoked", p);
+export const creditTransferred = (p: Payload) => queue.publish("credit.transferred", p);
+export const creditSplit = (p: Payload) => queue.publish("credit.split", p);
+export const creditMerged = (p: Payload) => queue.publish("credit.merged", p);
+export const creditAdjusted = (p: Payload) => queue.publish("credit.adjusted", p);
+export const creditGrantedPromo = (p: Payload) => queue.publish("credit.granted_promo", p);
+export const creditGrantedSupport = (p: Payload) => queue.publish("credit.granted_support", p);
+export const creditGrantedSla = (p: Payload) => queue.publish("credit.granted_sla", p);
+export const creditReserved = (p: Payload) => queue.publish("credit.reserved", p);
+export const creditReleased = (p: Payload) => queue.publish("credit.released", p);
+export const creditConsumed = (p: Payload) => queue.publish("credit.consumed", p);
+export const creditToppedUp = (p: Payload) => queue.publish("credit.topped_up", p);
+export const creditThresholdHit = (p: Payload) => queue.publish("credit.threshold_hit", p);
+export const creditBalanceLow = (p: Payload) => queue.publish("credit.balance_low", p);
+export const creditBalanceZero = (p: Payload) => queue.publish("credit.balance_zero", p);
+export const creditReportSent = (p: Payload) => queue.publish("credit.report_sent", p);
+export const creditAudited = (p: Payload) => queue.publish("credit.audited", p);

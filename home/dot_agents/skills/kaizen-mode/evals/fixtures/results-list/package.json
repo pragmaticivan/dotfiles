@@ -1,0 +1,11 @@
+{
+  "name": "catalog-ui",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test"
+  },
+  "dependencies": {
+    "react": "^19.1.0"
+  }
+}

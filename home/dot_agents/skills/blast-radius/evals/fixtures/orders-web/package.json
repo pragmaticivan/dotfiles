@@ -1,0 +1,13 @@
+{
+  "name": "orders-web",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "postinstall": "patch-package",
+    "export": "node src/export.ts > data/orders-export.jsonl",
+    "reconcile": "python3 jobs/reconcile.py data/orders-export.jsonl"
+  },
+  "dependencies": {
+    "datekit": "2.30.0"
+  }
+}

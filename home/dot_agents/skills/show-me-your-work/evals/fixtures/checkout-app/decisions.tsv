@@ -1,0 +1,3 @@
+ts	phase	decision	why	evidence	result
+2026-08-25T14:10:00Z	sessions	moved checkout sessions out of the cookie into a server-side store	cookie was over the 4 KB limit for big carts	commit 8b1e4f0	tests green
+2026-08-26T09:20:00Z	sessions	turned on sticky sessions at the load balancer	keep each shopper on one instance while the store is chosen	infra/lb.tf:42	deployed to staging
