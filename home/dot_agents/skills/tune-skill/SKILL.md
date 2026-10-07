@@ -18,7 +18,7 @@ The rules below summarize the Anthropic documents. Refresh the local copies befo
 python3 scripts/fetch_docs.py
 ```
 
-The script uses only the Python standard library. It writes Markdown to `~/.cache/tune-skill/docs/`.
+The scripts use only the Python standard library. `fetch_docs.py` writes Markdown to `~/.cache/tune-skill/docs/`.
 Read `skill-best-practices.md` there when a rule below is unclear or when the audit and this file disagree.
 Read the `prompting-<model>.md` guide for each model that runs the skill.
 Add a document with `--url <url>`. The `llms.txt` file in the cache lists every page.
@@ -81,6 +81,8 @@ Read `evals/evals.json` in the skill. Write the missing cases in this shape:
 
 Base each case on a real request or a real failure, not on the rule you plan to add.
 Include one case where the skill must decline or push back.
+When the skill reads files or a repository, put a small fixture under `evals/fixtures/` and list it in `files`.
+Without a fixture, a grader cannot check an assertion about evidence from a file.
 
 ### 4. Report the findings and the edit plan
 
@@ -89,19 +91,42 @@ Stop here when the user asked for an audit only.
 
 ### 5. Snapshot, edit, and re-audit until no error remains
 
-Snapshot the skill before the first edit:
+Snapshot the skill before the first edit. Keep the workspace out of the skill's parent directory, because a dotfiles manager or a skill loader can install it as a skill:
 
 ```bash
-mkdir -p <skill-dir>-workspace && cp -R <skill-dir> <skill-dir>-workspace/skill-snapshot
+WS=~/.cache/tune-skill/<name>-workspace
+mkdir -p $WS && cp -R <skill-dir> $WS/skill-snapshot
 ```
 
 Change how the skill instructs, not what the skill does. Ask the user before you add or remove a behavior.
-Make the edits. Run the audit again. Return to the edit when an error remains.
+Make the edits. Run the audit again, and also run the repository's own lint, which can be stricter. Return to the edit when an error remains.
 
 ### 6. Run the evals old against new on each target model
 
-Use the skill-creator skill for the run, the grading, and the benchmark. Use the snapshot as the baseline.
 Run on each model that the skill targets. Without a stated target, run on Haiku, Sonnet, and Opus.
+Evaluate all the edits as one batch. Use the snapshot as the baseline.
+
+```bash
+python3 scripts/eval_run.py setup $WS --evals <skill-dir>/evals/evals.json
+```
+
+The command prints one `outputs/` directory for each model, eval, and config. For each directory, start a subagent on that model.
+Give it the eval prompt and the skill path, which is the snapshot for `old_skill` or `<skill-dir>` for `new_skill`. Tell it to write its reply to `response.md` in that directory.
+Record each task notification with `python3 scripts/eval_run.py timing <run-dir> <tokens> <duration_ms>`.
+
+Grade blind, so that a grader cannot favor the new version:
+
+```bash
+python3 scripts/eval_run.py blind $WS
+```
+
+Start one grader for each `$WS/blind/eval-<id>/` directory. Use skill-creator's `agents/grader.md` as its standard.
+Tell it to write `R<nnn>.grading.json` next to each reply that has none, with an `expectations` list of `text`, `passed`, and `evidence`.
+Then print the pass rate per model:
+
+```bash
+python3 scripts/eval_run.py report $WS
+```
 
 Read the result per model:
 
@@ -110,6 +135,15 @@ Read the result per model:
 
 ### 7. Keep or revert each edit from the eval result
 
+Check the evals before you trust the pass rate:
+
+- The report lists each assertion that has the same result in every run. That assertion cannot show a change.
+- Read the grader notes. An assertion that rewards a wrong behavior, such as a score with no evidence, gives a false gain.
+
+Fix those assertions and grade again before you decide. Fixing an assertion does not require you to run the skill again.
+
+With one run for each config, treat a change of one assertion as noise.
+When a target model regresses, revert one edit at a time to find the cause. When the decision depends on a small change, run `setup --runs 3` on the same workspace for that model, run the new subagents, then run `blind` again. It adds only the new runs, so the graders grade only those.
 Revert an edit that lowers the pass rate on a target model. Keep an edit that holds the pass rate and removes text.
 When a run fails for a reason that no rule covers, propose the new rule to the user. Do not add it unasked.
 
