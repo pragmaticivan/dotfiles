@@ -4,46 +4,51 @@
     {
       "id": 1,
       "prompt": "hey our docs site (mkdocs.yml at the root, Material theme) basically never gets cited when people ask chatgpt or perplexity stuff about our product, even though our own docs answer the question fine. i think the writing is too corporate / jargon-y. can you just rewrite the getting-started.md page so it sounds more natural and conversational, that should fix it right?",
-      "expected_output": "The response first runs Phase 0 detection, identifying this as a docs/knowledge-base project from mkdocs.yml and naming the docs playbook, then runs the Phase 1 scored audit (crawl access, llms.txt, structured data, citability, etc.) before touching any wording. It pushes back on the premise that prose is the bottleneck, checking robots.txt/CDN blocking, whether llms.txt exists, and whether JSON-LD is present, and explains that if those are failing, rewriting getting-started.md's tone will not move citations. It must not jump straight into rewriting the page's prose as the first and only action.",
-      "files": [],
+      "files": [
+        "evals/fixtures/mkdocs-site"
+      ],
+      "expected_output": "The response opens by classifying the repo as an MkDocs docs site from mkdocs.yml. The audit finds that docs/robots.txt disallows OAI-SearchBot and PerplexityBot, which explains the missing ChatGPT and Perplexity citations, and that llms.txt is absent. It pushes back on a tone rewrite as the fix, and offers an answer-first restructure of getting-started.md as a later step, after a go-ahead.",
       "expectations": [
-        "response explicitly detects the project as a docs/knowledge-base site (citing mkdocs.yml) before giving any recommendations",
-        "response produces a scored audit table (or explicit per-check status) covering multiple categories from the 8-category scoring model, not just prose quality",
-        "response checks llms.txt presence and robots.txt/AI-bot crawl access as part of the audit, since these are docs-playbook priorities",
-        "each check or score claim cites concrete evidence (a file path/line or a URL/path checked), not just an assertion",
-        "response does not treat rewriting getting-started.md's tone/wording as the primary fix while crawl access, llms.txt, or structured data are unverified or failing",
-        "response does not skip Phase 0 project-type detection and jump straight to generic AEO advice",
-        "response gives the user a prioritized plan (or asks for go-ahead before large edits) rather than unilaterally rewriting the page"
+        "response opens by classifying the project as a docs site and cites mkdocs.yml as the evidence",
+        "response reports that docs/robots.txt disallows OAI-SearchBot and PerplexityBot, cites that file, and names it as a likely cause of the missing ChatGPT and Perplexity citations",
+        "response reports that the repo has no llms.txt",
+        "response gives a per-check audit in which each status cites a fixture file or is marked unverified, not an unsupported claim",
+        "response does not treat a tone rewrite of getting-started.md as the primary fix while the robots.txt block stands",
+        "any change proposed for getting-started.md is an answer-first restructure (for example, lead with the install command and a question-shaped heading), not only a change of tone",
+        "response asks for a go-ahead before it edits files, and does not rewrite the page unasked",
+        "response does not state research figures or outcomes that are not in the skill's references or the user's message (for example an invented lift multiplier, a misattributed study figure, or a promise that the engines will cite the site)"
       ]
     },
     {
       "id": 2,
       "prompt": "site's prawnly.io, built on Next.js. just found robots.txt has `Disallow: /` under `User-agent: GPTBot`. want the full AEO score before we touch anything.",
-      "expected_output": "The response detects this as a marketing/SaaS site (Next.js) per Phase 0, then runs the full Phase 1 scored audit across all 8 categories, outputting a per-check table with status, evidence, and points plus a total /100 and band. It flags the `Disallow: /` for GPTBot under crawl access as a top-severity finding (highest-weighted category) with the exact evidence, and does not let a single fix distract from delivering the complete scored table the user asked for.",
       "files": [],
+      "expected_output": "The response classifies prawnly.io as a marketing/SaaS site from Next.js, then gives the full per-check score. Checks without evidence are unverified, and the total is either labeled as resting on missing evidence or withheld with a reason. It explains that GPTBot is OpenAI's training crawler, so the line alone does not block ChatGPT search citations, and it does not edit robots.txt before the score.",
       "expectations": [
-        "response identifies the project as a marketing/SaaS site and references the Next.js signal used to classify it",
-        "response outputs a per-check table (or clearly itemized equivalent) spanning categories beyond just crawl access, e.g. structured data, citability, content structure",
-        "response reports a total score out of 100 and names the corresponding band (Critical/Foundation/Good/Excellent)",
-        "response calls out the GPTBot `Disallow: /` line in robots.txt as evidence for the crawl-access finding, not just a generic 'fix robots.txt' statement",
-        "response does not report category or total scores without citing evidence (file/line or the specific robots.txt line) per check",
-        "response does not recommend implementing fixes (e.g. editing robots.txt) before presenting the requested score, since the user asked to see the score before touching anything",
-        "response does not skip Phase 0 project-type detection and jump straight into a generic checklist"
+        "response opens by classifying the project as a marketing/SaaS site and cites Next.js as the evidence",
+        "response outputs a per-check table spanning categories beyond crawl access, such as structured data, citability, and content structure",
+        "response either gives a total out of 100 with a band and states how much of it rests on evidence, or withholds the total and explains why; it does not present a total as the site's measured quality",
+        "response states that GPTBot is OpenAI's training crawler and that ChatGPT search citations depend on OAI-SearchBot or ChatGPT-User, so the GPTBot line alone does not show a citation block",
+        "response marks checks it has no evidence for as unverified or unknown, not as failed and not with guessed points",
+        "response does not recommend editing robots.txt before it presents the requested score",
+        "response does not state research figures or outcomes that are not in the skill's references or the user's message (for example an invented lift multiplier, a misattributed study figure, or a promise that the engines will cite the site)"
       ]
     },
     {
       "id": 3,
       "prompt": "We're an API-first payments startup. Our DevRel team wants ChatGPT and Claude to recommend our SDK whenever developers ask things like \"how do I do refunds with a payments API\" or \"best payments API for marketplaces.\" We've spent the last three weeks polishing README prose and rewriting our blog posts to sound more authoritative and quotable, but nothing's changing. We do have an openapi.yaml at the repo root and a decent README, but no llms.txt anywhere, and honestly we've never checked whether GPTBot or PerplexityBot can even reach our docs site.",
-      "expected_output": "The response detects this as an API/SDK/library project (openapi.yaml, README) per Phase 0 and loads the API playbook, then runs the Phase 1 scored audit rather than continuing the prose-polishing effort. It explicitly reframes: three weeks of prose/authority work will not move citations while crawl access is unverified and llms.txt is absent, and prioritizes checking robots.txt/CDN blocking for AI bots, confirming OpenAPI is discoverable and current, and adding llms.txt before any further wording changes. It must not validate or continue the prose-authority-polishing strategy as the next step.",
-      "files": [],
+      "files": [
+        "evals/fixtures/payments-api"
+      ],
+      "expected_output": "The response classifies the repo as an API/SDK project from openapi.yaml and README.md. It finds that website/static/robots.txt disallows every crawler, which alone explains why nothing changed, and ranks that first. It reports the missing llms.txt and the undocumented refund and split operations in openapi.yaml, says further prose work will not help while the block stands, and asks before large edits.",
       "expectations": [
-        "response detects the project as an API/SDK/library type, citing openapi.yaml and/or the README as evidence",
-        "response identifies llms.txt as missing and crawl-access (robots.txt / AI-bot fetchability) as unverified, and treats these as higher priority than further prose work",
-        "response references the API playbook's agent-actionability angle (e.g. OpenAPI being current/discoverable) as relevant to the goal, not just generic content advice",
-        "response explicitly states that continuing to polish README/blog prose will not fix citation visibility while crawl access and llms.txt are unresolved",
-        "response does not lead with further prose or wording tweaks as the recommended next step while crawl access and llms.txt are still failing or unverified",
-        "response does not skip Phase 0 project-type detection and jump straight to generic 'sound more authoritative' advice",
-        "response does not report any score or finding without citing file/path evidence (e.g. presence/absence of openapi.yaml, llms.txt, robots.txt contents)"
+        "response opens by classifying the project as an API/SDK project and cites openapi.yaml or README.md as the evidence",
+        "response finds that website/static/robots.txt has `Disallow: /` for every user agent, cites that file, and ranks removing that block as the first fix",
+        "response reports that the repo has no llms.txt",
+        "response reports that the refunds and marketplace split operations in openapi.yaml have no descriptions or examples, and links this to agent actionability for the user's target questions",
+        "response states that more README or blog prose work will not change citations while the robots.txt block stands",
+        "response asks for a go-ahead before large edits, and does not edit files unasked",
+        "response does not state research figures or outcomes that are not in the skill's references or the user's message (for example an invented lift multiplier, a misattributed study figure, or a promise that the engines will cite the site)"
       ]
     }
   ]

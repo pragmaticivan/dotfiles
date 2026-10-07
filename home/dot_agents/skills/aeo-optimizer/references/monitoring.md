@@ -49,4 +49,4 @@ Treat AEO like a test:
 - Emit machine formats (JSON/SARIF/JUnit) for pipeline integration where tooling supports it.
 
 ## Server-log crawler evidence
-Parse access logs for AI bot user-agents (see `ai-crawlers.md`, 27 bots) to confirm engines are actually fetching you and which pages — ground truth that access works.
+Parse access logs for AI bot user-agents (see `ai-crawlers.md`) to confirm engines are actually fetching you and which pages — ground truth that access works.

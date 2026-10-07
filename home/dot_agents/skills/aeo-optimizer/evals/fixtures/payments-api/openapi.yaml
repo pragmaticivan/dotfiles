@@ -1,0 +1,27 @@
+openapi: 3.0.3
+info:
+  title: Tallypay API
+  version: 2.4.0
+paths:
+  /v2/refunds:
+    post:
+      operationId: createRefund
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment_id:
+                  type: string
+                amount:
+                  type: integer
+      responses:
+        "200":
+          description: OK
+  /v2/marketplace/splits:
+    post:
+      operationId: createSplit
+      responses:
+        "200":
+          description: OK

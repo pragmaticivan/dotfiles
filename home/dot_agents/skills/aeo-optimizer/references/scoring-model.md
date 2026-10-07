@@ -69,6 +69,19 @@ The audit engine. Score each category, sum to 100, map to a band. Weights reflec
 - WebMCP `registerTool()` / schema.org `potentialAction` for actionable sites.
 - Apps/APIs: current OpenAPI, stable URLs, consider MCP server.
 
+## Points per check
+Split each category's max evenly across its checks. Then score each check by status:
+
+| Status | Points | Use when |
+|--------|--------|----------|
+| pass | full share | Evidence shows the check is met. |
+| partial | half share | Evidence shows the check is partly met. |
+| fail | 0 | Evidence shows the check is not met. |
+| unverified | 0 | You cannot get evidence (no repo access, no deployed URL). A guess, such as "likely fast", is unverified. Name what the user must check. |
+| N/A | — | The check does not apply. Give its share to the other checks in the category. |
+
+Say in the output how many checks are unverified. A low score from unverified checks is not a low score from failures.
+
 ## Output format
 Emit:
 1. Per-check table: `| # | Category | Check | Status | Evidence | Pts (x/max) |`
