@@ -1,0 +1,1 @@
+for s in "$@"; do python3 ~/.local/share/chezmoi/home/dot_agents/skills/tune-skill/scripts/eval_run.py blind /tmp/skillrun/ws/$s >/dev/null && sed "s#{ws}#/tmp/skillrun/ws/$s#g; s#{it}#1#g" /tmp/skillrun/grader.md > /tmp/skillrun/ws/$s/grader-brief.md; done
