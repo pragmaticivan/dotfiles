@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/reflect/SKILL.md
 name: reflect
-description: "Mine the active transcript for durable learnings with three parallel reviewers, then route each one to a concrete edit on an existing skill."
+description: "Mine the active transcript for durable learnings with three parallel reviewers, then route each one to an edit on an existing skill. Use for /reflect, after a user correction, or after a hard task lands with a recipe worth keeping."
 ---
 
 # Reflect
@@ -34,19 +34,19 @@ For each candidate, read the first JSONL line and check that `message.content[0]
 
 ### 2. Spawn three reviewers in parallel
 
-One message, three `Agent` calls, `subagent_type: general-purpose`, explicit `model:` on each, agent mode (`readonly: false`). Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript); readonly strips MCPs. The prompt forbids file writes; the parent applies edits.
+One message, three `Agent` calls, `subagent_type: general-purpose`, explicit `model:` on each from the `~/.claude/kaizen-models.md` line named in the table, agent mode (`readonly: false`). Reviewers need MCP access for context lookups (tickets, chat threads, observability traces referenced in the transcript); readonly strips MCPs. The prompt forbids file writes; the parent applies edits.
 
 | Lens | `model` | Prompt template |
 |---|---|---|
-| Judgment | your configured reflect-judgment model (default `opus`) | `references/judgment-reviewer.md` |
-| Tooling | your configured reflect-tooling model (default `fable`) | `references/tooling-reviewer.md` |
-| Divergent | your configured reflect-judgment model (default `opus`) | `references/divergent-reviewer.md` |
+| Judgment | `reflect-judgment`, default `opus` | `references/judgment-reviewer.md` |
+| Tooling | `reflect-tooling`, default `fable` | `references/tooling-reviewer.md` |
+| Divergent | `reflect-judgment`, default `opus` | `references/divergent-reviewer.md` |
 
 Pass each template verbatim, substituting the transcript path or digest where marked. Reviewers return findings in the `Agent` response body.
 
 ### 3. Synthesize
 
-One `Agent` call, `subagent_type: general-purpose`, using your configured reflect-judgment model (default `opus`), agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access; readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
+One `Agent` call, `subagent_type: general-purpose`, using the `reflect-judgment` model, default `opus`, agent mode (`readonly: false`). The synthesizer's quality check includes spot-verifying citations, which can require MCP access; readonly strips MCPs. Use `references/synthesizer.md` verbatim, with each reviewer's full output inlined where marked. The synthesizer returns a structured Accepted / Rejected / Backlog list.
 
 ### 4. Structural enforcement check
 
@@ -65,7 +65,7 @@ For each approved Accepted item, follow the Routing field exactly:
 - `tune description: <skill path>` (the skill exists but didn't trigger when it should have): hand to `skill-creator` and run its description-optimization loop.
 - `new skill via skill-creator: <kebab-name>`: hand creation to `skill-creator`. Do not invent the shape ad hoc.
 
-If your environment ships a SKILL.md validator, run it on every touched skill before declaring done. Skip this step if it doesn't.
+If your environment ships a SKILL.md validator, run it on every touched skill before declaring done.
 
 ### 6. Summarize for the user
 

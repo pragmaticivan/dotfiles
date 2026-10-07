@@ -4,6 +4,20 @@
 **Structure:** 9 sections containing 53 numbered rules (Section 1: 14, Section 2: 2, Section 3: 7, Section 4: 5, Section 5: 5, Section 6: 6, Section 7: 3, Section 8: 7, Section 9: 4), plus 8 General recommendations (GR-1..GR-8) in Section 9 that are explicitly NOT STE rules.
 **Conventions in this file:** each rule gives the normative statement (numeric limits verbatim from the spec), condensed details/exceptions, and one Non-STE → STE example pair. Sentence-length limits at a glance: procedures max 20 words (5.1), descriptive text max 25 words (6.3), note sentences max 25 words (5.5), paragraphs max 6 sentences (6.6).
 
+## Contents
+
+1. [Section 1 - Words](#section-1---words)
+2. [Section 2 - Multi-word nouns](#section-2---multi-word-nouns)
+3. [Section 3 - Verbs](#section-3---verbs)
+4. [Section 4 - Sentences](#section-4---sentences)
+5. [Section 5 - Procedural writing](#section-5---procedural-writing)
+6. [Section 6 - Descriptive writing](#section-6---descriptive-writing)
+7. [Section 7 - Safety instructions](#section-7---safety-instructions)
+8. [Section 8 - Punctuation and word count](#section-8---punctuation-and-word-count)
+9. [Section 9 - Writing practices](#section-9---writing-practices)
+10. [Appendix A - Subject-to-rule index](#appendix-a---subject-to-rule-index)
+11. [Appendix B - What changed in Issue 9](#appendix-b---what-changed-in-issue-9)
+
 ---
 
 ## Section 1 - Words

@@ -16,22 +16,14 @@ Take one large pull request (or an unpushed branch) and turn it into a **stack**
 main (trunk)
 ```
 
-**Why the work is worth it:** review quality collapses with diff size. A 300-line PR gets architectural feedback; a 2,000-line PR gets skimmed. Splitting does not reduce the total code — it converts one unreviewable artifact into several reviewable ones.
-
 **The one invariant that makes this safe:** each layer branch holds the *cumulative* final content of layers 1..k, so the top layer's tree is byte-identical to the original branch. `build-stack.sh` refuses to finish unless `git diff <top-layer> <original-branch>` is empty. If that gate passes, nothing was dropped, duplicated, or mangled — you never have to eyeball a rebase to trust the split.
-
-## When this fires
-
-Explicit: stacked PRs, stacked pull requests, stacked diffs, `gh stack`, split this PR, split my branch, break up this PR, make this PR smaller, this PR is too big, PR too large to review, dependent pull requests, restack, retarget PR base.
-
-Implicit: "reviewers say this PR is unreviewable", "can you break this branch into reviewable chunks", "how do I ship this feature in layers", "turn my existing PR into a stack", "this diff is 2000 lines and nobody will review it".
 
 Announce at the start: *"Using the stacked-pr-split skill — I'll analyze the diff, propose a layer plan for your approval, then build and submit the stack."*
 
 ## Two things to read when you need them
 
-- `references/layer-design.md` — how to choose layer boundaries: dependency ordering, the self-containment rule, size targets, and the PR-body template. **Read this before designing a plan** (Phase 3); it is the judgment-heavy part.
-- `references/gh-stack-invariants.md` — the `gh stack` command surface, non-interactive rules, exit codes, and platform limits. **Read this before running any `gh stack` command** (Phase 6+).
+- `references/layer-design.md` — how to choose layer boundaries: dependency ordering, the self-containment rule, size targets, and the PR-body template. Read it before Phase 3.
+- `references/gh-stack-invariants.md` — the `gh stack` command surface, non-interactive rules, exit codes, and platform limits. Read it before the first `gh stack` command in Phase 6.
 
 ---
 
@@ -110,7 +102,7 @@ Read the full `files` array — you need per-file paths and sizes to design laye
 
 ## Phase 3 — Design the layer plan
 
-**Read `references/layer-design.md` now.** This is where the skill earns its keep, and it is genuinely hard: you are inferring a dependency DAG from a diff and then linearizing it.
+Read `references/layer-design.md` now. You are inferring a dependency DAG from a diff and then linearizing it.
 
 The process, in brief:
 
@@ -256,20 +248,16 @@ Never delete the backup branch on your own initiative. It is the only cheap way 
 
 - Designing a plan without running `analyze-split.sh`. You'd be guessing at sizes.
 - Any git operation before the user approves the plan.
-- Working around the "file assigned to two layers" error by duplicating the file. The layer boundary is wrong; fix the boundary.
 - Proceeding when `build-stack.sh` reports `verified: false`. The losslessness gate failing means the stack does not reproduce the original — there is nothing to salvage by pushing it.
 - Closing or force-pushing the original PR's branch before the stack exists on GitHub and the user has confirmed.
 - Splitting a diff that is mostly generated content. Check `excluded_lines` first.
-- Building a stack in a fork, or without confirming stacks are enabled. Both fail at `submit`, after all the work.
 
 ## Common mistakes
 
 - **Every PR targeting `main`.** That is not a stack — it is a set of growing snapshots, and each layer's incremental diff is lost the moment any of them merges.
 - **No stack-position header in the PR body.** Reviewers flag intentional forward references as bugs.
 - **Splitting tests away from the code they cover** to hit a line target. Tests count 0.5× precisely so they can ride along with their layer.
-- **Interactive `gh stack` invocations.** `gh stack view` without `--json`, or `submit` without `--auto`, opens a TUI and hangs the session.
 - **`git push --force`** instead of the `--force-with-lease` that `gh stack push` already uses.
-- **Marking every layer ready for review at once.** A mid-stack PR merging early silently rewrites the diffs above it.
 
 ## Provenance
 

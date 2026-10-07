@@ -12,6 +12,18 @@ Three rules carry the rest.
 
 Open a todolist with the steps below copied in verbatim. A step you skip stays listed with `skip: <reason>`.
 
+#### Contents
+
+- Roles and placement
+- Store layout
+- The brief
+- Steps
+- Queue and drain
+- Stack safety
+- Verification
+- Liveness and failure
+- Escalation
+
 #### Roles and placement
 
 - **Coordinator (this chat).** Local. Frames, authors briefs, drains the inbox, owns the human report, makes judgment calls. It never authors or edits code: conflicted merges, restacks, and code changes are always tasks. Mechanically landing a verified unit (fast-forward or clean cherry-pick of a worker's commit, then push) is bookkeeping the coordinator may do itself on repos where local git is cheap; queueing finished work behind an idle stacker is how a deadline harvests nothing. The loop is agentic end to end. Agents are spawned, resumed, and drained only through the Agent tool. State reads and writes go through `scripts/orch/orch.ts` at drain points, one command in and one line out, to conserve context. The CLI never spawns, waits, or wakes anything.

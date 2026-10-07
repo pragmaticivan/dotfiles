@@ -6,11 +6,11 @@ model: haiku
 
 # Stop Slop
 
-Eliminate predictable AI patterns from prose and add human voice. Apply these rules to any writing task.
+Eliminate predictable AI patterns from prose and add human voice.
 
 ## Process
 
-1. Scan for the patterns in `references/patterns.md` and the phrase lists below.
+1. Scan for the patterns in `references/patterns.md`, `references/phrases.md`, and `references/structures.md`.
 2. Rewrite. Preserve meaning, match intended tone.
 3. Add soul (see next section).
 4. Self-audit: "What makes this obviously AI generated?" Fix remaining tells.
@@ -49,8 +49,7 @@ order, you edited the vocabulary and left the slop. Change the structure or dele
 
 ## Reference Files
 
-See the `references/` directory for:
-- `patterns.md` - The numbered rule catalog, cited by number from other skills
-- `phrases.md` - Specific phrases to eliminate
-- `structures.md` - Formulaic patterns to avoid
-- `examples.md` - Before/after transformations
+- [patterns.md](references/patterns.md) - The numbered rule catalog, cited by number from other skills
+- [phrases.md](references/phrases.md) - Specific phrases to eliminate
+- [structures.md](references/structures.md) - Formulaic patterns to avoid
+- [examples.md](references/examples.md) - Before/after transformations
