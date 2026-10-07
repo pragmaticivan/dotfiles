@@ -12,4 +12,4 @@ Invoked at the end of every other playbook.
 
 Split a fat PR by stacking (sequential dependencies), by file group (different reviewers), horizontally (shared code and stubs first, then consumers), or vertically (smaller full-stack slices).
 
-A subagent that opens a PR runs `interrogate`, `/stop-slop`, and `/no-comments`, returns the URL, and does NOT babysit. Return to the parent.
+A subagent that opens a PR runs `interrogate`, `/stop-slop`, and `/no-comments`, returns the URL, and does not babysit. Return to the parent.

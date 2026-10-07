@@ -2,6 +2,13 @@
 
 **You own the plan, not the code. The plan is a checklist an owner runs box by box and the operator audits from the evidence.** For work that spans phases or stacked PRs. The plan is the deliverable. Do not implement.
 
+#### Contents
+
+- Steps 1 to 7
+- Verification and driving the surface
+- The plan skeleton
+- The reply
+
 1. When the change is one or two files with an obvious approach, skip the plan. Say so and stop. When the change is one PR, write the single-PR shape instead and check it with `--single` per step 6. `one-shot.md` step 1 owns that path.
 2. Settle open questions by prototype before you write. For a question about layout, timing, behavior, or whether an API works, run `prototype.md`. Keep the branch, the SHA, and the artifacts for Appendix A. Ask the operator only about a product or preference call that no run can settle. Give options (the **never-block-on-the-human** principle).
 3. Explore in subagents with `subagent_type: "kaizen-agent"` and an explicit model per the Subagents section (the **guard-the-context-window** principle). Each returns file pointers, conventions, test commands, and entry points. No inlined dumps.

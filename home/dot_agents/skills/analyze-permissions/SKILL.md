@@ -1,6 +1,6 @@
 ---
 name: analyze-permissions
-description: "Audit accumulated Claude Code permissions, propose wildcard patterns, and apply the approved ones to the chezmoi-managed global settings. Use only when the user asks for this by name."
+description: "Audit accumulated Claude Code permissions, propose wildcard patterns, and apply the approved ones to the chezmoi-managed global settings. Use only for /analyze-permissions or when the user asks for this skill by name."
 model: sonnet
 ---
 
@@ -34,7 +34,7 @@ Example invocations:
 2. Read that source file — this is the source of truth for global permissions (`permissions.allow`, `permissions.deny`, `permissions.ask`).
 3. Read the project-local file: `<project-root>/.claude/settings.local.json` — accumulated "Always allow" entries. Per-project, **not** chezmoi-managed, edited in place.
 
-Note: `settings.local.json` is project-specific — each repo has its own. The global file is shared across all projects and all machines that run this chezmoi config.
+The global file is shared across all projects and all machines that run this chezmoi config.
 
 ### Step 2: Analyze Patterns
 

@@ -14,8 +14,6 @@ Fetch PR review comments, categorize them as obvious fixes vs. non-obvious, auto
 /addressing-pr-comments [PR_NUMBER]
 ```
 
-If no PR number is provided, detect from the current branch or ask.
-
 ## Instructions
 
 ### 1. Determine PR Number
@@ -55,22 +53,10 @@ Exclude:
 
 ### 4. Categorize Each Comment
 
-Classify each actionable comment using `./comment-classification-guide.md` as reference:
+Classify each actionable comment with `./comment-classification-guide.md`:
 
-**Obvious fix** — Can be addressed mechanically with no ambiguity:
-- Rename variable/function
-- Fix typo in code or comment
-- Add/remove import
-- Style/formatting change
-- Add missing type annotation
-- Simple null check or error message tweak
-
-**Non-obvious** — Requires judgment, design decisions, or discussion:
-- Architectural changes
-- "Have you considered..." questions
-- Alternative approach suggestions
-- Performance/correctness concerns
-- Anything where multiple valid responses exist
+- **Obvious fix.** The comment has one correct mechanical response, such as a rename, a typo, an import, or formatting.
+- **Non-obvious.** The comment needs judgment, a design decision, or discussion. Multiple valid responses exist.
 
 ### 5. Present Obvious Fixes for Confirmation
 
@@ -92,7 +78,7 @@ Use `AskUserQuestion` with options:
 - "Let me pick which ones"
 - "Skip obvious fixes"
 
-After confirmation, make the changes and commit them. Group into atomic commits by file or logical unit. Do NOT add Claude as co-author in commit messages.
+After confirmation, make the changes and commit them. Group into atomic commits by file or logical unit. Do not add Claude as co-author in commit messages.
 
 ### 6. Handle Non-Obvious Comments
 
@@ -105,13 +91,12 @@ For each non-obvious comment, use `AskUserQuestion` to present:
   - Open a follow-up task/issue
   - Dismiss (not actionable)
 
-Execute whatever the user chooses. If they choose a code change, make it and commit. If they want a reply drafted, prepare it but do NOT post it (see Step 7).
+Execute whatever the user chooses. If they choose a code change, make it and commit. If they want a reply drafted, prepare it but do not post it (see Step 7).
 
-### 7. Reply to Comments (ONLY When Explicitly Asked)
+### 7. Reply to Comments (Only When Explicitly Asked)
 
-**Default behavior: NEVER reply to or post comments on the PR.**
-
-Only post replies if the user explicitly says something like "reply to the comments" or "post responses."
+By default, do not reply to or post comments on the PR.
+Post replies only if the user explicitly says something like "reply to the comments" or "post responses."
 
 When posting replies:
 - Always prefix with: `*[This reply was drafted by Claude and posted on behalf of @{username}]*`
@@ -133,9 +118,4 @@ Done! Here's what happened:
 
 ## Constraints
 
-- Never auto-reply to comments without explicit user request
-- Always attribute posted replies to Claude
-- Group fixes into atomic commits (by file or logical unit)
-- Do NOT add Claude as co-author in commits
 - Follow the project's worktree workflow if CLAUDE.local.md specifies one
-- Read files before editing — never guess at code context

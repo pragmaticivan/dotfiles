@@ -41,7 +41,7 @@ One document, one mode. Two questions pick it: does the content inform action (d
 - Understanding + work: **reference**.
 - Understanding + learning: **explanation**.
 
-Use the compass on a whole document or on one sentence. Reach for it whenever you feel unsure what you are writing. Gut feel is often wrong here.
+Use the compass on a whole document or on one sentence. Reach for it whenever you feel unsure what you are writing.
 
 **Tutorial: learning by doing.** You are the teacher. The learner's success is your job, not theirs. Open by saying what the learner will build, not what they will "learn". Every step produces a visible result, early and often. Tell them what they should see: the expected output, the prompt change, the log line. Cut explanation to one clause and a link. Teaching pauses break the lesson. Stay concrete. Write as "we", in commands: "First, do x. Now, do y."
 
@@ -59,7 +59,7 @@ Source: diataxis.fr, fetched 2026-07-18.
 
 - Talk to the reader as "you", in the present tense. "Will" only for things that genuinely happen later.
 - Say who does what: "the compiler checks", not "is checked". Passive is fine only when the actor is unknown or beside the point.
-- Write instructions as commands: "Click Submit." State facts plainly. Never "should be done".
+- Write instructions as commands, not narration: "Click Submit." State facts plainly. Never "should be done".
 - Put the condition before the instruction: "To delete the document, click Delete." The reader skips what does not apply.
 - Put the common case first. Exceptions after.
 - Sound like a knowledgeable friend. No buzzwords, no figurative language, no "please" in instructions, and never "simply", "easy", or "quickly" in a procedure. If it were simple, the reader would not be here.
@@ -83,7 +83,6 @@ Source: developers.google.com/style, fetched 2026-07-18.
 - Keep "the" and "a": "Remove backup file" reads two ways. "Remove the backup file" reads one.
 - Give each word one meaning and one job, then keep it. If "check" means inspect, don't also use it for restrain.
 - Pick one word per action and stick to it: "start", not "start" here and "initiate" there.
-- Write procedures as direct commands, never as narration and never in the passive: "Install the component", not "the component must be installed".
 - Avoid "-ing" words where you can. They take too many grammatical jobs and breed misreadings.
 
 Source: asd-ste100.org (Issue 9, 2025), fetched 2026-07-18. The numbered rules and dictionary live in the spec PDF. The principles above are the transferable core.

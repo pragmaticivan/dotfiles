@@ -1,7 +1,7 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/no-comments/SKILL.md
 name: no-comments
-description: "Spawn Comment Sicko over the diff, fix the accepted findings, and offer to encode any constraint a comment claims."
+description: "Spawn Comment Sicko over the diff, fix the accepted findings, and offer to encode any constraint a comment claims. Use for /no-comments, or before review to strip narrating, stale, and commented-out comments from a diff."
 ---
 
 # No comments

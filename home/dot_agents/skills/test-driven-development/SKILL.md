@@ -8,19 +8,9 @@ description: "Write the failing test before the code, and reproduce a bug with a
 
 ## Overview
 
-Write a failing test before writing the code that makes it pass. For bug fixes, reproduce the bug with a test before attempting a fix. Tests are proof — "seems right" is not done. A codebase with good tests is an AI agent's superpower; a codebase without tests is a liability.
+Write a failing test before writing the code that makes it pass. For bug fixes, reproduce the bug with a test before attempting a fix. Tests are proof. "Seems right" is not done.
 
-## When to Use
-
-- Implementing any new logic or behavior
-- Fixing any bug (the Prove-It Pattern)
-- Modifying existing functionality
-- Adding edge case handling
-- Any change that could break existing behavior
-
-**When NOT to use:** Pure configuration changes, documentation updates, or static content changes that have no behavioral impact. When the behavior matters but a test would be impractical, see When a Failing Test Is Impractical below — that section is the only sanctioned way to skip the regression step, and it still requires executable evidence.
-
-**Related:** For browser-based changes, combine TDD with runtime verification in a real browser — Playwright MCP by default, Chrome DevTools MCP as fallback. See the Browser Testing section below.
+**When NOT to use:** Pure configuration changes, documentation updates, or static content changes that have no behavioral impact. When the behavior matters but a test would be impractical, see When a Failing Test Is Impractical below. That section is the only sanctioned way to skip the regression step, and it still requires executable evidence.
 
 ## The TDD Cycle
 
@@ -147,7 +137,6 @@ Prefer no new test over a bad test. A bad test is one that mostly tests mocks, e
 - Do not change tests merely to match a wrong implementation.
 - Do not weaken existing assertions unless the expected behavior has genuinely changed and the reason is clear.
 - Keep the regression test focused on the bug; avoid broad fixture churn or unrelated coverage expansion.
-- Do not add tests when the practical signal is weak; use manual or scripted verification and say why.
 - If the bug is flaky, make the test deterministic where possible and document the signal being locked down.
 - If the bug exposes a broader class of failures, first land the focused regression path, then consider additional sibling coverage.
 
@@ -168,8 +157,6 @@ Invest testing effort according to the pyramid — most tests should be small an
  ╱──────────────────╲
 ```
 
-**The Beyonce Rule:** If you liked it, you should have put a test on it. Infrastructure changes, refactoring, and migrations are not responsible for catching your bugs — your tests are. If a change breaks your code and you didn't have a test for it, that's on you.
-
 ### Test Sizes (Resource Model)
 
 Beyond the pyramid levels, classify tests by what resources they consume:
@@ -179,8 +166,6 @@ Beyond the pyramid levels, classify tests by what resources they consume:
 | **Small** | Single process, no I/O, no network, no database | Milliseconds | Pure function tests, data transforms |
 | **Medium** | Multi-process OK, localhost only, no external services | Seconds | API tests with test DB, component tests |
 | **Large** | Multi-machine OK, external services allowed | Minutes | E2E tests, performance benchmarks, staging integration |
-
-Small tests should make up the vast majority of your suite. They're fast, reliable, and easy to debug when they fail.
 
 ### Decision Guide
 
@@ -255,24 +240,6 @@ Preference order (most to least preferred):
 
 **Use mocks only when:** the real implementation is too slow, non-deterministic, or has side effects you can't control (external APIs, email sending). Over-mocking creates tests that pass while production breaks.
 
-### Use the Arrange-Act-Assert Pattern
-
-```typescript
-it('marks overdue tasks when deadline has passed', () => {
-  // Arrange: Set up the test scenario
-  const task = createTask({
-    title: 'Test',
-    deadline: new Date('2025-01-01'),
-  });
-
-  // Act: Perform the action being tested
-  const result = checkOverdue(task, new Date('2025-01-02'));
-
-  // Assert: Verify the outcome
-  expect(result.isOverdue).toBe(true);
-});
-```
-
 ### One Assertion Per Concept
 
 ```typescript
@@ -289,35 +256,14 @@ it('validates titles correctly', () => {
 });
 ```
 
-### Name Tests Descriptively
-
-```typescript
-// Good: Reads like a specification
-describe('TaskService.completeTask', () => {
-  it('sets status to completed and records timestamp', ...);
-  it('throws NotFoundError for non-existent task', ...);
-  it('is idempotent — completing an already-completed task is a no-op', ...);
-  it('sends notification to task assignee', ...);
-});
-
-// Bad: Vague names
-describe('TaskService', () => {
-  it('works', ...);
-  it('handles errors', ...);
-  it('test 3', ...);
-});
-```
-
 ## Test Anti-Patterns to Avoid
 
 | Anti-Pattern | Problem | Fix |
 |---|---|---|
-| Testing implementation details | Tests break when refactoring even if behavior is unchanged | Test inputs and outputs, not internal structure |
 | Flaky tests (timing, order-dependent) | Erode trust in the test suite | Use deterministic assertions, isolate test state |
-| Testing framework code | Wastes time testing third-party behavior | Only test YOUR code |
+| Testing framework code | Wastes time testing third-party behavior | Test only your own code |
 | Snapshot abuse | Large snapshots nobody reviews, break on any change | Use snapshots sparingly and review every change |
 | No test isolation | Tests pass individually but fail together | Each test sets up and tears down its own state |
-| Mocking everything | Tests pass but production breaks | Prefer real implementations > fakes > stubs > mocks. Mock only at boundaries where real deps are slow or non-deterministic |
 
 ## Browser Testing
 
@@ -393,7 +339,7 @@ This separation ensures the test is written without knowledge of the fix, making
 
 ## See Also
 
-For detailed testing patterns, examples, and anti-patterns across frameworks, see `references/testing-patterns.md`.
+For Arrange-Act-Assert structure, test naming, assertions, mocking, and framework examples, see `references/testing-patterns.md`.
 
 ## Common Rationalizations
 
@@ -407,29 +353,16 @@ For detailed testing patterns, examples, and anti-patterns across frameworks, se
 | "It's just a prototype" | Prototypes become production code. Tests from day one prevent the "test debt" crisis. |
 | "Let me run the tests again just to be extra sure" | After a clean test run, repeating the same command adds nothing unless the code has changed since. Run again after subsequent edits, not as reassurance. |
 
-## Red Flags
-
-- Writing code without any corresponding tests
-- Tests that pass on the first run (they may not be testing what you think)
-- "All tests pass" but no tests were actually run
-- Bug fixes without reproduction tests, or without a stated reason and a substitute check
-- Tests that test framework behavior instead of application behavior
-- Test names that don't describe the expected behavior
-- Skipping tests to make the suite pass
-- Running the same test command twice in a row without any intervening code change
-
 ## Verification
 
 After completing any implementation:
 
 - [ ] Every new behavior has a corresponding test
-- [ ] All tests pass: `npm test`
+- [ ] All tests pass, and the run output shows that the tests ran
 - [ ] Bug fixes include a reproduction test that failed before the fix, or a stated reason plus the substitute check that replaced it
 - [ ] Test names describe the behavior being verified
 - [ ] No tests were skipped or disabled
 - [ ] Coverage hasn't decreased (if tracked)
-
-**Note:** Run each test command after a change that could affect the result. After a clean run, don't repeat the same command unless the code has changed since — re-running on unchanged code adds no confidence.
 
 ## Reporting the Result
 
