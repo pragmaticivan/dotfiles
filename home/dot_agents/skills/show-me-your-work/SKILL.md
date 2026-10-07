@@ -17,9 +17,9 @@ Copy `references/decision-log-template.tsv` (the header row) to start a clean lo
 - **ts.** ISO8601 timestamp. The timeline axis.
 - **phase.** The phase or workstream.
 - **decision.** What was chosen or done, one line.
-- **why.** The reason in plain words. If a principle drove it, say it plainly (`explored options first, this was a one-way door`), not as a jargon tag.
+- **why.** The reason as one short plain phrase. If a principle drove it, say it plainly (`explored options first, this was a one-way door`), not as a jargon tag. Numbers, benchmarks, and backstory belong in the artifact the evidence cell points to, not here.
 - **evidence.** A link or path that proves it: commit SHA, PR number, `file:line`, or an artifact, trace, or screenshot path. Never a paragraph.
-- **result.** The outcome or predicate state: `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, `open`.
+- **result.** The outcome or predicate state: `tests green`, `reverted`, `pixel-diff 0`, `INCONCLUSIVE`, `open`. Start with the predicate word so a reviewer can filter on it. A rolled-back change is `reverted`, with the trigger after it if needed (`reverted, broke idempotency keys`).
 
 An example, plain-spoken so a reviewer reads it at a glance. This is illustration only; don't copy these rows into a real log.
 
@@ -64,7 +64,7 @@ Fix the log, not the story. If the work diverged from what a row claims, the row
 
 ## Cross-model review of the trail
 
-Before handing back, you must spawn a subagent on a different model family from the one that did the work. Self-review is not a substitute; the point is fresh eyes you cannot bring yourself. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
+Before handing back, you must spawn a subagent on a different model family from the one that did the work. Self-review is not a substitute; the point is fresh eyes you cannot bring yourself. If no other model family is available, use a different model of the same family and say so on the `reviewed by` line. The subagent reads the audit trail and the run's transcript, then flags what the user should pay attention to. Not a redo of the work, a scan for what's suboptimal or risky.
 
 - Decisions logged with weak or absent evidence.
 - Verification steps skipped or claimed without proof in the transcript.
