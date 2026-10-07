@@ -1,6 +1,6 @@
 ---
 name: creating-pull-requests
-description: "Draft or update a pull request description that transfers the author's mental model to the reviewer. Load this before writing any PR text, including a rewrite or a sync to the current branch."
+description: "Draft or update a pull request description that transfers the author's mental model to the reviewer. Use it before writing any PR text: 'open a PR', 'write the PR description', a rewrite, or a sync of the body to the current branch."
 effort: low
 ---
 
@@ -10,14 +10,11 @@ A PR description transfers the author's understanding to the reviewer. The autho
 
 ## Critical rules
 
-ALWAYS:
 - Create PRs in draft mode (`--draft`). The user will mark them ready for review.
-
-NEVER:
-- Add `Co-Authored-By` headers on commits.
-- Include "Generated with Claude Code" or any AI/Claude attribution.
-- Mention Claude, AI, agents, or assistants anywhere in the PR.
-- Open a sentence with "This PR introduces/adds/implements...", "In this pull request...", or "This change...". Start with the problem, the action, or the component name.
+- Do not add `Co-Authored-By` headers on commits.
+- Do not include "Generated with Claude Code" or any AI/Claude attribution.
+- Do not mention Claude, AI, agents, or assistants anywhere in the PR.
+- Do not open a sentence with "This PR introduces/adds/implements...", "In this pull request...", or "This change...". Start with the problem, the action, or the component name.
 
 ## Enforce PROSE.md
 
@@ -30,8 +27,6 @@ Read `~/.claude/PROSE.md` before drafting. Apply every rule. The most common vio
 - Bold sparingly (Von Restorff). One bolded headline per Reviewer-notes bullet. If everything is bold, nothing stands out.
 - Paragraphs 2–4 lines. Long blocks get skipped; one-line fragments fragment.
 - No "In conclusion", "Overall", "In summary". End with a next step or a final fact.
-
-After drafting, re-read against PROSE.md and cut violations. Every sentence should pass the spoken word test: would you say it out loud to a colleague?
 
 ## Size gate — classify before you draft
 
@@ -47,13 +42,13 @@ A small PR with a verbose multi-section description signals "AI-generated, ignor
 
 ## Motivation is not optional
 
-Every PR, regardless of size, must answer **why the change exists**. Even a 20-line fix has a reason — a bug report, a production incident, a prerequisite for future work, a code path that was wrong. The "why" is the single most important thing reviewers need. Without it, they can evaluate whether the code compiles but not whether it solves the right problem.
+Every PR, regardless of size, must answer **why the change exists**. Even a 20-line fix has a reason — a bug report, a production incident, a prerequisite for future work, a code path that was wrong. The "why" is the single most important thing reviewers need.
 
 For small PRs, fold the motivation into the TL;DR as the first sentence. For medium+ PRs, use the Why section when the TL;DR can't carry the full context.
 
 ### When you don't have the motivation
 
-You are an agent — you may lack context the author has. If you cannot derive the "why" from the diff, commit messages, branch name, linked tickets, or conversation history, **ask**. Use AskUserQuestion:
+If you cannot derive the "why" from the diff, commit messages, branch name, linked tickets, or conversation history, **ask**. Use AskUserQuestion:
 
 - "What problem does this solve?" or "What was broken / missing / slow before this change?"
 - "Is this a prerequisite for other work? What does it unblock?"
@@ -81,7 +76,7 @@ These are things the diff literally cannot convey.
 
 ### State scope boundaries
 
-Tell the reviewer what is NOT in scope: "Focuses on the login flow; sign-up is a follow-up." Prevents reviewers from flagging missing pieces that are intentionally deferred. For small PRs, one trailing sentence in the TL;DR. For large PRs, integrate into the Why or Follow-up section.
+Tell the reviewer what is out of scope: "Focuses on the login flow; sign-up is a follow-up." Prevents reviewers from flagging missing pieces that are intentionally deferred. For small PRs, one trailing sentence in the TL;DR. For large PRs, integrate into the Why or Follow-up section.
 
 ## Title format
 
@@ -191,8 +186,6 @@ Multiple AI patterns stacking together triggers "I'm ignoring this LLM-generated
 
 ### Openers
 
-Never start a sentence with "This PR", "This change", "This commit", or "In this pull request."
-
 | AI opener | Human opener |
 |---|---|
 | This PR adds retry logic to... | Retry logic in the ingestion pipeline now... |
@@ -227,19 +220,7 @@ Visual aids earn space when they communicate faster than prose.
 
 **GFM alerts** — `> [!IMPORTANT]` or `> [!WARNING]` for breaking changes or facts a reviewer must not miss.
 
-**When NOT to use** — purely internal changes, one-line fixes where "before" is obvious, diagrams of the whole system rather than what changed.
-
-## Verbosity check
-
-After drafting, apply these cuts:
-
-1. Re-read every sentence. If it restates the diff, cut it.
-2. If a section repeats what another section says, cut the weaker one.
-3. If a paragraph exceeds 4 lines, split or trim.
-4. If the whole description exceeds the budget rule, cut sections bottom-up (Follow-up first, then Tests, then Visual aids).
-5. Read the final description aloud. If any sentence makes you wince, rewrite it shorter.
-
-The best description is the shortest one that transfers the author's understanding.
+**When to skip them** — purely internal changes, one-line fixes where "before" is obvious, diagrams of the whole system rather than what changed.
 
 ## Process
 
@@ -268,9 +249,9 @@ Before writing, establish the "why":
 1. Check the diff and commit messages for problem context.
 2. Check the branch name and commits for ticket numbers.
 3. Search git history and conversation context for related PRs, incidents, or discussions.
-4. **If the motivation is still unclear, ask the user.** Use AskUserQuestion with specific prompts: "What problem does this solve?", "What was broken before?", "Is this a prerequisite for other work?"
+4. **If the motivation is still unclear, ask the user** with the questions in "When you don't have the motivation".
 
-Do not fabricate motivation. Do not write "Improves code quality" or "Cleans up technical debt" as generic filler.
+Do not write "Improves code quality" or "Cleans up technical debt" as generic filler.
 
 ### 4. Classify and draft
 
@@ -286,7 +267,10 @@ Re-read the diff, then re-read PROSE.md, then review each sentence:
 2. Does it start with "This PR" or "This change"? Rewrite.
 3. Is this section earning its space for a PR this size? Cut the section.
 4. Does any sentence violate PROSE.md (passive voice, puffery, em dashes, filler adverbs)? Fix it.
-5. Is the description shorter than the diff (for small/medium PRs)? If not, keep cutting.
+5. Does a section repeat another section? Cut the weaker one.
+6. Does a paragraph exceed 4 lines? Split or trim it.
+7. Is the description shorter than the diff (for small/medium PRs)? If not, cut sections bottom-up: Follow-up first, then Tests, then Visual aids.
+8. Read the final description aloud. Rewrite each sentence that makes you wince.
 
 ### 6. Apply
 
@@ -300,7 +284,7 @@ gh pr create --draft --title "..." --body-file /tmp/pr-body.md
 gh pr edit <number> --title "..." --body-file /tmp/pr-body.md
 ```
 
-**Never** pass the body inline via HEREDOC or `--body`.
+Do not pass the body inline via HEREDOC or `--body`.
 
 ## Updating an existing PR
 
@@ -316,7 +300,7 @@ Title: `Fix off-by-one in chunk boundary calculation`
 ## TL;DR
 
 Chunking a 10-second stereo clip at 5-second boundaries produced three chunks
-instead of two — the boundary loop used `<=` instead of `<`, generating a
+instead of two. The boundary loop used `<=` instead of `<`, generating a
 zero-length trailing chunk. Now uses exclusive end indices.
 
 [PROJ-1234](url)
@@ -370,7 +354,7 @@ entries on S3.
 | 10k-item job overhead | ~8 min | ~30 sec |
 | Cost per 1M reads | $0.50 | $0.12 |
 
-Small entries (metadata, embeddings) are 2–30 kB — a poor fit for S3's
+Small entries (metadata, embeddings) are 2–30 kB, a poor fit for S3's
 per-object overhead.
 
 ## How

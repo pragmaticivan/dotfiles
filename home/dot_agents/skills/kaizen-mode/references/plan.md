@@ -4,6 +4,17 @@ Produce a phased implementation plan grounded in the **Principles** section of t
 
 Open a todolist with one item per step below.
 
+## Contents
+
+- 0. Triage
+- 1. Re-read principles
+- 2. Scope and constraints
+- 3. Explore in subagents
+- 4. Write the plan
+- 5. Verification per phase
+- 6. Implementation guidance
+- 7. Hand back
+
 ## 0. Triage
 
 Skip the plan when the change is one or two files with an obvious approach. Say so and stop.

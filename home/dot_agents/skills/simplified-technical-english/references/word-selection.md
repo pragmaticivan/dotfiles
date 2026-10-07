@@ -2,6 +2,15 @@
 
 **Source:** ASD-STE100 Issue 9 (2025-01-15), Part 2 (Dictionary) Introduction, pages 2-0-3 to 2-0-19. The word-selection flowchart is the graphic on page 2-0-16.
 
+## Contents
+
+1. [How to select words](#how-to-select-words)
+2. [The dictionary format](#the-dictionary-format)
+3. [Verbs in STE](#verbs-in-ste)
+4. [Help categories](#help-categories)
+5. [Recurring errors](#recurring-errors)
+6. [Approved verbs](#approved-verbs)
+
 General facts (page 2-0-3):
 
 - The dictionary gives **875 approved words** — the most frequent words used in technical writing — with examples that show how to use each one correctly.

@@ -14,7 +14,7 @@ Use this formula for a function `m`:
 CRAP(m) = CC(m)^2 * (1 - coverage(m))^3 + CC(m)
 ```
 
-Use coverage as a value from `0` through `1` in the formula. Treat `30` as a triage hint, not a quality gate.
+In the formula, coverage is a fraction from `0` through `1`. Treat `30` as a triage hint, not a quality gate.
 
 ## Data shape
 
@@ -30,7 +30,7 @@ Represent each measured function with these fields:
 }
 ```
 
-`coverage` is a percentage from `0` through `100`. Keep the analyzer name, analyzer version, coverage kind, and source revision with the report.
+In the data shape, `coverage` is a percentage from `0` through `100`. `rank_crap.py` converts it. Keep the analyzer name, analyzer version, coverage kind, and source revision with the report.
 
 ## Workflow
 

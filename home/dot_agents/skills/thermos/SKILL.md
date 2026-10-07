@@ -1,12 +1,10 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/thermos/skills/thermos/SKILL.md
 name: thermos
-description: "Run both thermo-nuclear reviews in parallel, then synthesize one deduplicated verdict."
+description: "Run both thermo-nuclear reviews in parallel, then synthesize one deduplicated verdict. Use for /thermos, 'thermos this branch', or a double thermo review that covers correctness, security, and code quality in one pass."
 ---
 
 # Thermos
-
-Run the two thermo review passes as async background subagents in parallel, then synthesize their results.
 
 ## Workflow
 

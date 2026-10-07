@@ -1,6 +1,6 @@
 # Review Rubric
 
-Review through whichever lenses are relevant. Not every lens applies to every change. Use judgment.
+Review through whichever lenses are relevant. Not every lens applies to every change.
 
 ## Correctness
 
@@ -65,7 +65,7 @@ Is the complexity justified by what the code accomplishes?
 - Obsolete compatibility paths kept alive for transitional stability that's no longer needed. If the migration is done, delete the scaffolding
 - Does the user experience justify the complexity? Every feature, control, and option should earn its place. Half-finished features are worse than missing ones.
 
-Simpler is better unless simpler is wrong. Three lines of duplication beat a premature abstraction.
+Simpler is better unless simpler is wrong.
 
 ## Security
 

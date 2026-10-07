@@ -70,26 +70,18 @@ true in the code. That leaves a doc comment one job: **the why the types cannot 
 Two lines. Three when the invariant genuinely needs it. A nine-line header does not get read, goes stale
 invisibly because nothing checks it, and buries the one sentence that mattered.
 
-When a comment runs long, do not just truncate it — that trades verbosity for lost knowledge, which is the
-worse failure. Read the length as a diagnosis:
-
-| The comment explains… | The actual fix |
-|---|---|
-| When a field is set, or which field combinations are valid | A discriminated union. The comment wants to be a variant. |
-| That two arguments must not be swapped | Brand the types, or take an object argument. |
-| That input must be non-empty or in range | Construct the type so the bad value cannot exist. |
-| Four behaviours in one function | Three functions, each with a short comment. |
-| A whole subsystem's model | A doc or an ADR, linked in one line. |
-
-Then every fact that survives goes into the types, a name, a test, or a linked doc — in that order. A
-scope caveat like "this reads the daily track only" is a name asking to be more specific, not a sentence.
+When a comment runs long, do not just truncate it, because that trades verbosity for lost knowledge.
+Read the length as a diagnosis: a comment about valid field combinations wants to be a variant, and one
+about argument order wants a brand or an object argument. Every fact that survives goes into the types, a
+name, a test, or a linked doc, in that order. A scope caveat like "this reads the daily track only" is a
+name asking to be more specific, not a sentence.
 
 What earns the three lines: a non-obvious invariant a reader would otherwise break, why the obvious
 implementation is wrong, a constraint from outside the codebase, or the reason a surviving `as` / `!` /
 `@ts-expect-error` is there. None of those describe what the code does.
 
-Worked cut of a real nine-line comment down to three, plus TSDoc tag guidance and when a published
-library's public API justifies more: `references/comments.md`.
+The full diagnosis table, a worked cut of a real nine-line comment down to three, TSDoc tag guidance, and
+when a published library's public API justifies more: `references/comments.md`.
 
 ## Make illegal states unrepresentable
 
@@ -225,8 +217,8 @@ Types cannot see a promise you forgot to await, so let the linter help:
 expecting `() => void` — an event handler, an `Array.prototype.forEach`, an Express middleware — throws
 into nothing. Express 4 in particular does not catch a rejected promise from a handler.
 
-**Do not treat the linter as the whole defense here.** Ultracite sets about 365 rules and neither of these
-two is among them, because it avoids `nursery` rules on purpose. Biome's type inference reads your own
+**Do not treat the linter as the whole defense here.** No Ultracite preset enables these two, because it
+avoids `nursery` rules on purpose. Biome's type inference reads your own
 source, including across imports, but not the types in `lib.dom.d.ts` or `node_modules`. So
 `el.addEventListener("click", saveAsync)` — one of the cases where an unhandled rejection hurts most —
 goes unreported. Read every callback you hand to a framework or DOM API yourself.
@@ -250,8 +242,6 @@ Also worth setting on a new project: `verbatimModuleSyntax` (import elision beco
 `noUncheckedSideEffectImports`, and `erasableSyntaxOnly` (TS 5.8+) if the code must run under a
 type-stripping runtime such as recent Node — that forbids `enum`, `namespace`, and constructor parameter
 properties, which cannot be erased.
-
-`tsc --init` writes most of this list already. Run it rather than hand-assembling a config.
 
 Start from `assets/tsconfig.strict.json` and `assets/biome.jsonc` on a new project, or run
 `ultracite init`. Ultracite is the lint entry point: a preset over Biome that ships about 365 rules, the
@@ -291,7 +281,6 @@ Detail and CommonJS-to-ESM notes: `references/patterns.md`.
 | "It's just one `any`, I'll clean it up later" | `any` is contagious. Every value derived from it is unchecked too, and nothing marks the blast radius. |
 | "I know it's not null here" | Then the type should say so. If you cannot make it say so, you do not know it — you are guessing about a future caller. |
 | "The API always returns this shape" | Until it does not, and the failure surfaces three layers away from the cause. Parse it. |
-| "Enums are clearer than string unions" | An `enum` emits runtime code, is nominally typed, and blocks type-stripping runtimes. A `const` object plus a literal union reads the same and costs nothing. |
 | "I'll add types after it works" | Types are how you find out whether it works. Writing them last makes them describe the bugs. |
 | "`strict` is too noisy for this codebase" | Then adopt it per-flag, per-commit. "Too noisy" is a measure of how much is already unchecked. |
 | "The generic makes it reusable" | One caller needs no type parameter. Add the generic at the second caller, when you know what varies. |
@@ -299,16 +288,8 @@ Detail and CommonJS-to-ESM notes: `references/patterns.md`.
 
 ## Red flags
 
-- `any` outside a `.d.ts` shim, or `as` without a check above it
-- `!` non-null assertions, `@ts-ignore`, a `biome-ignore` with no reason comment
-- A `boolean` plus optional fields where a discriminated union belongs
-- A hand-written type that duplicates a Zod schema, a generated client, or a database row type
-- Validation repeated at three depths of the same call chain
-- `catch (err: any)` or `err.message` on an unnarrowed value
-- An `async` function passed where `() => void` is expected
-- A `switch` on a union with no exhaustiveness check
+- A `biome-ignore` with no reason comment, or `catch (err: any)`
 - A type-level puzzle (nested conditionals, deep recursion) where a plain function would do
-- A doc comment over three lines, or one whose `@param` / `@returns` restate the signature
 - A callback declared with method syntax (`onChange(x: T): void`), which `strictFunctionTypes` skips
 
 ## Verify before you claim it works

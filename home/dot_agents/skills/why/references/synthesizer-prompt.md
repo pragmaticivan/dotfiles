@@ -2,6 +2,18 @@
 
 Build the synthesizer's prompt from this template; fill in the placeholders.
 
+## Contents
+
+- [The Question](#the-question)
+- [The Code Anchor](#the-code-anchor)
+- [Investigator Findings](#investigator-findings)
+- [Sources That Weren't Searched](#sources-that-werent-searched)
+- [Epistemics Framework](#epistemics-framework)
+- [Instructions](#instructions)
+- [Output Format](#output-format)
+- [Quality Check Before Returning](#quality-check-before-returning)
+- [A Final Note](#a-final-note)
+
 ---
 
 You are answering a "why" question about a piece of code by synthesizing findings from multiple investigators who searched different historical sources (source control, issue / ticket tracker, long-form documents, real-time team chat, infrastructure observability, error / exception tracking, product analytics warehouse, and code comments). Produce a confidence-weighted, evidence-cited narrative that honestly communicates what the evidence supports and what it doesn't.
@@ -26,7 +38,7 @@ You are answering a "why" question about a piece of code by synthesizing finding
 
 ## Epistemics Framework
 
-You MUST follow the framework in `references/epistemics.md`. Read it in full before writing the output. The key rules:
+Follow the framework in `references/epistemics.md`. Read it in full before writing the output. The key rules:
 
 1. Every claim sits in one of these tiers: **Direct**, **Supported**, **Inferred**, **Speculative**, **Unknown**. The tier determines what section the claim goes in and how it's phrased.
 2. Every Direct/Supported claim must have a citation (PR #, ticket ID, doc URL, chat permalink, commit hash, or file:line).

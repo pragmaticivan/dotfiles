@@ -3,6 +3,13 @@
 From John Maeda, *The Laws of Simplicity*. Each law gets one code rule and one prose rule. Read
 the law you need. One change rarely needs more than two.
 
+## Contents
+
+- [1. Reduce](#1-reduce), [2. Organize](#2-organize), [3. Time](#3-time), [4. Learn](#4-learn)
+- [5. Differences](#5-differences), [6. Context](#6-context), [7. Emotion](#7-emotion)
+- [8. Trust](#8-trust), [9. Failure](#9-failure), [10. The one](#10-the-one)
+- [The three keys](#the-three-keys)
+
 ## 1. Reduce
 
 Shrink, then hide, then embody the quality in the name so the smaller thing still reads as

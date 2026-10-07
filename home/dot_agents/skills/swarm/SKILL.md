@@ -2,7 +2,7 @@
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/swarm/SKILL.md
 # Merged in: https://github.com/cursor/plugins/blob/main/pstack/skills/arena/SKILL.md (compete mode)
 name: swarm
-description: "Fan out N parallel workers at one task. Cover mode returns one report from slices and races. Compete mode cross-judges N candidates, picks a base, and grafts in the best of the losers."
+description: "Fan out N parallel workers at one task. Cover mode returns one report from slices and races. Compete mode cross-judges candidates and grafts the best into one base. Use for /swarm, 'swarm this', 'arena this', or a design or code bakeoff."
 ---
 
 # Swarm
@@ -36,11 +36,11 @@ Every worker receives the same brief, so the brief is the contract. Get it right
    - **Cover.** Set N from the user or derive it from the shape. N is total workers, not the concurrency limit; excess workers queue and run as slots free up. Use `swarm workers` in `~/.claude/kaizen-models.md` when present, otherwise `sonnet`. For a model race, name each arm's model up front.
    - **Compete.** Use `arena runners` from `~/.claude/kaizen-models.md` when present. Otherwise default to one each on `opus`, `fable`, and `sonnet`. Spawn more when the swarm covers multiple design directions. Same model N times when the work is generation-bound rather than judgment-sensitive.
 4. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
-5. Give each worker its own writable output. Use `isolation: "worktree"`, a branch, or `/tmp/swarm-<slug>/worker-<n>/`. N workers writing to the same path is shared mutable state and fails the `../kaizen-mode/principles/separate-before-serializing-shared-state.md` test.
+5. Give each worker its own writable output, by default `isolation: "worktree"`. A worker that writes only a report can use `/tmp/swarm-<slug>/worker-<n>/`. N workers writing to the same path is shared mutable state and fails the `../kaizen-mode/principles/separate-before-serializing-shared-state.md` test.
 
 ## Phase B: Fan out
 
-Spawn all N workers in one message with `run_in_background: true` and the configured model. Cover mode uses `subagent_type: "general-purpose"`. Add `isolation: "worktree"` for any worker that writes files, so parallel writers cannot conflict. Run in the session's own checkout only when the worker needs something on this machine that a worktree does not carry.
+Spawn all N workers in one message with `run_in_background: true` and the configured model. Cover mode uses `subagent_type: "general-purpose"`. Run in the session's own checkout only when the worker needs something on this machine that a worktree does not carry.
 
 When a worker must start from a non-default branch, check that branch out in its worktree as the brief's first step.
 
@@ -57,7 +57,7 @@ If a worker drops out, proceed with N-1 and note it. In compete mode, the dropou
 
 ## Phase C: Aggregate
 
-Read the terminal results. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
+Read the terminal results. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Do not paste raw worker dumps.
 
 Keep a compact result table, one-line evidenced issues, and explicit gaps or dropouts.
 
@@ -79,7 +79,7 @@ Read every candidate end to end before picking. Skimming N candidates surfaces o
 
 Score each candidate against the rubric criterion by criterion, not on holistic feel. Compare against the cross-judge. Agreement on the base confirms the pick. Disagreement means one of you is biased or the rubric was ambiguous. Read both rationales before deciding.
 
-Pick the base on which candidate a future maintainer can extend most easily without breaking invariants. Prefer the cleaner boundary or smaller surface area when two feel tied, per the Laziness Protocol.
+Pick the base on which candidate a future maintainer can extend most easily without breaking invariants. Prefer the cleaner boundary or smaller surface area when two feel tied, per the **laziness-protocol** principle.
 
 Record the pick and the reason in a short synthesis note alongside the base artifact, including the cross-judge's verdict.
 
@@ -89,13 +89,13 @@ Walk each losing candidate once more and identify what is worth porting into the
 
 Fold each graft in by hand, per the **redesign-from-first-principles** principle. Don't paste mechanically. The result has to remain coherent under one mental model.
 
-Record what was grafted, from which candidate, and what was rejected and why. The rejection notes are the highest-signal part of the record. Future readers learn from what you considered and dropped, not just what you kept.
+Record what was grafted, from which candidate, and what was rejected and why. The rejection notes are the highest-signal part of the record.
 
 When N candidates converge on the same shape, that is a strong agreement signal. Note the convergence in the record and ship the consensus shape. No graft is needed. When N candidates wildly diverge, Phase A was under-specified. Reframe and re-run rather than averaging the divergence.
 
 ## Phase F: Verify
 
-The synthesized artifact has to hold up under the same scrutiny as any other output, per the **prove-it-works** principle. The swarm does not earn you a pass.
+The synthesized artifact has to hold up under the same scrutiny as any other output, per the **prove-it-works** principle.
 
 If verification surfaces a problem the swarm did not catch, either Phase A was wrong (re-frame and re-run) or one candidate caught it and you missed the graft (go back to Phase E). Don't paper over.
 
