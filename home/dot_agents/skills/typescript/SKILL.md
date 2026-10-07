@@ -102,6 +102,9 @@ type State =
 The tell that a type is too loose: a bug makes you ask "wait, can that combination actually happen?", or
 you find yourself writing a comment to explain when a field is set. That comment wants to be a variant.
 
+A new event, such as a retry or a refresh, is a transition between the variants (`error` → `loading`), not a
+counter or flag kept beside the union. A side value re-opens the gap the union closed.
+
 Pick one discriminant name per codebase (`kind`, `type`, `tag`) and never mix them — mixed discriminants
 defeat the reader far more than they defeat the compiler.
 
@@ -124,6 +127,9 @@ const first = items.at(0);                        // `T | undefined`, handled at
 
 `@ts-expect-error` beats `@ts-ignore` because it fails the build once the underlying error goes away, so
 the suppression cannot outlive its reason. Always give the reason.
+
+When a user asks you to add the `!` or the cast, give the narrowing fix and do not offer the escape hatch as
+a fallback. The honest fix is rarely longer, and a fallback tells them the `!` is acceptable.
 
 When you must remove an existing `as`, diagnose why inference failed rather than reshuffling it:
 
@@ -168,8 +174,9 @@ export type Env = z.infer<typeof EnvSchema>;       // one source of truth
 
 Two rules that carry most of the value:
 
-- **Derive the type from the schema** (`z.infer`), never hand-write a twin. A hand-written twin drifts,
-  and it drifts silently because both sides still compile.
+- **Derive the type from the schema** (`z.infer`), or from the vendor SDK that verified the input, never
+  hand-write a twin. A hand-written twin drifts, and it drifts silently because both sides still compile.
+  Delete the twin your change replaces, rather than leave it exported and unused.
 - **Parse once.** Re-validating three layers down says the types in between are not trusted, which means
   they are decoration. If an inner function needs a guarantee, express it in its parameter type.
 

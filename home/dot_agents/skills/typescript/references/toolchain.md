@@ -178,9 +178,10 @@ on a project that has no global Biome.
 remains the thing that proves your types. The linter's job is the class of bug `tsc` does not model — a
 floating promise above all.
 
-**Use the `.jsonc` extension.** Biome reads comments in `biome.jsonc`. A comment in `biome.json` makes
-Biome fall back to its defaults **without reporting an error** — severities revert and the formatter goes
-back to tabs. Nothing tells you. A config that silently does not apply is worse than one that fails.
+**Use the `.jsonc` extension.** Biome reads comments in `biome.jsonc` only. A `//` comment in `biome.json`
+is a parse error, and nothing lints. Measured on Biome 2.1.0 and 2.5.15: `biome check` and `biome format`
+both exit 1 with `Expected a property but instead found '// ...'`. The fix is to rename the file to
+`biome.jsonc`.
 
 **Commit a `.gitignore` before the first run.** `core` sets `vcs.useIgnoreFile`, which is what keeps the
 ignore list in one file instead of two. With that on and no ignore file present, Biome exits with a
@@ -192,6 +193,10 @@ and adopting the preset is what turns it on.
 `core` is the base. It already sets every rule this skill argues for: `noExplicitAny`, `noTsIgnore`,
 `noUnnecessaryConditions`, `noNonNullAssertion`, `noEnum`, `useImportType`, and `noUnusedVariables`. Do
 not restate them — a hand-written list of 30 rules on top of `core` is 30 lines that change nothing.
+
+`core` also sets the formatter. As of Ultracite 7 that is a two-space indent, LF line endings, a width of
+80, double quotes, and `es5` trailing commas. After a Prettier migration, override only the values that
+differ, such as `quoteStyle` or `lineWidth`. Do not restate `indentStyle` or `indentWidth`.
 
 `type-aware` adds the rules that need the project graph: `noImportCycles`, `noUndeclaredDependencies`,
 `noUnresolvedImports`, `noPrivateImports`, `noDeprecatedImports`, and `useArraySortCompare`.
