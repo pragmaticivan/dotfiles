@@ -18,6 +18,8 @@ Mine the current conversation for durable learnings, then route them into skill 
 
 Skip when the conversation is trivial, off-topic, or already covered by an existing skill the parent followed correctly. One-offs are not learnings.
 
+This skip is the only shortcut. When a session has a learning, run the full fan-out and synthesis however short the transcript is. A single pass by the parent gives one lens and misses what the other two find.
+
 ## Process
 
 ### 1. Locate the active transcript
