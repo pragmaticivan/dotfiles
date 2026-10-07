@@ -36,6 +36,7 @@ Remaining triggers:
 - Before commit → the `stop-slop` skill (`/stop-slop`).
 - Before review → the **no-comments** skill (`/no-comments`).
 - Shipping UI / IDE / CLI → drive the real surface. Browser, Electron, and web UIs go through the **browser-testing-with-devtools** skill; CLIs and TUIs you drive directly in a terminal. For bug fixes, reproduce first on the same surface yourself; hand to the user only under the narrow Bug fix step 1 exception.
+- Running a benchmark, measuring perf yourself, or reporting a speedup or regression you measured → `references/benchmark-checklist.md` before you report or act on the number.
 - Any PR-status request → the **Babysit** playbook (`playbooks/babysit.md`). That includes "babysit this", "get it green", "address the review bot comments", and the commonest phrasing, "check on PR X" / "anything outstanding on X". Never triggered by merely opening a PR. Declare its mode before polling; the playbook's step 1 owns the request-to-mode mapping. Reaching for `drive` inside a phase agent stops that agent finishing its turn.
 - Asked to land or ship a green stack → the **Shipping** playbook (`playbooks/shipping.md`). Green is not safe. Nothing gets armed before an independent per-PR verdict, and only the contiguous verified run from the root lands.
 - review bot or the agentic security review commented → skeptical posture. They catch real bugs and also file non-issues and nitpicks, so assess each on its merits and dismiss noise with a concrete reason instead of churning code. Triage fix / dismiss / ask per `references/review-bot-triage.md`.
@@ -70,6 +71,8 @@ Read the linked file in full for any principle you apply. Each entry names when 
 **Verification**
 
 - **Prove It Works** (`principles/prove-it-works.md`). After a task, before declaring done. Verify against the real artifact, not a proxy or "it compiles".
+- **Explain the Number** (`principles/explain-the-number.md`). Before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
+- **Test Behavior, Not Implementation** (`principles/test-behavior-not-implementation.md`). Writing, changing, or keeping a test. Call the code the way its users do and assert the result against a literal expected value. If the test would still pass when every imported function returns `undefined`, rewrite the assertion or delete the test.
 - **Fix Root Causes** (`principles/fix-root-causes.md`). Debugging. Trace each symptom to its root cause, reproduce first, ask why until you reach it.
 - **Sequence Work into Verifiable Units** (`principles/sequence-verifiable-units.md`). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
 
@@ -98,7 +101,9 @@ Read the linked file in full for any principle you apply. Each entry names when 
 
 **Defaults for every `Agent` call.** `run_in_background: true`, a tool set scoped to the role, file pointers not inlined context, explicit model per role (defaults `sonnet` for code, `opus` for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`opus`) when the task needs judgment or the intent is vague, and to your strongest instruction-following model (`fable`) when the work is a precisely specified sequence of steps to execute to the letter; trivial mechanical edits go to your fast code model (`haiku`). Per-role lines in `~/.claude/kaizen-models.md` override these defaults and the model choices in the routed skills (`how`, `why`, `swarm`, `architect`, `interrogate`, `reflect`); a role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model (omit the `Agent` call's `model`).
 
-You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. Interrupt-chained resumes silently drop directives, so fire a fresh subagent with consolidated scope rather than trusting a "done" summary. A second opinion is the same prompt against a different model. Agreement is high-signal.
+You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A second opinion is the same prompt against a different model. Agreement is high-signal.
+
+**Fresh subagents by default.** Give new work to a fresh subagent with consolidated scope: the original brief, every later directive, and the prior agent's report and branch. This holds for a fix round, a follow-up, a retry, and the next queue item. Resume or message an existing subagent only when the new work needs state that lives in that agent and is costly to move: its local checkout, its uncommitted changes, or a process it still runs, such as a dev server or a watcher. A stop or hold order to a running agent is not reuse. Interrupt-chained resumes silently drop directives, so fire a fresh subagent rather than trusting a "done" summary.
 
 ## Writing the reply
 

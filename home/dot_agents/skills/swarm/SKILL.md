@@ -35,7 +35,8 @@ Every worker receives the same brief, so the brief is the contract. Get it right
 3. Set N and pick the models.
    - **Cover.** Set N from the user or derive it from the shape. N is total workers, not the concurrency limit; excess workers queue and run as slots free up. Use `swarm workers` in `~/.claude/kaizen-models.md` when present, otherwise `sonnet`. For a model race, name each arm's model up front.
    - **Compete.** Use `arena runners` from `~/.claude/kaizen-models.md` when present. Otherwise default to one each on `opus`, `fable`, and `sonnet`. Spawn more when the swarm covers multiple design directions. Same model N times when the work is generation-bound rather than judgment-sensitive.
-4. Give each worker its own writable output. Use `isolation: "worktree"`, a branch, or `/tmp/swarm-<slug>/worker-<n>/`. N workers writing to the same path is shared mutable state and fails the `../kaizen-mode/principles/separate-before-serializing-shared-state.md` test.
+4. When workers verify or measure commits, each brief names the exact SHAs. A measurement brief also names the method (sample count, what one sample is, order). The worker records both in its result.
+5. Give each worker its own writable output. Use `isolation: "worktree"`, a branch, or `/tmp/swarm-<slug>/worker-<n>/`. N workers writing to the same path is shared mutable state and fails the `../kaizen-mode/principles/separate-before-serializing-shared-state.md` test.
 
 ## Phase B: Fan out
 
@@ -45,7 +46,7 @@ When a worker must start from a non-default branch, check that branch out in its
 
 Every brief stands alone. Include the goal, scope, exact slice or race arm, how to verify, and what to report.
 
-- **Cover.** Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence.
+- **Cover.** Reports use `PASS`, `ISSUES`, or `BLOCKED` with evidence. A worker that can prove a defect reports `ISSUES` and lists every issue it can prove, not only the first.
 - **Compete.** Each brief carries the task, the path to the shared grounding, its own output path, and instructions to produce both the artifact and a short rationale. The rationale is mandatory. Without it, the parent cannot tell whether a candidate's structure is principled or accidental, which makes Phase E grafting unreliable. Each rationale names the alternatives the candidate considered and what it rejected.
 
 If a worker drops out, proceed with N-1 and note it. In compete mode, the dropout goes in the synthesis record.
@@ -56,7 +57,7 @@ If a worker drops out, proceed with N-1 and note it. In compete mode, the dropou
 
 ## Phase C: Aggregate
 
-Read the terminal results. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
+Read the terminal results. Drop a result that does not record the SHAs and method its brief names, and respawn that worker once. After a second miss, record a gap. A gap does not count as a pass. For coverage, every required slice needs a result. For a race, apply the selection rule declared up front. Use first pass, rank all, or best-of. Do not paste raw worker dumps.
 
 Keep a compact result table, one-line evidenced issues, and explicit gaps or dropouts.
 
