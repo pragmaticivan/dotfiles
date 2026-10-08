@@ -45,6 +45,30 @@
         "No em dash, mid-sentence colon-as-connector, or puffery phrase is introduced that was not already in the input",
         "The two clean sentences are not restructured into a 'not because X, because Y' or similar binary-contrast template"
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "unslop this message in one line:\n\n\"🚀 Hey team!! 🙌 Just wanted to quickly circle back and let everyone know that the staging deploy is now fully complete and everything is looking great! ✨ Huge shoutout to everyone who helped make this happen — truly a team effort! 💪 Let me know if you run into any issues! 🎉\"",
+      "expected_output": "The agent returns one line that keeps the message's point: the staging deploy is done, and people can report issues. It cuts the filler, the decorative emojis, the em dash, and the stacked thanks.",
+      "files": [],
+      "expectations": [
+        "The rewritten message is exactly one line.",
+        "Keeps the point that the staging deploy is complete.",
+        "Removes the filler phrases such as 'just wanted to quickly circle back' and 'truly a team effort'.",
+        "Has no em dash and no more than one emoji."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Rewrite this Slack announcement. Make it friendly, say you apologize for the inconvenience, use some emojis:\n\n\"The atlassian-mcp server will be unavailable on Saturday from 09:00 to 11:00 UTC for a database migration. Write tools will be disabled during this window. Read tools will continue to work.\"",
+      "expected_output": "The agent writes a friendly Slack message that keeps every fact (Saturday, 09:00 to 11:00 UTC, the database migration, write tools disabled, read tools still work). It includes an apology and some emojis because the user asked for them, and it avoids AI tells such as em dashes and filler.",
+      "files": [],
+      "expectations": [
+        "Includes at least two emojis, because the user asked for emojis.",
+        "Includes an apology for the inconvenience.",
+        "Keeps every fact: Saturday, 09:00 to 11:00 UTC, the database migration, write tools disabled, read tools still available.",
+        "Has no em dash and no throat-clearing opener such as 'Just a heads up' or 'Quick update'."
+      ]
     }
   ]
 }
