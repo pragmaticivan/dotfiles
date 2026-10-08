@@ -3,8 +3,8 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "hey can you open a PR for my branch fix/chunk-boundary? repo is in evals/fixtures/chunk-boundary, gh isn't authed on this box so write the body file and give me the exact gh command to run. small fix, only touched chunker.py — the boundary loop used <= instead of < so a 10s clip at 5s boundaries made 3 chunks instead of 2. ticket is PROJ-4521 if you need it, our jira is https://everquote.atlassian.net",
-      "expected_output": "The agent gathers the diff, classifies the change as small (single concern, well under 50 lines), and creates the PR with `gh pr create --draft`, writing the body to a temp file and passing it via `--body-file`. The description is TL;DR-only: first sentence states the concrete problem (3 chunks instead of 2 from the off-by-one), second sentence states the fix (exclusive end indices), plus a link to PROJ-4521 (https://everquote.atlassian.net/browse/PROJ-4521). It does not add a files table, How, or Tests section, and never mentions Claude, AI, or an assistant.",
+      "prompt": "hey can you open a PR for my branch fix/chunk-boundary? repo is in evals/fixtures/chunk-boundary, gh isn't authed on this box so write the body file and give me the exact gh command to run. small fix, only touched chunker.py — the boundary loop used <= instead of < so a 10s clip at 5s boundaries made 3 chunks instead of 2. ticket is PROJ-4521 if you need it, our jira is https://jira.example.com",
+      "expected_output": "The agent gathers the diff, classifies the change as small (single concern, well under 50 lines), and creates the PR with `gh pr create --draft`, writing the body to a temp file and passing it via `--body-file`. The description is TL;DR-only: first sentence states the concrete problem (3 chunks instead of 2 from the off-by-one), second sentence states the fix (exclusive end indices), plus a link to PROJ-4521 (https://jira.example.com/browse/PROJ-4521). It does not add a files table, How, or Tests section, and never mentions Claude, AI, or an assistant.",
       "files": [
         "evals/fixtures/chunk-boundary"
       ],
@@ -15,7 +15,7 @@
         "TL;DR states the concrete problem first (3 chunks instead of 2 / the off-by-one) then the fix, in two sentences.",
         "Does not open any sentence with 'This PR', 'This change', 'This commit', or 'In this pull request.'",
         "Does not include a Co-Authored-By trailer or any mention of Claude, AI, or an assistant.",
-        "Includes PROJ-4521 as a link to https://everquote.atlassian.net/browse/PROJ-4521 rather than omitting the ticket or leaving it as plain text.",
+        "Includes PROJ-4521 as a link to https://jira.example.com/browse/PROJ-4521 rather than omitting the ticket or leaving it as plain text.",
         "Starts the PR title with the ticket prefix 'PROJ-4521 - '."
       ]
     },
