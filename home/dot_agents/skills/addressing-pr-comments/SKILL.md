@@ -1,12 +1,21 @@
 ---
 name: addressing-pr-comments
-description: 'Fetch, triage, and fix GitHub PR review comments. Use for "address PR comments", "fix review comments", "handle PR feedback", or a PR number given with review context.'
+description: 'Fetch, triage, fix, and resolve GitHub PR review comments, including review-bot comments. Use for "address PR comments", "fix review comments", "is this comment valid", "fix and resolve", a PR comment URL with `#discussion_r`, or a PR number given with review context.'
 effort: medium
 ---
 
 # Addressing PR Comments
 
 Fetch PR review comments, categorize them as obvious fixes vs. non-obvious, auto-fix the obvious ones (with confirmation), and iterate with the user on the rest.
+
+## One comment URL
+
+When the request gives one comment URL (`.../pull/<PR>#discussion_r<id>`), work on that comment only:
+
+1. Fetch it with `gh api repos/{owner}/{repo}/pulls/comments/{id}`. Read the code it points at.
+2. Give a verdict first: valid or not valid, with the reason from the code.
+3. If the request says to fix ("if yes, fix", "fix and resolve"), a valid comment needs no more confirmation. Fix it, commit, and push. For a comment that is not valid, change no code and give the disproof.
+4. Do Step 7 for the reply and the resolve.
 
 ## Usage
 
@@ -47,7 +56,7 @@ gh repo view --json nameWithOwner -q .nameWithOwner
 
 Exclude:
 - Comments from the PR author (they're self-notes, not review feedback)
-- Bot comments (CI, linters, etc.)
+- Status-bot comments that report CI, coverage, or lint results. Keep the comments of a review bot that comments on code lines, and judge each one against the code, because review bots also post wrong findings.
 - Already-resolved comment threads (where `gh api` shows resolved status)
 - Pure acknowledgments ("LGTM", "looks good", thumbs up reactions)
 
@@ -73,6 +82,8 @@ I found N obvious fixes from reviews:
 Shall I apply all of these?
 ```
 
+If the request already says to fix the comments ("fix and resolve them"), apply the obvious fixes without this question.
+
 Use `AskUserQuestion` with options:
 - "Apply all" (Recommended)
 - "Let me pick which ones"
@@ -93,16 +104,25 @@ For each non-obvious comment, use `AskUserQuestion` to present:
 
 Execute whatever the user chooses. If they choose a code change, make it and commit. If they want a reply drafted, prepare it but do not post it (see Step 7).
 
-### 7. Reply to Comments (Only When Explicitly Asked)
+### 7. Reply and Resolve (Only When Explicitly Asked)
 
-By default, do not reply to or post comments on the PR.
-Post replies only if the user explicitly says something like "reply to the comments" or "post responses."
+By default, do not reply to, post on, or resolve threads on the PR.
+"Reply" in the request allows replies. "Resolve" allows resolving threads. Each word gives only its own permission.
 
 When posting replies:
-- Always prefix with: `*[This reply was drafted by Claude and posted on behalf of @{username}]*`
-- Get the GitHub username from: `gh api user -q .login`
+- Do not add an AI attribution prefix, and do not mention Claude, AI, or an assistant.
+- For a fix, give the commit SHA. For a dismissal, give the disproof in one or two sentences.
 - Post using: `gh api repos/{owner}/{repo}/pulls/{PR}/comments/{comment_id}/replies -f body="..."`
 - For review-level replies: `gh api repos/{owner}/{repo}/pulls/{PR}/reviews/{review_id}/comments -f body="..."`
+
+To resolve a thread, push the fix first. Then find the thread ID and resolve the thread:
+
+```bash
+gh api graphql -F n={PR} -f o={owner} -f r={repo} -f query='query($o:String!,$r:String!,$n:Int!){repository(owner:$o,name:$r){pullRequest(number:$n){reviewThreads(first:100){nodes{id isResolved comments(first:1){nodes{databaseId}}}}}}}'
+gh api graphql -f id={thread_id} -f query='mutation($id:ID!){resolveReviewThread(input:{threadId:$id}){thread{isResolved}}}'
+```
+
+The thread is the node whose first comment `databaseId` is the comment ID. Leave a thread open when the comment is not valid and the request did not ask to resolve it.
 
 ### 8. Summary
 
@@ -114,6 +134,7 @@ Done! Here's what happened:
 - N non-obvious comments addressed
 - N comments skipped/deferred
 - N replies posted (if any)
+- N threads resolved (if any)
 ```
 
 ## Constraints
