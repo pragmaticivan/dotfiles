@@ -1,6 +1,6 @@
 ---
 name: stop-slop
-description: "Cut AI tells from prose and put the voice back in. Use for any prose surface: a chat reply, a doc, a PR description, a commit body, or a log string."
+description: "Cut AI tells from prose and put the voice back in. Use for \"unslop this\", \"make it sound human\", or any prose surface: a chat reply, a Slack or social post, an announcement, a doc, a PR description, a commit body, or a log string."
 model: haiku
 ---
 
@@ -14,6 +14,8 @@ Eliminate predictable AI patterns from prose and add human voice.
 2. Rewrite only the sentences that carry a tell. Preserve meaning, match intended tone. If the scan finds no tell, say so and return the text as it is.
 3. Add soul (see next section).
 4. Self-audit: "What makes this obviously AI generated?" Fix remaining tells.
+
+The user's explicit asks win over the rules here. A request for emojis, a friendly tone, or an apology keeps them in the text, even where rule 18 would cut the emojis. A length limit such as "in one line" is a hard limit: keep the sender's point and cut everything else.
 
 ## Adding soul
 

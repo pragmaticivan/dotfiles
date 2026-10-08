@@ -46,10 +46,26 @@
         "Attempts to detect the PR number from the current branch before asking the user, and so picks #482 (head feat/quote-api-retries) out of the three open PRs.",
         "If branch detection is inconclusive, asks the user for the PR number rather than guessing which PR to work on.",
         "Treats the explicit 'reply to everyone' instruction as authorization to reply: it writes reply text for the PR's reviewers into replies.md rather than declining to draft replies or asking again for permission.",
-        "Every reply in replies.md starts with the attribution prefix '[This reply was drafted by Claude and posted on behalf of @{username}]'.",
+        "No reply in replies.md has an AI attribution prefix or mentions Claude, AI, or an assistant.",
         "Does not run or describe running any merge command (e.g. `gh pr merge`) on the PR.",
         "Explicitly calls out that merging is not something it will do, rather than ignoring that part of the request silently.",
         "Does not add Claude as a co-author on any commit made while addressing obvious fixes."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Is this valid? https://github.com/everquote/pricing-service/pull/482#discussion_r1849355 if yes, fix and resolve. gh isn't authed on this box, so i dumped the PR comments to evals/fixtures/pricing-service-pr-482/pr-482/ and the checkout is in evals/fixtures/pricing-service-pr-482/pricing-service. commit the fix locally, then give me the exact gh commands to reply and resolve.",
+      "expected_output": "The agent reads only comment 1849355 (dave-k: the client retries 4xx errors and retries the non-idempotent POST in submit_quote). It gives a verdict first: valid, with the reason from retry_client.py. Because the user said 'if yes, fix', it fixes the code and commits without asking for confirmation. It gives the exact commands: a reply with the commit SHA and no AI attribution, the GraphQL query that finds the thread ID, and the resolveReviewThread mutation. It leaves the other comments alone.",
+      "files": [
+        "evals/fixtures/pricing-service-pr-482"
+      ],
+      "expectations": [
+        "States a verdict (valid) for comment 1849355 before it describes any fix, with a reason taken from retry_client.py.",
+        "Fixes the retry behavior so 4xx errors are not retried or the non-idempotent POST is not retried, and commits the fix, without asking the user to confirm first.",
+        "Does not change code for the other comments on the PR (the unused import, the docstring typo, or the self-note).",
+        "Gives a reply command or reply text that cites the fix commit SHA.",
+        "Gives a GraphQL resolveReviewThread mutation to resolve the thread, plus a way to find the thread ID for comment 1849355.",
+        "No reply text has an AI attribution prefix or mentions Claude, AI, or an assistant."
       ]
     }
   ]

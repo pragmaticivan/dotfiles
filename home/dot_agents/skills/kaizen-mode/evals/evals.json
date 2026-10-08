@@ -85,6 +85,34 @@
         "Every principle the reply cites is tied to a specific decision it changed, not named on its own",
         "No em dash or en dash character appears anywhere in the output"
       ]
+    },
+    {
+      "id": 6,
+      "prompt": "/kaizen-mode fix conflicts in this PR https://github.com/acme/fees-service/pull/96. the checkout is evals/fixtures/fees-service, gh isn't authed here so I dumped the PR to evals/fixtures/fees-service/pr-96.json. there's no remote, so give me the exact push command instead of pushing.",
+      "expected_output": "The agent sees that PR 96 is a single PR whose base is main, not a stack. It rebases feat/weekend-surcharge onto main and resolves the conflicts in fees.py and test_fees.py so that both the minimum fee and the weekend surcharge work. It runs the tests, and they pass. It gives `git push --force-with-lease` as the push command, then stops without a CI loop.",
+      "files": [
+        "evals/fixtures/fees-service"
+      ],
+      "expectations": [
+        "Resolves the conflict itself (rebase or merge of main into the branch), not only a report that the branch needs a rebase.",
+        "The resolved fees.py keeps both behaviors: the MIN_FEE minimum from main and the weekend surcharge from the branch.",
+        "Runs the tests after the resolution and reports that all of them pass (including the minimum and weekend tests).",
+        "Gives `git push --force-with-lease` (not a plain `--force`) as the push command.",
+        "Stops after the conflict fix and the push command, without starting a CI watch or a merge."
+      ]
+    },
+    {
+      "id": 7,
+      "prompt": "/kaizen-mode I just opened PR #57 in acme/billing-api from feat/invoice-export. our repo has a review bot that comments on every new PR within a few minutes. what happens next, step by step? keep it short, I'm not asking you to do anything yet.",
+      "expected_output": "The agent says it watches the PR for the review bot's first pass in threads-only mode, for a bounded time of about 10 minutes. It fixes valid findings, pushes, replies with the commit SHA, and resolves the threads. It dismisses wrong findings with a disproof, then stops and reports without a CI watch or a merge.",
+      "files": [],
+      "expectations": [
+        "Says it watches the PR for the review bot's comments, in threads-only mode or with an equivalent limit to review threads.",
+        "Gives a time bound for the watch (about 10 minutes, or until the bot's first pass).",
+        "Says valid findings get a fix, a push, a reply, and a resolved thread.",
+        "Says wrong findings get a dismissal with a reason, not a code change.",
+        "Says it stops after the bot's pass, without a CI watch loop or a merge."
+      ]
     }
   ]
 }
