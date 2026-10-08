@@ -45,10 +45,6 @@ managed=$(
       {
         "hooks": [
           {
-            "command": "rtk hook claude",
-            "type": "command"
-          },
-          {
             "command": "bash '{{ .chezmoi.homeDir }}/.claude/hooks/git-push-guard.sh'",
             "timeout": 10,
             "type": "command"

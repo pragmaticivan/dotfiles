@@ -28,7 +28,7 @@ cat >"$managed_file" <<'EOF'
       "coverage/**"
     ]
   },
-  "plugins": ["./plugins/rtk","opencode-cursor-provider"],
+  "plugins": ["opencode-cursor-provider"],
   "permissions": [
     { "action": "external_directory", "resource": "~/.agents/skills/*", "effect": "allow" },
     { "action": "shell", "resource": "git push --force *", "effect": "ask" },
