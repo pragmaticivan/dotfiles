@@ -1,6 +1,6 @@
 ---
 name: addressing-pr-comments
-description: 'Fetch, triage, fix, and resolve GitHub PR review comments, including review-bot comments. Use for "address PR comments", "fix review comments", "is this comment valid", "fix and resolve", a PR comment URL with `#discussion_r`, or a PR number given with review context.'
+description: 'Fetch, triage, fix, and resolve GitHub PR review comments, bot comments included. Use for "address PR comments", "fix review comments", "is this comment valid", "fix and resolve", a `#discussion_r` URL, or a PR number with review context.'
 effort: medium
 ---
 
