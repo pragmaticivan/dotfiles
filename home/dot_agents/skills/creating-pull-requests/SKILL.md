@@ -90,6 +90,10 @@ Active voice, present tense, full scope.
 
 Pattern: `<Verb> <what> [in/for/to <context>]`
 
+### Jira ticket prefix
+
+If the user, the branch name, a commit, or the conversation gives a Jira ticket, put the ticket key at the start of the title. Use the format `<KEY> - <title>`, for example `PROJ-1234 - Fix off-by-one in chunk boundary calculation`. Keep the ticket link in the description too.
+
 ### Noun stacking — hard cap at two consecutive nouns
 
 Three or more consecutive nouns creates a garden-path sentence. Read-aloud test: if you wouldn't say the title in conversation, rewrite.
@@ -294,7 +298,7 @@ The description reflects the **current full state** of the branch vs base — no
 
 ### Small PR: one-concern bug fix (~20 lines)
 
-Title: `Fix off-by-one in chunk boundary calculation`
+Title: `PROJ-1234 - Fix off-by-one in chunk boundary calculation`
 
 ```markdown
 ## TL;DR
@@ -326,7 +330,7 @@ Complements `survey-v2/response-collection` (data capture side).
 
 ### Non-trivial PR with design decisions and focus area
 
-Title: `Route small cache entries to Redis instead of S3`
+Title: `PROJ-5678 - Route small cache entries to Redis instead of S3`
 
 ```markdown
 ## TL;DR
