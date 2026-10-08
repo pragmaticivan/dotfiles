@@ -3,9 +3,11 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "/architect I need to add a new `webhook` delivery channel to billing-service's NotificationDispatcher. Right now it only supports `email` and `sms`, each implementing the `Channel` interface in notifications/channel.go, and dispatcher.go retries failed sends off an in-memory queue with exponential backoff. Sketch how a WebhookChannel should plug into that without breaking the existing retry contract, including how it should classify non-2xx responses as retryable vs. terminal.",
+      "prompt": "/architect I need to add a new `webhook` delivery channel to billing-service's NotificationDispatcher (the repo is in evals/fixtures/billing-service). Right now it only supports `email` and `sms`, each implementing the `Channel` interface in notifications/channel.go, and notifications/dispatcher.go retries failed sends off an in-memory queue with exponential backoff. Sketch how a WebhookChannel should plug into that without breaking the existing retry contract, including how it should classify non-2xx responses as retryable vs. terminal.",
       "expected_output": "The response first grounds itself by tracing the existing Channel interface, dispatcher.go's retry/backoff logic, and how email and sms classify failures, treating this as mandatory since WebhookChannel integrates with a live subsystem. It then runs a compete-style sketch producing at least two structurally distinct candidates for where response classification and retry policy live (e.g., inside WebhookChannel vs. a shared classifier the dispatcher owns), screens both against the design-red-flags list, and synthesizes one design package with usage shown before the type sketch. It must not skip straight to a type sketch without grounding, and must not write the actual WebhookChannel implementation before the sketch is agreed.",
-      "files": [],
+      "files": [
+        "evals/fixtures/billing-service"
+      ],
       "expectations": [
         "Response describes tracing the existing Channel interface and dispatcher.go's retry/backoff behavior (running the `how` skill or equivalent grounding) before producing any sketch",
         "Response treats this grounding step as mandatory rather than optional, since WebhookChannel integrates with an existing subsystem",
@@ -13,7 +15,7 @@
         "Response screens the candidates against design red flags such as shallow module, information leakage, or pass-through methods before picking a base",
         "Output shows the caller's usage (how WebhookChannel is registered/invoked) before the type sketch, with a prose rationale",
         "Response does not write the full WebhookChannel implementation body before the sketch is synthesized and the design package is presented",
-        "Response does not claim the design is grounded without referencing the actual existing files (channel.go, dispatcher.go) or their retry/classification logic"
+        "Response does not claim the design is grounded without referencing the actual existing files (channel.go, dispatcher.go) or their retry/classification logic, namely the SendError.Retryable flag and the dispatcher's rule that any error that is not a SendError is retried"
       ]
     },
     {
@@ -32,9 +34,11 @@
     },
     {
       "id": 3,
-      "prompt": "/architect Add a Tags resource. Same shape as Categories in resources/categories.py: id, name, slug fields, same CRUD handlers, same repository pattern, same serializer class. Nothing new to decide here.",
+      "prompt": "/architect Add a Tags resource. Same shape as Categories in resources/categories.py (the repo is in evals/fixtures/catalog-api): id, name, slug fields, same CRUD handlers, same repository pattern, same serializer class. Nothing new to decide here.",
       "expected_output": "The response recognizes there is no genuine design decision to make since the shape is already fixed by mirroring the existing Categories resource exactly, and says running a full swarm compete with two structurally distinct candidates would be over-engineering for this case. It names Categories as the source of the shape, produces a direct sketch (or goes straight to implementation) of the Tags resource's types, handlers, repository, and serializer mirroring Categories, and does not manufacture a fake second 'structurally distinct' alternative just to satisfy the letter of the compete rule.",
-      "files": [],
+      "files": [
+        "evals/fixtures/catalog-api"
+      ],
       "expectations": [
         "Response explicitly states that a full two-candidate swarm compete is unnecessary or over-engineered for this task",
         "Response gives the reasoning that the shape is already fixed by mirroring the existing Categories resource, not derived from a fresh design exploration",

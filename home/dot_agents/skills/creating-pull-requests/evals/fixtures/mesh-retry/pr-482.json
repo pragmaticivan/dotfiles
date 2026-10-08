@@ -1,0 +1,9 @@
+{
+  "number": 482,
+  "title": "Add retry budgets to mesh client",
+  "baseRefName": "main",
+  "headRefName": "service-mesh-retry-budgets",
+  "isDraft": false,
+  "url": "https://github.com/acme/mesh/pull/482",
+  "body": "Adds a retry budget to the mesh client so retries stay under 20% of request volume per upstream. During the 9/04 payments brownout, retries from every caller tripled load on the already-struggling hosts.\n\n- Also adds circuit breaker support\n- Additionally tweaks health checks\n\nTests: `python3 -m unittest discover tests`"
+}

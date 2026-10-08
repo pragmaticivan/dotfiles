@@ -1,0 +1,22 @@
+import { queue, type Payload } from "../lib/queue.ts";
+
+export const customerCreated = (p: Payload) => queue.publish("customer.created", p);
+export const customerUpdated = (p: Payload) => queue.publish("customer.updated", p);
+export const customerDeleted = (p: Payload) => queue.publish("customer.deleted", p);
+export const customerMerged = (p: Payload) => queue.publish("customer.merged", p);
+export const customerEmailChanged = (p: Payload) => queue.publish("customer.email_changed", p);
+export const customerAddressChanged = (p: Payload) => queue.publish("customer.address_changed", p);
+export const customerTaxIdAdded = (p: Payload) => queue.publish("customer.tax_id_added", p);
+export const customerTaxIdRemoved = (p: Payload) => queue.publish("customer.tax_id_removed", p);
+export const customerBalanceCredited = (p: Payload) => queue.publish("customer.balance_credited", p);
+export const customerBalanceDebited = (p: Payload) => queue.publish("customer.balance_debited", p);
+export const customerCreditLimitChanged = (p: Payload) => queue.publish("customer.credit_limit_changed", p);
+export const customerFlagged = (p: Payload) => queue.publish("customer.flagged", p);
+export const customerUnflagged = (p: Payload) => queue.publish("customer.unflagged", p);
+export const customerLocaleChanged = (p: Payload) => queue.publish("customer.locale_changed", p);
+export const customerContactAdded = (p: Payload) => queue.publish("customer.contact_added", p);
+export const customerContactRemoved = (p: Payload) => queue.publish("customer.contact_removed", p);
+export const customerPortalOpened = (p: Payload) => queue.publish("customer.portal_opened", p);
+export const customerStatementSent = (p: Payload) => queue.publish("customer.statement_sent", p);
+export const customerExported = (p: Payload) => queue.publish("customer.exported", p);
+export const customerAnonymized = (p: Payload) => queue.publish("customer.anonymized", p);

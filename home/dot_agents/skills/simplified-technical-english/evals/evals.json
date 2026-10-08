@@ -11,7 +11,7 @@
       "expectations": [
         {
           "text": "Looks words up in the bundled dictionaries",
-          "passing_criteria": "The transcript shows a grep against references/dictionary-unapproved.md or references/dictionary-approved.md for the words it was not sure of, and the approved alternative appears in the output"
+          "passing_criteria": "The reply or the transcript shows a lookup in references/dictionary-unapproved.md or references/dictionary-approved.md (a grep for a word, or a scan of the full text), and the approved alternative appears in the output. A reply that only says it checked by hand does not pass"
         },
         {
           "text": "The rewritten file has no unapproved word and no broken limit",
@@ -50,7 +50,7 @@
     {
       "id": 2,
       "prompt": "Before I send evals/fixtures/migration-doc.md to the Data Platform team for sign-off, is it STE compliant? Don't rewrite the whole thing — I want to know what's actually wrong with it, per rule, so the author can fix it themselves.",
-      "expected_output": "A compliance audit report, not a rewrite: verdict with an error count, a per-rule summary table, findings anchored to file:line with the offending text and a suggested STE correction, a section for the items that need a human decision (candidate technical nouns such as warehouse, dynamic table, resource monitor, and past participles that may be adjectives), and a section naming what the document already gets right. Findings must cite real rule numbers: 3.4 (has been tested, has not been executed), 3.6 (was suspended by the resource monitor, will be required), 3.5 (utilizing, running, in progress), 8.1 (three semicolons), 1.1 (ensure, utilizing, should, may, therefore, retried, concurrently, e.g., approximately usage), GR-6 (e.g.), 6.3 (the 60-plus-word closing sentence), 5.5/7.1 (the do-not-run-twice consequence belongs in a WARNING or CAUTION). The audit must not reword the SQL block or the quoted Snowflake error string.",
+      "expected_output": "A compliance audit report, not a rewrite: verdict with an error count, a per-rule summary table, findings anchored to file:line with the offending text and a suggested STE correction, a section for the items that need a human decision (candidate technical nouns such as warehouse, dynamic table, resource monitor, and past participles that may be adjectives), and a section naming what the document already gets right. Findings must cite real rule numbers: 3.2 or 3.4 (has been tested, has not been executed), 3.6 (was suspended by the resource monitor, will be required), 3.5 (utilizing, running, in progress), 8.1 (three semicolons), 1.1 (ensure, utilizing, should, may, therefore, retried, concurrently, e.g., approximately usage), GR-6 (e.g.), 6.3 (the 60-plus-word closing sentence), 5.5/7.1 (the do-not-run-twice consequence belongs in a WARNING or CAUTION). The audit must not reword the SQL block or the quoted Snowflake error string.",
       "files": [
         "evals/fixtures/migration-doc.md"
       ],
@@ -69,7 +69,7 @@
         },
         {
           "text": "Catches the perfect-tense and passive constructions",
-          "passing_criteria": "The report flags 'has been tested' / 'has not yet been executed' under Rule 3.4 and at least one passive construction such as 'was suspended by the resource monitor' under Rule 3.6"
+          "passing_criteria": "The report flags 'has been tested' / 'has not yet been executed' under Rule 3.2 (which names the present perfect as not approved) or Rule 3.4 (auxiliary verbs in complex constructions), and at least one passive construction such as 'was suspended by the resource monitor' under Rule 3.6"
         },
         {
           "text": "Catches both prose semicolons and spares the one in the SQL",

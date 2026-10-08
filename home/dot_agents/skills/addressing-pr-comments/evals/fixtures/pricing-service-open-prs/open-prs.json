@@ -1,0 +1,5 @@
+[
+  {"number": 486, "title": "chore: bump requests to 2.32.3", "author": {"login": "marco-b"}, "headRefName": "chore/bump-requests", "baseRefName": "main", "isDraft": false, "url": "https://github.com/everquote/pricing-service/pull/486"},
+  {"number": 482, "title": "feat: retry quote API calls with exponential backoff", "author": {"login": "jlee"}, "headRefName": "feat/quote-api-retries", "baseRefName": "main", "isDraft": false, "url": "https://github.com/everquote/pricing-service/pull/482"},
+  {"number": 479, "title": "fix: round premiums half-up to the cent", "author": {"login": "priya-r"}, "headRefName": "fix/quote-rounding", "baseRefName": "main", "isDraft": false, "url": "https://github.com/everquote/pricing-service/pull/479"}
+]

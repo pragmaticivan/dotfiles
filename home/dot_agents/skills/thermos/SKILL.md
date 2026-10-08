@@ -14,6 +14,10 @@ description: "Run both thermo-nuclear reviews in parallel, then synthesize one d
    - `subagent_type: "thermo-nuclear-review-subagent"` for bugs, breakages, security, devex regressions, feature-flag leaks, and other branch-audit risks.
    - `subagent_type: "thermo-nuclear-code-quality-review-subagent"` for maintainability, structure, file-size growth, spaghetti, abstractions, and codebase-health risks.
 4. Pass each subagent the same scoped diff/file context and ask it to return prioritized findings with file references and evidence.
-5. After both finish, synthesize the results with findings first, deduplicated across reviewers. Weight overlapping findings more heavily, resolve disagreements with your own judgment, and keep summaries brief.
+5. After both finish, synthesize the results with findings first, deduplicated across reviewers. Resolve disagreements with your own judgment, and keep summaries brief.
+   - Merge findings about the same code into one item, even when one reviewer reports a bug and the other reports a structure problem. Name the concrete failure, then show how the structure caused it.
+   - Raise the priority of a finding that both reviewers reported independently, and say in the item that the agreement is the reason.
+
+Before the findings, state in the reply the scope that you reviewed: the branch and base, the files, the diff size, and the context that both reviewers got.
 
 If individual background summaries are already visible to the user, do not restate them wholesale. Surface the unified verdict, the highest-signal findings, and any remaining uncertainty.

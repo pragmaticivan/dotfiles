@@ -11,7 +11,7 @@ Eliminate predictable AI patterns from prose and add human voice.
 ## Process
 
 1. Scan for the patterns in `references/patterns.md`, `references/phrases.md`, and `references/structures.md`.
-2. Rewrite. Preserve meaning, match intended tone.
+2. Rewrite only the sentences that carry a tell. Preserve meaning, match intended tone. If the scan finds no tell, say so and return the text as it is.
 3. Add soul (see next section).
 4. Self-audit: "What makes this obviously AI generated?" Fix remaining tells.
 
@@ -25,6 +25,7 @@ Removing patterns is half the job. Sterile, voiceless writing is just as obvious
 - **Use "I" when it fits.** First person isn't unprofessional.
 - **Let some mess in.** Perfect structure looks machine-made.
 - **Be specific.** Not "this is concerning" but "there's something unsettling about agents churning away at 3am."
+- **Keep the voice the writer already has.** Contractions, exact numbers and times, and an honest "I have not checked" about the work are voice, not tells. Rule 24 is about stacked qualifiers, not a real caveat.
 
 ## Fix the shape, not the vocabulary
 

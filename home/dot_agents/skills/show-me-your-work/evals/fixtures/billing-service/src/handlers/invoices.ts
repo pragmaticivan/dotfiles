@@ -1,0 +1,22 @@
+import { queue, type Payload } from "../lib/queue.ts";
+
+export const invoiceCreated = (p: Payload) => queue.publish("invoice.created", p);
+export const invoiceFinalized = (p: Payload) => queue.publish("invoice.finalized", p);
+export const invoiceVoided = (p: Payload) => queue.publish("invoice.voided", p);
+export const invoicePaid = (p: Payload) => queue.publish("invoice.paid", p);
+export const invoiceOverdue = (p: Payload) => queue.publish("invoice.overdue", p);
+export const invoiceSent = (p: Payload) => queue.publish("invoice.sent", p);
+export const invoiceViewed = (p: Payload) => queue.publish("invoice.viewed", p);
+export const invoiceDisputed = (p: Payload) => queue.publish("invoice.disputed", p);
+export const invoiceRefunded = (p: Payload) => queue.publish("invoice.refunded", p);
+export const invoiceWrittenOff = (p: Payload) => queue.publish("invoice.written_off", p);
+export const invoiceReminderSent = (p: Payload) => queue.publish("invoice.reminder_sent", p);
+export const invoiceLineAdded = (p: Payload) => queue.publish("invoice.line_added", p);
+export const invoiceLineRemoved = (p: Payload) => queue.publish("invoice.line_removed", p);
+export const invoiceTaxUpdated = (p: Payload) => queue.publish("invoice.tax_updated", p);
+export const invoiceDiscountApplied = (p: Payload) => queue.publish("invoice.discount_applied", p);
+export const invoiceDiscountRemoved = (p: Payload) => queue.publish("invoice.discount_removed", p);
+export const invoiceCurrencyChanged = (p: Payload) => queue.publish("invoice.currency_changed", p);
+export const invoicePdfRendered = (p: Payload) => queue.publish("invoice.pdf_rendered", p);
+export const invoiceDueDateChanged = (p: Payload) => queue.publish("invoice.due_date_changed", p);
+export const invoiceNoteAdded = (p: Payload) => queue.publish("invoice.note_added", p);

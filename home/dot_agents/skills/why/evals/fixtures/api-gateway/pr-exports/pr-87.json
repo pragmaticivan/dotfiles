@@ -1,0 +1,11 @@
+{
+  "number": 87,
+  "title": "chore(api): tune rate limiter after load test",
+  "author": {"login": "tbecker"},
+  "mergedAt": "2024-01-16T09:45:00Z",
+  "body": "Tweak limit after the load test. See thread in #api-perf for the numbers.",
+  "comments": [
+    {"author": {"login": "lfischer"}, "body": "42 it is :)"}
+  ],
+  "reviews": [{"author": {"login": "lfischer"}, "state": "APPROVED", "body": ""}]
+}

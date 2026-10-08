@@ -8,7 +8,7 @@ description: "Adversarially review a change with one reviewer per configured mod
 
 Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Models differ in blind spots, priors, and reasoning patterns. Agreement across models is high-confidence signal; lone-model findings are worth reading but lower confidence.
 
-The deliverable is a synthesized verdict. Do NOT auto-apply changes.
+The deliverable is a synthesized verdict. Do not apply changes, even when the user also asks you to fix what you find or the change is small. A fix request does not replace the review. Run the reviewers, deliver the verdict, and ask which Act On items to apply. The user approves fixes after seeing the verdict, because a fix that skips the cross-model check loses the signal the user asked for.
 
 ## Step 1, Determine Scope
 
@@ -48,6 +48,8 @@ For each reviewer:
 - `readonly`: `true`
 
 If a model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Agent tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured value or default table. Do not block the review on the slug issue. If the configured value is `inherit-parent` or `auto`, omit `model` instead; never treat those aliases as broken slugs or enter this fallback for them.
+
+If a spawn fails for capacity, such as a concurrent subagent limit, or another transient reason, do not drop that reviewer. Spawn it again each time a running reviewer finishes, one at a time when parallel spawns keep failing. The verdict depends on agreement across models, so a one-model pass is not a complete result. Report a reviewer as not run only if it still cannot start after the others finish, and say in the Agreement Map that the agreement signal is partial.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent

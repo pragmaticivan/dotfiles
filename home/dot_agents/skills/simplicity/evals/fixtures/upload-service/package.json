@@ -1,0 +1,8 @@
+{
+  "name": "upload-service",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test 'storage/*.test.ts'"
+  }
+}

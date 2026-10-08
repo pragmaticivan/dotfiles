@@ -1,0 +1,8 @@
+{
+  "name": "billing-app",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test api/checkout.test.ts"
+  }
+}

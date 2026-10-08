@@ -1,0 +1,8 @@
+{
+  "number": 217,
+  "title": "feat: apply coupons before tax in checkout orders",
+  "author": {"login": "tnguyen"},
+  "headRefName": "feat/coupon-before-tax",
+  "baseRefName": "main",
+  "url": "https://github.com/everquote/checkout-service/pull/217"
+}

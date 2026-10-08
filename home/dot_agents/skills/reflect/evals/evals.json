@@ -3,14 +3,16 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "hey so we just spent like 45 min on that keda scaling bug for the pricing-svc deployment. first i checked the HPA (kubectl get hpa -n pricing) thinking it was a plain HPA issue, totally wrong lead, wasted like 15 min there. turns out it's actually a ScaledObject and the real fix was running `kubectl get --raw /apis/external.metrics.k8s.io/v1beta1/namespaces/pricing/service-triggers` to see the raw external metric value, which showed the trigger metadata `metricName` didn't match what the exporter actually publishes. fixed by editing the ScaledObject yaml at k8s/pricing-svc/base/scaledobject.yaml and correcting the metricName field. used the kubernetes skill the whole time for this. can you reflect on this session and see if theres a durable learning worth capturing?",
-      "expected_output": "The response locates the current session's own transcript in the workspace's agent-transcripts directory, then runs the three-reviewer fan-out (judgment, tooling, divergent) and a synthesis pass. The synthesis routes the HPA-vs-ScaledObject dead end and the `kubectl get --raw` external-metrics diagnostic recipe to the kubernetes skill's SKILL.md as an Accepted body edit, since that skill was the one actually used, and it presents the Accepted/Rejected/Backlog list for the user's explicit approval rather than editing the skill file outright. It must not glob ~/.claude/projects/* to find the transcript and must not propose a brand-new skill when the kubernetes skill is a real existing home for the learning.",
-      "files": [],
+      "prompt": "hey so we just spent like 45 min on that keda scaling bug for the pricing-svc deployment. first i checked the HPA (kubectl get hpa -n pricing) thinking it was a plain HPA issue, totally wrong lead, wasted like 15 min there. turns out it's actually a ScaledObject and the real fix was running `kubectl get --raw /apis/external.metrics.k8s.io/v1beta1/namespaces/pricing/service-triggers` to see the raw external metric value, which showed the trigger metadata `metricName` didn't match what the exporter actually publishes. fixed by editing the ScaledObject yaml at k8s/pricing-svc/base/scaledobject.yaml and correcting the metricName field. used the kubernetes skill the whole time for this. this workspace's agent-transcripts dir is evals/fixtures/pricing-keda-session/agent-transcripts. can you reflect on this session and see if theres a durable learning worth capturing? when you report back, list each reviewer you ran and the model it ran on.",
+      "expected_output": "The response locates the current session's own transcript in the workspace's agent-transcripts directory, then runs the three-reviewer fan-out (judgment, tooling, divergent) and a synthesis pass. The synthesis routes the HPA-vs-ScaledObject dead end and the `kubectl get --raw` external-metrics diagnostic recipe to the kubernetes skill (its SKILL.md or a reference file inside it) as an Accepted body edit, since that skill was the one actually used, and it presents the Accepted/Rejected/Backlog list for the user's explicit approval rather than editing the skill file outright. It must not glob ~/.claude/projects/* to find the transcript and must not propose a brand-new skill when the kubernetes skill is a real existing home for the learning.",
+      "files": [
+        "evals/fixtures/pricing-keda-session"
+      ],
       "expectations": [
         "Response locates the transcript via the workspace's own agent-transcripts directory rather than globbing across ~/.claude/projects/*/",
         "Response describes or performs three parallel review passes (judgment, tooling, divergent lenses) rather than a single generic review",
-        "The judgment and divergent lenses are assigned an opus-class model and the tooling lens a distinct model (fable), matching the reflect skill's model table",
-        "The synthesis routes the HPA-vs-ScaledObject / metricName-mismatch learning to the kubernetes skill's SKILL.md as the routing target, not to a newly invented skill",
+        "The reply's reviewer list assigns the judgment and divergent lenses an opus-class model and the tooling lens a distinct model (fable), matching the reflect skill's model table",
+        "The synthesis routes the HPA-vs-ScaledObject / metricName-mismatch learning to the existing kubernetes skill (its SKILL.md or one of its reference or rule files) as the routing target, not to a newly invented skill",
         "Output presents an Accepted/Rejected/Backlog style list and asks for the user's explicit approval before any skill file is edited",
         "Response does not glob ~/.claude/projects/*/ to locate the transcript",
         "Response does not propose 'new skill via skill-creator' for this learning given the kubernetes skill already exists and was the one invoked"
@@ -18,9 +20,11 @@
     },
     {
       "id": 2,
-      "prompt": "about to touch prod tf state: was going to run `terraform state rm aws_instance.legacy_worker` directly on the prod state to clear a drifted resource, using the terraform skill. ivan stopped me and said never run state surgery on prod without pulling a state backup first (`terraform state pull > backup.tfstate`) and reviewing `terraform plan -target=aws_instance.legacy_worker` diff before any state rm/mv. reflect on this.",
+      "prompt": "about to touch prod tf state: was going to run `terraform state rm aws_instance.legacy_worker` directly on the prod state to clear a drifted resource, using the terraform skill. ivan stopped me and said never run state surgery on prod without pulling a state backup first (`terraform state pull > backup.tfstate`) and reviewing `terraform plan -target=aws_instance.legacy_worker` diff before any state rm/mv. transcripts for this workspace live in evals/fixtures/prod-tf-state-session/agent-transcripts. reflect on this.",
       "expected_output": "The response finds this session's own transcript (workspace agent-transcripts directory, not a cross-workspace glob), fans out the three parallel reviewers, and synthesizes Ivan's mid-task correction into a durable rule: back up state and review a targeted plan diff before any `terraform state rm`/`mv`. It routes that rule as an Accepted body edit to the terraform skill's SKILL.md, since terraform was the skill actually in use, and withholds any file edit until the user approves the Accepted list. It must not silently apply the edit and must not state the learning without naming the terraform skill and the concrete addition.",
-      "files": [],
+      "files": [
+        "evals/fixtures/prod-tf-state-session"
+      ],
       "expectations": [
         "Response locates the transcript through the workspace's agent-transcripts directory, not by globbing ~/.claude/projects/*/",
         "Response runs three parallel reviewer lenses (judgment, tooling, divergent) as part of its process, not just a single pass",

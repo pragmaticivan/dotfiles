@@ -10,7 +10,7 @@ STE is a controlled natural language: 875 approved words plus 53 writing rules.
 One meaning per word is the target, not fluent English. `ensure` is wrong and
 `make sure` is right. `perform` is wrong and `do` is right.
 
-Apply your judgment, and look a word up when you are not sure. There is no
+Apply your judgment, and look a word up when you are not sure. There is no compliance
 checker. Do not estimate a compliance score, and do not report a count of
 errors that you did not find yourself.
 
@@ -30,8 +30,20 @@ grep -i "^ensure " references/dictionary-unapproved.md   # -> the approved alter
 grep -i "^ACCESS " references/dictionary-approved.md     # -> the approved meaning
 ```
 
-Do this for a word that you doubt, not for each word. `references/word-selection.md`
-gives the decision flow and the 39 errors that recur.
+Look up a word that you doubt while you write. When the text is complete,
+scan all of it. This loop prints the entry for each word of the file that has an
+unapproved entry:
+
+```bash
+tr -cs 'A-Za-z' '\n' < FILE | tr 'A-Z' 'a-z' | sort -u |
+  while read -r w; do grep "^$w (" references/dictionary-unapproved.md; done
+```
+
+Each entry gives a part of speech. Replace the word if your text uses it as
+that part of speech, unless it is a technical noun or verb (1.5, 1.12). The scan
+finds only the base form, thus read `-ed`, `-ing`, and `-s` forms yourself.
+`references/word-selection.md` gives the decision flow and the 39 errors that
+recur.
 
 ## Decide the type of the text first
 
@@ -63,8 +75,13 @@ result as its own descriptive sentence after the instruction.
 
 When you rewrite, preserve the technical content exactly. STE changes the
 words, never the facts. To delete a caveat or a limit value is a worse failure
-than a rule breach. Report the substantive rewrites (rule, before, after), and
-do not list every `the` you added.
+than a rule breach. Report the substantive rewrites in a table with three
+columns: the rule number, the original text, and the STE text. Do not list every
+`the` that you added.
+
+Give the compliant text as the answer. Do not give a version that breaks a rule
+and offer the compliant version as an option. If the compliant text reads
+badly, change the sentence again until it is compliant and clear.
 
 ## Core limits
 
@@ -133,7 +150,9 @@ Confirm its category, then use the same word everywhere.
 A **warning** is about injury or death. A **caution** is about damage to
 equipment. When both apply, use a warning (7.1). Start with the command or the
 condition (7.2), then give the risk or the result (7.3). A note gives
-information only (5.5). Destructive commands and data loss get a caution.
+information only (5.5). A note that holds an instruction becomes a numbered
+work step at the point where the reader does it, or a warning or caution if it
+prevents a risk. A paragraph between the steps is not a step. Destructive commands and data loss get a caution.
 
 ```
 CAUTION: DO NOT RUN THIS COMMAND ON THE PRODUCTION DATABASE. THE COMMAND

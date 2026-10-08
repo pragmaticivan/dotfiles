@@ -1,0 +1,77 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.1.0/schema.json",
+  "files": {
+    "includes": ["packages/**", "!**/dist", "!**/coverage"]
+  },
+  // Two spaces everywhere, matches the old Prettier setup.
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "single",
+      "trailingCommas": "all"
+    }
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": false,
+      "complexity": {
+        "noBannedTypes": "error",
+        "noUselessConstructor": "error",
+        "noUselessTypeConstraint": "error",
+        "noWith": "error",
+        "useArrowFunction": "error"
+      },
+      "correctness": {
+        "noConstAssign": "error",
+        "noConstantCondition": "error",
+        "noEmptyCharacterClassInRegex": "error",
+        "noEmptyPattern": "error",
+        "noGlobalObjectCalls": "error",
+        "noInvalidConstructorSuper": "error",
+        "noPrecisionLoss": "error",
+        "noSelfAssign": "error",
+        "noSwitchDeclarations": "error",
+        "noUnreachable": "error",
+        "noUnsafeFinally": "error",
+        "noUnusedLabels": "error",
+        "noUnusedVariables": "error",
+        "useIsNan": "error",
+        "useValidTypeof": "error"
+      },
+      "style": {
+        "noNonNullAssertion": "error",
+        "useConst": "error",
+        // We decided type-only imports must say so, see the RFC in Notion.
+        "useImportType": "error",
+        "useTemplate": "warn"
+      },
+      "suspicious": {
+        // any is banned outright, no exceptions.
+        "noExplicitAny": "error",
+        "noAsyncPromiseExecutor": "error",
+        "noCatchAssign": "error",
+        "noClassAssign": "error",
+        // Allow console.warn and console.error only.
+        "noConsole": { "level": "warn", "options": { "allow": ["warn", "error"] } },
+        "noDebugger": "error",
+        "noDoubleEquals": "error",
+        "noDuplicateCase": "error",
+        "noDuplicateClassMembers": "error",
+        "noDuplicateObjectKeys": "error",
+        "noDuplicateParameters": "error",
+        "noEmptyBlockStatements": "error",
+        "noFallthroughSwitchClause": "error",
+        "noFunctionAssign": "error",
+        "noRedeclare": "error",
+        "noSparseArray": "error",
+        "noUnsafeNegation": "error"
+      }
+    }
+  }
+}

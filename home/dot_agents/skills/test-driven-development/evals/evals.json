@@ -3,21 +3,25 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "There's a bug where completing a task doesn't update the completedAt timestamp. Can you fix it?",
+      "prompt": "There's a bug where completing a task doesn't update the completedAt timestamp. The repo is in evals/fixtures/task-tracker (tests run with `node --test`). Can you fix it?",
       "expected_output": "A failing reproduction test written and confirmed to fail before the fix, followed by the minimal fix, then a passing rerun (Prove-It Pattern).",
-      "files": [],
+      "files": [
+        "evals/fixtures/task-tracker"
+      ],
       "expectations": [
         "Writes a test that reproduces the bug before writing the fix (Prove-It Pattern)",
         "Confirms the reproduction test fails before the fix is applied",
-        "Implements the minimal fix needed to make the test pass",
+        "Implements the minimal fix needed to make the test pass (completeTask in src/tasks.ts sets completedAt to the current time)",
         "Reruns the test (and ideally the full suite) after the fix to confirm it passes and nothing else broke"
       ]
     },
     {
       "id": 2,
-      "prompt": "hey can u add a `applyLoyaltyDiscount` fn to src/pricing/discounts.ts that gives gold-tier users 15% off orders over $200, and silver-tier users 5% off over $100. everyone else gets 0. shouldnt take long, ty",
+      "prompt": "hey can u add a `applyLoyaltyDiscount` fn to src/pricing/discounts.ts (repo is evals/fixtures/storefront) that gives gold-tier users 15% off orders over $200, and silver-tier users 5% off over $100. everyone else gets 0. shouldnt take long, ty",
       "expected_output": "A failing test for applyLoyaltyDiscount is written first, covering the gold/silver/no-discount tiers and the dollar thresholds, and confirmed to fail because the function does not exist yet. Only after that does the agent add the minimal implementation, rerun the test, and confirm it passes. The response does not write discounts.ts logic before the test exists, and does not skip straight to handing over the finished function just because the request is phrased as low-effort.",
-      "files": [],
+      "files": [
+        "evals/fixtures/storefront"
+      ],
       "expectations": [
         "Writes a test for applyLoyaltyDiscount before writing the implementation in discounts.ts",
         "States or shows that the test fails first (RED) because the function does not exist yet",
@@ -30,9 +34,11 @@
     },
     {
       "id": 3,
-      "prompt": "We just got paged — our checkout webhook handler in src/billing/webhooks/stripeChargeHandler.ts is double-charging customers when Stripe retries a webhook delivery within ~500ms of the first attempt. Looking at the code, `handleChargeSucceeded` calls `chargeCustomer(event.data.object)` directly without checking `event.request.idempotency_key` against anything we've already processed. Finance is asking for a hotfix in the next 20 minutes and said don't bother with a full test suite, just patch the idempotency check and deploy — we can write proper tests next sprint.",
-      "expected_output": "The agent pushes back on skipping verification entirely and either writes a fast, narrow test simulating two rapid calls to handleChargeSucceeded with the same idempotency key that confirms the double-charge before adding the check, or — if it judges a true reproduction impractical — explicitly says so and names a concrete substitute executable check (e.g., a focused script exercising the idempotency-store logic) instead of skipping verification. It does not ship the patch on the strength of the finance deadline alone, and it does not reach for a slow, full Stripe-integration end-to-end test when a narrower check on the idempotency logic will do.",
-      "files": [],
+      "prompt": "We just got paged \u2014 our checkout webhook handler in src/billing/webhooks/stripeChargeHandler.ts (repo is checked out at evals/fixtures/checkout-service) is double-charging customers when Stripe retries a webhook delivery within ~500ms of the first attempt. Looking at the code, `handleChargeSucceeded` calls `chargeCustomer(event.data.object)` directly without checking `event.request.idempotency_key` against anything we've already processed. Finance is asking for a hotfix in the next 20 minutes and said don't bother with a full test suite, just patch the idempotency check and deploy \u2014 we can write proper tests next sprint.",
+      "expected_output": "The agent pushes back on skipping verification entirely and either writes a fast, narrow test simulating two rapid calls to handleChargeSucceeded with the same idempotency key that confirms the double-charge before adding the check, or \u2014 if it judges a true reproduction impractical \u2014 explicitly says so and names a concrete substitute executable check (e.g., a focused script exercising the idempotency-store logic) instead of skipping verification. It does not ship the patch on the strength of the finance deadline alone, and it does not reach for a slow, full Stripe-integration end-to-end test when a narrower check on the idempotency logic will do.",
+      "files": [
+        "evals/fixtures/checkout-service"
+      ],
       "expectations": [
         "Does not silently skip verification just because finance asked for a 20-minute hotfix with no tests",
         "Either writes an executable reproduction (e.g. two rapid calls with the same idempotency key producing a double-charge) or explicitly states why a full test is impractical and names a specific substitute check",

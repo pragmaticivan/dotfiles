@@ -1,0 +1,10 @@
+{
+  "date": "2026-08-26",
+  "host": "ci-perf-2",
+  "measure": "session read and write inside one checkout request, end to end",
+  "runs": [
+    { "run": 1, "redis": { "p99_ms": 4.1 }, "in_process_lru": { "p99_ms": 0.31 } },
+    { "run": 2, "redis": { "p99_ms": 3.9 }, "in_process_lru": { "p99_ms": 0.29 } },
+    { "run": 3, "redis": { "p99_ms": 4.0 }, "in_process_lru": { "p99_ms": 0.30 } }
+  ]
+}

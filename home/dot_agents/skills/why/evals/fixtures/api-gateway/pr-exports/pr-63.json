@@ -1,0 +1,9 @@
+{
+  "number": 63,
+  "title": "fix(api): lower rate limit to 50/min",
+  "author": {"login": "lfischer"},
+  "mergedAt": "2023-08-29T13:30:00Z",
+  "body": "One partner integration was polling /v1/orders in a tight loop and starving other keys. Lowering to 50/min per key. Partner has been told to back off.",
+  "comments": [],
+  "reviews": [{"author": {"login": "tbecker"}, "state": "APPROVED", "body": "fine for now"}]
+}

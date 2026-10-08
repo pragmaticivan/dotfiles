@@ -1,7 +1,7 @@
 ---
 # source: https://github.com/addyosmani/agent-skills/blob/main/skills/browser-testing-with-devtools/SKILL.md (Addy Osmani)
 name: browser-testing-with-devtools
-description: "Drive a real Chrome through the DevTools MCP to inspect the DOM, read console errors, trace network calls, and profile. Use to verify or debug anything that renders in a browser."
+description: "Drive a real Chrome through the DevTools MCP, or headless Chrome over CDP when the MCP is absent, to inspect the DOM, read console errors, trace network calls, and profile. Use to verify or debug anything that renders in a browser."
 ---
 
 # Browser Testing with DevTools
@@ -37,6 +37,19 @@ Add the server to the project's `.mcp.json` or the Claude Code settings:
 | `get_css_styles` | Reads computed styles for elements | Debug CSS issues, verify styling |
 | `evaluate_script` | Runs JavaScript in the page context | Read-only state inspection and debugging (see Security Boundaries) |
 | `navigate_page`, `click`, `fill` | Drives the page | Reproduce a bug, replay an action |
+
+### When the MCP Is Absent
+
+No MCP is not a reason to fall back to reading code. Start headless Chrome and drive it with `scripts/cdp.mjs` (Node 22 or later):
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --remote-debugging-port=9222 --user-data-dir="$(mktemp -d)" about:blank &  # Linux: google-chrome
+node scripts/cdp.mjs http://localhost:3000/tasks 'click:li button' 'getComputedStyle(document.querySelector("li")).paddingBottom'
+```
+
+Each run opens a fresh tab, loads the URL, and runs each step in order. A step is `click:<selector>` for a real mouse click, or a JavaScript expression that reads page state. The script prints console messages, exceptions, network responses with status, and each step's value. Collect what the MCP would show for the bug: the console, the network calls, the DOM structure, and the computed styles. Run it again after the fix to verify.
+
+If the sandbox or a permission blocks the dev server or Chrome, retry the command with the permission or sandbox override your tool offers. If it stays blocked, still make the fix, and name each runtime check you could not run.
 
 ## Security Boundaries
 

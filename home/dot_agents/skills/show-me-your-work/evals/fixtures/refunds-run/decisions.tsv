@@ -1,0 +1,4 @@
+ts	phase	decision	why	evidence	result
+2026-09-14T08:05:00Z	frame	listed every refund path before touching code, 6 call sites	wanted the size before changing payments code	commit 4c7d2e8	found 6 call sites, 2 without tests
+2026-09-14T08:50:00Z	payments	added tests for the 2 untested refund paths first	so a refactor cannot break them without notice	commit 5f3a901	tests green
+2026-09-14T09:30:00Z	payments	ran the refund job against the staging account as a dry run	check real Stripe behavior before the change	logs/dry-run-2026-09-14.txt	hit 429 rate limits after 25 calls

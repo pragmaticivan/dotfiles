@@ -12,7 +12,9 @@ Don't reinvent a playbook you already have. A focused single-unit task that matc
 
 ## Start
 
-Open a todolist whose first item is to read the Principles section of the **kaizen-mode** skill. Then add the phases below as todos.
+First decide whether the task belongs here. When a bundled playbook fits, as the paragraph above describes, state the playbook and the one-line reason, then follow `~/.claude/skills/kaizen-mode/playbooks/<name>.md` instead of Phases A to E. The words "figure it out" do not make a task large.
+
+Otherwise, open a todolist whose first item is to read the Principles section of the **kaizen-mode** skill. Then add the phases below as todos.
 
 ## Phase A: Frame
 
@@ -46,10 +48,10 @@ Apply the **sequence-verifiable-units** principle, verifying each unit before st
 
 ## Phase D: Keep the audit trail
 
-Log the run via the **show-me-your-work** skill, one canonical TSV with a row per decision and per unit, evidence as links. figure-it-out's work is usually ambitious enough to commit the trail so the reviewer can read it in the PR. Commit it when confidence has to be shown. The trail plus the diff is what lets the human come back and trust the work.
+Log the run via the **show-me-your-work** skill, one canonical TSV with a row per decision and per unit, evidence as links. Create the file before the first unit and append each row when its decision or unit lands. A trail written in one batch at the end records conclusions, not the order of the decisions. figure-it-out's work is usually ambitious enough to commit the trail so the reviewer can read it in the PR. Commit it when confidence has to be shown. The trail plus the diff is what lets the human come back and trust the work.
 
 ## Phase E: Verify and hand back
 
 Check the whole against the Phase A predicate on the real product, not just the harness. Encode any recurring correction as a gate, a lint rule, a check, or a script, so the win can't silently regress (the **encode-lessons-in-structure** principle).
 
-**Reply:** the playbook you designed, the rigor level and why, the decision-trail path, what's verified against the predicate, and what's still open.
+**Reply:** the playbook you designed, the rigor level and why, the decision-trail path and how the returning human audits it, what's verified against the predicate, and what's still open.

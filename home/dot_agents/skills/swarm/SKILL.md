@@ -14,6 +14,8 @@ Fan out N parallel workers. Two modes, declared in Phase A before anything spawn
 
 Reach for compete when one attempt would lock in the wrong shape: design or code bakeoffs, one-way-door decisions. Reach for cover when you need breadth, not synthesis.
 
+Do not swarm when one deterministic pass answers the task, such as a `grep` over small files or a codemod. Run that pass, return the result in the form the user asked for, and say in one sentence why you did not fan out. Workers earn their cost only when each unit needs judgment or more context than one agent can hold.
+
 Phases A and B are shared. The phases after them differ by mode.
 
 ## Start
@@ -31,7 +33,7 @@ Every worker receives the same brief, so the brief is the contract. Get it right
 1. State the done predicate and the artifact or report the swarm must return.
 2. Declare the mode.
    - **Cover.** Choose the shape: partition into slices, race N workers on identical briefs, or mix both. For a race or mixed shape, declare `first pass`, `rank all`, or `best-of` before spawning.
-   - **Compete.** Derive the rubric. State what success looks like for *this* task, then turn it into 3-6 concrete gradeable criteria. Concrete: `Adds a --dry-run flag that skips writes`. Vague: `code is correct`. The rubric is the picker's tool in Phase D; candidates only see the task.
+   - **Compete.** Derive the rubric. State what success looks like for *this* task, then turn it into 3-6 concrete gradeable criteria. Concrete: `Adds a --dry-run flag that skips writes`. Vague: `code is correct`. Write the rubric to a file before any worker spawns. The cross-judge and the picker use it. Candidates see only the task.
 3. Set N and pick the models.
    - **Cover.** Set N from the user or derive it from the shape. N is total workers, not the concurrency limit; excess workers queue and run as slots free up. Use `swarm workers` in `~/.claude/kaizen-models.md` when present, otherwise `sonnet`. For a model race, name each arm's model up front.
    - **Compete.** Use `arena runners` from `~/.claude/kaizen-models.md` when present. Otherwise default to one each on `opus`, `fable`, and `sonnet`. Spawn more when the swarm covers multiple design directions. Same model N times when the work is generation-bound rather than judgment-sensitive.
@@ -63,7 +65,7 @@ Keep a compact result table, one-line evidenced issues, and explicit gaps or dro
 
 ## Phase D: Report
 
-Return one consolidated in-chat report with the table, issue one-liners, gaps or dropouts, and the race rule when used.
+Return one consolidated in-chat report. Open with the mode, the shape, and N, then give the table, issue one-liners, gaps or dropouts, and the race rule when used.
 
 ---
 
@@ -101,4 +103,4 @@ If verification surfaces a problem the swarm did not catch, either Phase A was w
 
 ## Outputs
 
-One synthesized artifact. One short synthesis note alongside, naming the base, the grafts (with source candidate), the rejections, the dropouts if any, and the verification result.
+One synthesized artifact. One short synthesis note alongside, naming the mode and why, the rubric criteria with each candidate's scores, the base, the grafts (with source candidate), the rejections, the dropouts if any, and the verification result.

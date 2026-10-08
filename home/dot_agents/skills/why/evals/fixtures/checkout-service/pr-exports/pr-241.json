@@ -1,0 +1,10 @@
+{
+  "number": 241,
+  "title": "chore(cart): retry once on version conflict",
+  "author": {"login": "ana-o"},
+  "createdAt": "2024-08-30T18:00:00Z",
+  "mergedAt": "2024-09-02T13:05:00Z",
+  "body": "Users saw 'cart changed, try again' too often after #212. Retry the write once with a fresh row_version.",
+  "comments": [],
+  "reviews": [{"author": {"login": "marco-d"}, "state": "APPROVED", "body": ""}]
+}

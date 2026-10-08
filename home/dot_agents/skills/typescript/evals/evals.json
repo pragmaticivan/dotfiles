@@ -3,9 +3,11 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Our order detail page has this state and we keep getting bug reports where the spinner and the error banner render at the same time: `const [loading, setLoading] = useState(false); const [order, setOrder] = useState<Order | null>(null); const [error, setError] = useState<string | null>(null);`. Can you add a retry button and clean this up while you're in there?",
+      "prompt": "Our order detail page (evals/fixtures/order-page/src/orders/OrderDetailPage.tsx) has this state and we keep getting bug reports where the spinner and the error banner render at the same time: `const [loading, setLoading] = useState(false); const [order, setOrder] = useState<Order | null>(null); const [error, setError] = useState<string | null>(null);`. Can you add a retry button and clean this up while you're in there?",
       "expected_output": "Replaces the three parallel state values with one discriminated union (or useReducer over one), so loading + error cannot both be true. Adds retry as a state transition. Explains why the union removes the bug class rather than adding a guard.",
-      "files": [],
+      "files": [
+        "evals/fixtures/order-page"
+      ],
       "expectations": [
         "Replaces the parallel boolean/nullable state with a single discriminated union carrying a literal discriminant (kind/type/status)",
         "Names the impossible-state problem explicitly: the old shape allowed loading and error at once",
@@ -16,13 +18,15 @@
     },
     {
       "id": 2,
-      "prompt": "Add a POST /webhooks/stripe handler to our Express app that marks the matching order paid. I already wrote the type: `interface StripeEvent { id: string; type: string; data: { object: { metadata: { orderId: string }; amount_received: number } } }` and the other handlers just do `const event = req.body as StripeEvent`.",
+      "prompt": "Add a POST /webhooks/stripe handler to our Express app (the repo is in evals/fixtures/orders-api) that marks the matching order paid. I already wrote the type: `interface StripeEvent { id: string; type: string; data: { object: { metadata: { orderId: string }; amount_received: number } } }` and the other handlers just do `const event = req.body as StripeEvent`.",
       "expected_output": "Parses the request body into the typed shape at the boundary instead of casting, and flags the cast pattern in the existing handlers. Treats webhook input as untrusted, including signature verification.",
-      "files": [],
+      "files": [
+        "evals/fixtures/orders-api"
+      ],
       "expectations": [
         "Replaces `req.body as StripeEvent` with a runtime parse (schema library or an honest validating function) rather than reusing the cast",
-        "States why the cast is unsafe: nothing checked the shape, so the failure moves to runtime",
-        "Derives the TypeScript type from the schema (e.g. z.infer) instead of keeping a hand-written twin alongside it",
+        "States why the cast is unsafe: it checks nothing at runtime, so a wrong or forged body reaches the handler unchecked",
+        "Takes the TypeScript type from the schema (e.g. z.infer) or from the SDK that verified the event (e.g. Stripe.Event), and does not leave the hand-written StripeEvent interface behind as an unused twin",
         "Treats the webhook body as untrusted input and verifies the Stripe signature, not just the shape",
         "Handles the async handler so a rejection cannot float (await plus try/catch, or an error-forwarding wrapper)",
         "Does not introduce a new `any`, `as`, `!`, or `@ts-ignore` anywhere in the rewritten handler"
@@ -30,9 +34,11 @@
     },
     {
       "id": 3,
-      "prompt": "Our tsconfig only has `strict: false` and there's `any` everywhere — about 40k lines across an Express API. Leadership wants us 'type safe'. Can you make the codebase strict?",
+      "prompt": "Our tsconfig only has `strict: false` and there's `any` everywhere — about 40k lines across an Express API. I put a trimmed copy of the repo in evals/fixtures/loose-api. Leadership wants us 'type safe'. Can you make the codebase strict?",
       "expected_output": "Measures the current state first, then proposes a staged, per-flag, per-commit plan starting with `strict: true`. Does not flip every flag at once, and does not claim the migration is done after editing the config.",
-      "files": [],
+      "files": [
+        "evals/fixtures/loose-api"
+      ],
       "expectations": [
         "Measures before changing: reads the existing tsconfig and counts the current `any` / `as` / escape-hatch load (running scripts/ts-audit.mjs counts)",
         "Proposes a staged plan of one flag per commit rather than enabling everything in a single change",
@@ -52,7 +58,7 @@
         "Explains that the compiler cannot see the earlier lookup, so the assertion is an unverified claim that fails at runtime",
         "Delivers a working alternative: handles the undefined branch, or changes the signature/data structure (e.g. a Map lookup or a non-empty type) so the value is guaranteed",
         "Unblocks the deploy in the same reply rather than only lecturing",
-        "If a suppression is genuinely unavoidable, uses `@ts-expect-error` with a reason instead of `@ts-ignore` or `any`"
+        "Does not offer `!`, `as`, `@ts-ignore`, or `any` as a fallback for when the user is in a hurry"
       ]
     },
     {
@@ -72,27 +78,31 @@
     },
     {
       "id": 6,
-      "prompt": "We're ripping out ESLint and Prettier and moving to Ultracite across our TS monorepo. I already ran `biome migrate eslint --write` and it produced a biome.json with about 40 rules in it. I added a few comments in there explaining our rule choices. Can you review it and make sure we didn't lose anything important?",
-      "expected_output": "Flags that comments in biome.json make Biome silently fall back to defaults (rename to biome.jsonc), moves the config onto ultracite/biome/core instead of the hand-migrated rule list, points out that no preset enables the floating-promise rules, and notes that tsc is still required.",
-      "files": [],
+      "prompt": "We're ripping out ESLint and Prettier and moving to Ultracite across our TS monorepo. I already ran `biome migrate eslint --write` and it produced a biome.json with about 40 rules in it. The repo is in evals/fixtures/biome-migration. I added a few comments in there explaining our rule choices. Can you review it and make sure we didn't lose anything important?",
+      "expected_output": "Flags that comments in biome.json break the config (Biome 2.1.0 and 2.5.15 both fail with a parse error) and says to rename it to biome.jsonc, moves the config onto ultracite/biome/core instead of the hand-migrated rule list, points out that no preset enables the floating-promise rules, and notes that tsc is still required.",
+      "files": [
+        "evals/fixtures/biome-migration"
+      ],
       "expectations": [
-        "Identifies that comments in biome.json cause Biome to ignore the config silently, and says to rename it to biome.jsonc",
+        "Identifies that comments in biome.json break the config (a parse error, measured on Biome 2.1.0 and 2.5.15), and tells the user without hedging to rename it to biome.jsonc",
         "Moves the config to extend ultracite/biome/core (installed as a dev dependency) rather than keeping the hand-migrated rule list, and says most of those 40 rules are already in the preset",
-        "Checks that noFloatingPromises / noMisusedPromises are named under linter.rules.nursery, and notes that neither a `types` domain nor the ultracite/biome/type-aware preset switches those nursery rules on",
+        "Checks that noFloatingPromises / noMisusedPromises are named under linter.rules.nursery, and notes that no Ultracite preset, ultracite/biome/type-aware included, switches those nursery rules on",
         "States that Ultracite does not replace tsc and confirms a `tsc --noEmit` gate still exists",
-        "Does not tell the user to set formatter.indentStyle by hand once the config extends the preset, since core already sets it",
+        "Does not tell the user to keep formatter.indentStyle or indentWidth by hand once the config extends the preset, since core already sets a two-space indent (overrides for quoteStyle, lineWidth, or trailingCommas that differ from core are fine)",
         "Recommends removing the leftover ESLint and Prettier config files and dependencies",
         "Does not claim rule parity with typescript-eslint without qualification"
       ]
     },
     {
       "id": 7,
-      "prompt": "In `src/scheduler/planNextRun.ts` we have `interface DailySource { id: string; lastRunAt: string | null }`. Add a function that takes `DailySource[]` for one pipeline and returns the oldest instant any of them still needs, or `null` when none has run. Sources advance independently, so a stalled one widens the next run back to it. A source that has never run (`lastRunAt === null`), or whose timestamp fails `Date.parse`, should take whatever the other sources plan rather than dragging everyone back to the epoch. This only covers the daily track — backfills name their own range in a separate function.",
-      "expected_output": "A small function whose doc comment is at most three lines, keeping only the non-obvious invariant. The scope caveat goes into the name, the contract stays in the signature, and the never-ran rule is covered by a test rather than a paragraph.",
-      "files": [],
+      "prompt": "In `src/scheduler/planNextRun.ts` (the repo is in evals/fixtures/pipeline-scheduler) we have `interface DailySource { id: string; lastRunAt: string | null }`. Add a function that takes `DailySource[]` for one pipeline and returns the oldest instant any of them still needs, or `null` when none has run. Sources advance independently, so a stalled one widens the next run back to it. A source that has never run (`lastRunAt === null`), or whose timestamp fails `Date.parse`, should take whatever the other sources plan rather than dragging everyone back to the epoch. This only covers the daily track — backfills name their own range in a separate function. Document it for the next person who touches the scheduler.",
+      "expected_output": "A small function with a doc comment of at most three lines that keeps only the non-obvious invariant. The scope caveat goes into the name, the contract stays in the signature, and the never-ran rule is covered by a test rather than a paragraph.",
+      "files": [
+        "evals/fixtures/pipeline-scheduler"
+      ],
       "expectations": [
-        "The doc comment is at most three prose lines",
-        "The comment does not restate what the signature already says (the return type, or that it can be null)",
+        "Writes a doc comment on the new function, and that comment is at most three prose lines",
+        "The doc comment carries a why the types cannot hold (for example, why a stalled source widens the run or why a never-ran source does not set the floor), and does not restate the signature (the return type, or that it can be null)",
         "No @param or @returns tags that merely repeat the parameter and return types",
         "The daily-track scope is carried by the function name rather than by a sentence in the comment",
         "The non-obvious rule is preserved somewhere — the never-ran/unparseable source not setting the floor is kept in the comment or covered by a test, not silently dropped",

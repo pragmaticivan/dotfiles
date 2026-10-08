@@ -1,0 +1,4 @@
+invoice_id,account_id,state,qty,unit_price
+INV-1001,AC-17,MA,2,19.99
+INV-1001,AC-17,MA,1,5.00
+INV-1002,NP-04,NH,3,10.00

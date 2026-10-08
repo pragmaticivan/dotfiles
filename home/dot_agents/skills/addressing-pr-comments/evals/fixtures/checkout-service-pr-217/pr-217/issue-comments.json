@@ -1,0 +1,16 @@
+{
+  "comments": [
+    {
+      "id": "IC_kwDOcheckout217a",
+      "author": {"login": "danger-bot"},
+      "body": ":warning: Test coverage dropped from 87.2% to 85.9% in this PR.",
+      "createdAt": "2026-10-06T15:41:27Z"
+    },
+    {
+      "id": "IC_kwDOcheckout217b",
+      "author": {"login": "alex-w"},
+      "body": "LGTM ✅",
+      "createdAt": "2026-10-06T18:10:52Z"
+    }
+  ]
+}
