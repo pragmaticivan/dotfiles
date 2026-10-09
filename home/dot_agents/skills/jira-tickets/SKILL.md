@@ -73,6 +73,11 @@ After the writes, fetch each new issue again and check three things:
 
 Jira refuses a link to a closed issue. Report the refused link and continue.
 
-With `acli`, pass the description with `--description-file` and wrap the summary in single quotes. Do not put a title into a double-quoted shell argument.
+`acli` reads plain text or ADF, not Markdown. Convert the ticket first, then pass the summary in single quotes. Do not put a title into a double-quoted shell argument.
+
+```bash
+python3 <skill-dir>/scripts/md_to_adf.py 01-x.md > 01-x.adf.json
+acli jira workitem create --project 'AIE' --type 'Story' --assignee '@me' --summary '<title>' --description-file 01-x.adf.json --json
+```
 
 If neither path works, the files in `/tmp/jira-tickets/<run-slug>/` are the deliverable. The `#` line is the Jira Summary, and the rest is the Description. Jira Cloud converts pasted Markdown.
