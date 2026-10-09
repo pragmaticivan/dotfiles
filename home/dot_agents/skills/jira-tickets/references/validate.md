@@ -9,7 +9,7 @@ Look for these problems, in this order:
 1. **Not viable.** The ticket asks for something the code or the stated constraints make impossible, or the ticket contradicts itself.
 2. **Wrong facts.** A path, symbol, command, or ticket key that does not exist. A claim about runtime behavior that the code does not show, written as fact. A `Verify` command that cannot prove the `Done when` items.
 3. **Hidden blockers.** A dependency, a missing access or credential, a migration, a decision that a human must make, or an unowned question that the ticket does not name.
-4. **Too big.** The ticket holds more than one outcome, or one engineer cannot finish it in one sprint. Propose the split.
+4. **Too big, or cut by layer.** The ticket holds more than one outcome, or one agent cannot finish it in one fresh context window. Or an epic child covers only one layer and a person cannot verify it alone. Propose the split or the merge.
 5. **Cold-reader gaps.** A question that an engineer with no context must ask before they can start.
 6. **Parallel conflicts.** Epic only. Two tickets in different lanes that edit the same files, or a `Depends on` that the lanes do not respect.
 

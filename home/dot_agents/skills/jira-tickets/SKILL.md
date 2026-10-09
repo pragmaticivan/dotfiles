@@ -35,6 +35,8 @@ Send these in one message so they run at the same time:
 
 Write each ticket to its own file in `/tmp/jira-tickets/<run-slug>/`. Use `00-epic.md` for the epic and `<nn>-<slug>.md` for each child. Agents that write in parallel must not share a file.
 
+Cut each child ticket as a vertical slice. It delivers one behavior that a person can demo or verify end to end, through every layer it needs. Do not cut by layer (a storage ticket, then an API ticket). When the slices collide in shared code, put a prefactor ticket first that makes the change easy. A wide mechanical change, for example a rename across many call sites, is the exception: add the new form, migrate the callers in batches, then delete the old form.
+
 Lanes come from the files that each ticket edits. Tickets that edit the same file go in one lane, in dependency order. All other tickets go in different lanes, so that agents can run them at the same time.
 
 ## 3. Lint
@@ -61,7 +63,7 @@ Show the tickets in chat, epic first. Then show a short report:
 
 ## 6. Write to Jira, only with approval
 
-Create or update issues only after the user approves the specific action. Use a Jira write tool from the Atlassian MCP when one exists. If not, use `acli` when `acli jira auth status` succeeds. Create the epic first, then the children with the epic as parent. Then replace the `#` numbers in each `Depends on` with the new keys.
+Create or update issues only after the user approves the specific action. Use a Jira write tool from the Atlassian MCP when one exists. If not, use `acli` when `acli jira auth status` succeeds. Create the epic first, then the children with the epic as parent. Then replace the `#` numbers in each `Depends on` with the new keys, and add each dependency as a Jira "is blocked by" link. Add the `ready-for-agent` label to each ticket whose `Ready for an agent` is `yes`. Then an agent can find ready work with a JQL query.
 
 With `acli`, pass the description with `--description-file` and wrap the summary in single quotes. Do not put a title into a double-quoted shell argument.
 

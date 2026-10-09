@@ -32,7 +32,8 @@
         "Flags as a blocking open question, or as not ready for an agent, that saved filters need storage the repository does not have.",
         "Each child ticket has Agent notes with a Ready for an agent line and paths that exist in the repository.",
         "Reports which lanes or tickets can start in parallel now.",
-        "No ticket adds scope the request did not ask for, such as a new exception type, a latency target, or a metric."
+        "No ticket adds scope the request did not ask for, such as a new exception type, a latency target, or a metric.",
+        "Each child ticket delivers a behavior a person can verify end to end. No child covers only one layer, such as saved-filter storage without the API that uses it."
       ]
     },
     {
