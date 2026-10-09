@@ -45,7 +45,7 @@ Lanes come from the files that each ticket edits. Tickets that edit the same fil
 python3 <skill-dir>/scripts/lint_ticket.py story /tmp/jira-tickets/<run>/01-x.md task /tmp/jira-tickets/<run>/02-y.md
 ```
 
-Fix each `FAIL` before validation. The lint finds dropped sections, placeholders that remain, a `Done when` with no checkbox, and a ticket that is "ready" while it has a blocking question.
+Fix each `FAIL` before validation. The lint finds dropped sections, placeholders that remain, a `Acceptance Criteria` with no checkbox, and a ticket that is "ready" while it has a blocking question.
 
 ## 4. Validate
 

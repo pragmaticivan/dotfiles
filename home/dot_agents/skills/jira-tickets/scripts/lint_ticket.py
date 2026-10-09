@@ -32,7 +32,7 @@ def lint(kind, text, markers):
     if re.search(r"<[A-Z][^>]*>", re.sub(r"`[^`]*`", "", text)):
         problems.append("unfilled `<placeholder>` left in the ticket")
     if kind != "epic" and not re.search(r"^- \[ \] ", text, re.M):
-        problems.append("`Done when` has no `- [ ]` item")
+        problems.append("`Acceptance Criteria` has no `- [ ]` item")
     if "[blocking]" in text and re.search(r"Ready for an agent:\*\* yes", text):
         problems.append("says ready for an agent but has a [blocking] question")
     return problems

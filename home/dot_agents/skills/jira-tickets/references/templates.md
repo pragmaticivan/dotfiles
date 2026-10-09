@@ -6,7 +6,7 @@ Rules for all types:
 
 - The first three lines answer "what, why, done" for a reader who stops there.
 - Write for the engineer who was not in the meeting. No "as discussed", no "the usual way".
-- Each `Done when` item is something a person can see, run, or measure. "Works correctly" fails.
+- Each `Acceptance Criteria` item is something a person can see, run, or measure. "Works correctly" fails.
 - An unknown becomes an open question with an owner. Do not guess an answer.
 - Tag each open question `[blocking]` or `[non-blocking]`. An agent does not start a ticket with a `[blocking]` question. Thus tag a question `[blocking]` only when a different answer changes what gets built. A question that the engineer can answer from the code, or that changes only a detail, is `[non-blocking]`.
 - Do not add scope that the request did not ask for: new error types, metrics, or targets. Put an idea like that in `Open questions` as `[non-blocking]`.
@@ -21,7 +21,7 @@ Rules for all types:
 **TL;DR** <Who> can <do what> so that <benefit>.
 **Why now** <The pain or goal, with evidence: a number, a support ticket, a quote.>
 
-## Done when
+## Acceptance Criteria
 - [ ] <Given a state, when an action, then an observable result.>
 
 ## Out of scope
@@ -34,7 +34,7 @@ Rules for all types:
 - **Ready for an agent:** <yes | no, blocked on the questions above>
 - **Area:** <`path/` (verified) or not verified>
 - **Start here:** <`path/file.ext` symbol, or not verified>
-- **Verify:** <`command` that proves the Done when items>
+- **Verify:** <`command` that proves the Acceptance Criteria items>
 - **Constraints:** <What must not change: APIs, flags, migrations, files owned by others.>
 - **Depends on:** <KEY-123, or none>
 ```
@@ -47,7 +47,7 @@ Rules for all types:
 **TL;DR** <The change> so that <benefit>.
 **Why now** <What goes wrong, or what gets slower, if nobody does this.>
 
-## Done when
+## Acceptance Criteria
 - [ ] <An observable end state: a command output, a metric, a config value.>
 
 ## Approach
@@ -84,7 +84,7 @@ Rules for all types:
 **Actual** <Result.>
 **Evidence** <Logs, a dashboard link, the first-seen date, the version or commit.>
 
-## Done when
+## Acceptance Criteria
 - [ ] The repro steps give the expected result.
 - [ ] A regression test fails before the fix and passes after it.
 

@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "can you write a jira ticket for this? support says trainers exporting the full pokedex get a csv that just stops, we have 1025 pokemon and one trainer only got 151 rows. been happening since at least last week, ~60 trainers/week hit it. repo is evals/fixtures/pokemon-service. don't push anything to jira yet, just give me the ticket",
-      "expected_output": "A Bug ticket in the bug template: symptom title, TL;DR, Impact with severity and the 60 trainers a week, numbered Repro, Expected 1025 rows and Actual 151, Done when with a regression test item. Agent notes name pokedex/export.py and MAX_ROWS = 151 as the suspected cause and give a verify command based on python3 -m unittest. It writes nothing to Jira.",
+      "expected_output": "A Bug ticket in the bug template: symptom title, TL;DR, Impact with severity and the 60 trainers a week, numbered Repro, Expected 1025 rows and Actual 151, Acceptance Criteria with a regression test item. Agent notes name pokedex/export.py and MAX_ROWS = 151 as the suspected cause and give a verify command based on python3 -m unittest. It writes nothing to Jira.",
       "files": [
         "evals/fixtures/pokemon-service"
       ],
@@ -12,7 +12,7 @@
         "Classifies the ticket as a Bug and uses Repro, Expected, and Actual sections.",
         "Names pokedex/export.py and the MAX_ROWS = 151 slice as the suspected cause.",
         "Gives a Verify command that runs the unittest suite, for example python3 -m unittest discover -s tests.",
-        "Has a Done when checklist with a regression test item that fails before the fix.",
+        "Has a Acceptance Criteria checklist with a regression test item that fails before the fix.",
         "States the impact with the about 60 trainers a week figure.",
         "Does not create or update a Jira issue.",
         "Tags as [blocking] only questions whose answer changes the fix. A scoping detail such as which trainer store.all() returns is not [blocking]."
@@ -60,9 +60,9 @@
         "evals/fixtures/pokemon-service"
       ],
       "expectations": [
-        "Rewrites the ticket in the Story template with an outcome title, TL;DR, Done when checkboxes, and Agent notes.",
+        "Rewrites the ticket in the Story template with an outcome title, TL;DR, Acceptance Criteria checkboxes, and Agent notes.",
         "Reports that the template type (Story) differs from the Jira type (Task) and does not change the issue type.",
-        "Carries the by-type sort as an open question instead of adding it to Done when.",
+        "Carries the by-type sort as an open question instead of adding it to Acceptance Criteria.",
         "Lists a comment command that posts the old description with a Previous description heading before the edit command.",
         "Lists an acli jira workitem edit command with a single-quoted --summary and a --description-file that points to ADF made by md_to_adf.py.",
         "No command removes an existing label, and no command uses --remove-labels.",
