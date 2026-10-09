@@ -29,7 +29,7 @@ def lint(kind, text, markers):
     problems = [f"missing `{m}`" for m in markers[kind] if not any(l.startswith(m) for l in text.splitlines())]
     if not text.startswith("# "):
         problems.append("first line must be `# <title>`")
-    if re.search(r"<[A-Z][^>]*>", text):
+    if re.search(r"<[A-Z][^>]*>", re.sub(r"`[^`]*`", "", text)):
         problems.append("unfilled `<placeholder>` left in the ticket")
     if kind != "epic" and not re.search(r"^- \[ \] ", text, re.M):
         problems.append("`Done when` has no `- [ ]` item")
