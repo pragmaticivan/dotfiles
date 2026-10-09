@@ -1,0 +1,55 @@
+{
+  "skill_name": "jira-tickets",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "can you write a jira ticket for this? support says agencies exporting big date ranges get a csv that just stops, one agency had 12k leads and only got 10k rows. been happening since at least last week, ~40 agencies/week hit it. repo is evals/fixtures/leads-service. don't push anything to jira yet, just give me the ticket",
+      "expected_output": "A Bug ticket in the bug template: symptom title, TL;DR, Impact with severity and the 40 agencies a week, numbered Repro, Expected 12,000 rows and Actual 10,000, Done when with a regression test item. Agent notes name leads/export.py and MAX_ROWS = 10_000 as the suspected cause and give a verify command based on python3 -m unittest. It writes nothing to Jira.",
+      "files": [
+        "evals/fixtures/leads-service"
+      ],
+      "expectations": [
+        "Classifies the ticket as a Bug and uses Repro, Expected, and Actual sections.",
+        "Names leads/export.py and the MAX_ROWS = 10_000 slice as the suspected cause.",
+        "Gives a Verify command that runs the unittest suite, for example python3 -m unittest discover -s tests.",
+        "Has a Done when checklist with a regression test item that fails before the fix.",
+        "States the impact with the about 40 agencies a week figure.",
+        "Does not create or update a Jira issue.",
+        "Tags as [blocking] only questions whose answer changes the fix. A scoping detail such as which agency store.all() returns is not [blocking]."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "PM wants the leads list to get: filter by created date range, export only the filtered leads to csv, and saved filters per user. break it into tickets so we can hand them to a few coding agents at once. code is in evals/fixtures/leads-service",
+      "expected_output": "An Epic with a success measure, scope, and a Breakdown table of child tickets with types, dependencies, and lanes, plus one ticket file for each child. Tickets that edit the same file (leads/filters.py, leads/api.py) share a lane or have explicit dependencies. Saved filters gets a blocking question about storage, because the repository has no persistence for user settings. Each child has Agent notes with verified paths and a Ready for an agent line.",
+      "files": [
+        "evals/fixtures/leads-service"
+      ],
+      "expectations": [
+        "Produces an Epic with a Breakdown table that lists each child with a Type, a Depends on value, and a Lane.",
+        "Produces a separate ticket for each of the three features: the date filter, the filtered export, and saved filters.",
+        "The lanes or dependencies stop two parallel tickets from editing the same file, such as leads/filters.py or leads/api.py.",
+        "Flags as a blocking open question, or as not ready for an agent, that saved filters need storage the repository does not have.",
+        "Each child ticket has Agent notes with a Ready for an agent line and paths that exist in the repository.",
+        "Reports which lanes or tickets can start in parallel now.",
+        "No ticket adds scope the request did not ask for, such as a new exception type, a latency target, or a metric."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "need a task ticket: move the nightly lead export onto our redis queue so it stops blocking the api workers. repo: evals/fixtures/leads-service",
+      "expected_output": "A Task ticket. The validation surfaces that the repository has no Redis or queue code: the nightly export in leads/jobs.py runs on a thread, so the premise is not verified. The ticket carries this as a blocking open question with an owner, sets Ready for an agent to no, and does not invent Redis paths or modules.",
+      "files": [
+        "evals/fixtures/leads-service"
+      ],
+      "expectations": [
+        "Classifies the ticket as a Task.",
+        "Points out that the repository has no Redis or queue code and that the export runs on a thread in leads/jobs.py.",
+        "Adds a blocking open question with an owner about which Redis queue to use or whether it exists.",
+        "Sets Ready for an agent to no.",
+        "Does not name a Redis file, module, or class as if it exists in the repository.",
+        "Does not state as fact a runtime claim that the repository does not show, such as which process calls run_nightly_export."
+      ]
+    }
+  ]
+}
