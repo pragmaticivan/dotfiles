@@ -49,7 +49,7 @@ Fix each `FAIL` before validation. The lint finds dropped sections, placeholders
 
 ## 4. Validate
 
-Spawn validator subagents in one message (in Claude Code, `general-purpose`, model `sonnet`). Each validator gets the path to `references/validate.md`, its ticket paths, and the repository root when grounding ran. Give one validator each ticket. For an epic, give one more validator the full set, which checks for lane conflicts and gaps in coverage.
+Do not skip this step, even for one small ticket. The draft has not had a cold read yet, and the validator finds wrong facts that the lint cannot find. Spawn validator subagents in one message (in Claude Code, `general-purpose`, model `sonnet`). Each validator gets the path to `references/validate.md`, its ticket paths, and the repository root when grounding ran. Give one validator each ticket. For an epic, give one more validator the full set, which checks for lane conflicts and gaps in coverage.
 
 Apply each `[blocking]` fix to the ticket. When a fix needs a human decision, add it as a `[blocking]` open question with an owner, and set `Ready for an agent` to `no`. Apply each `[non-blocking]` fix that takes one line. Run the lint again. Do not validate a second time.
 
@@ -57,7 +57,7 @@ Apply each `[blocking]` fix to the ticket. When a fix needs a human decision, ad
 
 Show the tickets in chat, epic first. Then show a short report:
 
-- The verdict for each ticket and the `[blocking]` items that a human must answer. These are the grooming agenda.
+- The validator's `VERDICT` line for each ticket, copied as it came back, and the `[blocking]` items that a human must answer. These are the grooming agenda. A ticket with no `VERDICT` line is not done.
 - The tickets that are ready for an agent, and the lanes that can start in parallel.
 - The paths that you could not verify.
 
@@ -68,7 +68,7 @@ Create or update issues only after the user approves the specific action. Use a 
 After the writes, fetch each issue again and check two things:
 
 - The `- [ ]` items show as Jira checkboxes, not as text.
-- Remove the labels that the tool added on its own, for example `created-with-atlassian-mcp`. Keep `ready-for-agent`.
+- Remove each label that the tool added in this run, for example `created-with-atlassian-mcp` on a new issue. Keep `ready-for-agent`, and keep each label that the issue had before this run.
 
 Jira refuses a link to a closed issue. Report the refused link and continue.
 
@@ -97,15 +97,13 @@ Fix each reversed link: delete it with `acli jira workitem link delete --id <id>
 
 ### Update an existing issue
 
-A bare Jira key from step 1 ends here as an update, not a create. Save the issue as fetched, with `acli jira workitem view 'ABC-123' --fields summary,description,labels,issuetype --json > old.json`. In the step 5 report, show the new summary and description. If the template picked a different type, report the mismatch and do not change the type. On approval:
+A bare Jira key from step 1 ends here as an update, not a create. Fetch it with `acli jira workitem view 'ABC-123' --fields summary,description,labels,issuetype --json`. In the step 5 report, show the new summary and description. If the template picked a different type, report the mismatch and do not change the type. On approval:
 
 ```bash
-jq '{type:"doc",version:1,content:([{type:"heading",attrs:{level:3},content:[{type:"text",text:"Previous description"}]}] + .fields.description.content)}' old.json > old-comment.json &&
-acli jira workitem comment create --key 'ABC-123' --body-file old-comment.json &&
 acli jira workitem edit --key 'ABC-123' --summary '<title>' --description-file 01-x.adf.json --yes
 ```
 
-- The `&&` runs the edit only after the comment succeeds, so that the old text is never lost. Skip the comment when the old description is empty.
+- Do not post the old description as a comment. The Jira History tab keeps it.
 - Change only the summary, the description, and the `ready-for-agent` label. `--labels` adds to the existing labels, so pass only `ready-for-agent`. Do not remove a label that the issue had before.
 - After the edit, fetch the issue again and run the same checks as for a create.
 

@@ -55,7 +55,7 @@
     {
       "id": 4,
       "prompt": "POKE-42 is a mess, rewrite it in place. acli can't reach jira from this box so I dumped the issue with acli view --json to evals/fixtures/pokemon-service/POKE-42.json. code is in the same folder. give me the rewritten ticket and the exact commands you'd run once I say go",
-      "expected_output": "The ticket rewritten in the Story template, because trainers notice the sort, with the existing Jira type Task reported as a mismatch and not changed. The by-type sort is an open question, not a silent addition. The commands, not run, are in order: build the ADF comment from POKE-42.json with a Previous description heading, post it with acli jira workitem comment create, convert the ticket with md_to_adf.py, then acli jira workitem edit with a single-quoted summary and --description-file. No command removes the team-trainers or created-with-atlassian-mcp labels.",
+      "expected_output": "The ticket rewritten in the Story template, because trainers notice the sort, with the existing Jira type Task reported as a mismatch and not changed. The by-type sort is an open question, not a silent addition. The commands, not run, convert the ticket with md_to_adf.py, then run acli jira workitem edit with a single-quoted summary and --description-file. No command posts a comment, and no command removes the team-trainers or created-with-atlassian-mcp labels.",
       "files": [
         "evals/fixtures/pokemon-service"
       ],
@@ -63,7 +63,7 @@
         "Rewrites the ticket in the Story template with an outcome title, TL;DR, Acceptance Criteria checkboxes, and Agent notes.",
         "Reports that the template type (Story) differs from the Jira type (Task) and does not change the issue type.",
         "Carries the by-type sort as an open question instead of adding it to Acceptance Criteria.",
-        "Lists a comment command that posts the old description with a Previous description heading before the edit command.",
+        "Does not post the old description as a comment.",
         "Lists an acli jira workitem edit command with a single-quoted --summary and a --description-file that points to ADF made by md_to_adf.py.",
         "No command removes an existing label, and no command uses --remove-labels.",
         "Does not claim that it ran any write command against Jira."
