@@ -11,7 +11,7 @@ Turn a request into Jira tickets in the format from `references/templates.md`. S
 
 Read `references/templates.md` now. Each later step uses it.
 
-- **Bare Jira key** (the full request is one token like `ABC-123`): fetch the issue and rewrite it in the template. For a key inside a longer request, do not fetch the issue unless the request asks you to use it as context, for example as a parent epic.
+- **Bare Jira key** (the full request is one token like `ABC-123`): fetch the issue and rewrite it in the template. Step 6 updates the issue in place. For a key inside a longer request, do not fetch the issue unless the request asks you to use it as context, for example as a parent epic.
 - **Pick the type.** Use the first row that matches:
 
 | Signal | Type |
@@ -65,7 +65,7 @@ Show the tickets in chat, epic first. Then show a short report:
 
 Create or update issues only after the user approves the specific action. Use a Jira write tool from the Atlassian MCP when one exists. If not, use `acli` when `acli jira auth status` succeeds. Create the epic first, then the children with the epic as parent. Create one issue and make sure that Jira accepts it before you create the others. If Jira rejects a create for a missing required field, fetch an existing issue of the same project and type, and copy only that field. Then replace the `#` numbers in each `Depends on` with the new keys, and add each dependency as a Jira "is blocked by" link. Add the `ready-for-agent` label to each ticket whose `Ready for an agent` is `yes`. Then an agent can find ready work with a JQL query.
 
-After the writes, fetch each new issue again and check three things:
+After the writes, fetch each issue again and check three things:
 
 - The `- [ ]` items show as Jira checkboxes, not as text.
 - Each "is blocked by" link points the correct direction. Some Jira sites invert it.
@@ -79,5 +79,19 @@ Jira refuses a link to a closed issue. Report the refused link and continue.
 python3 <skill-dir>/scripts/md_to_adf.py 01-x.md > 01-x.adf.json
 acli jira workitem create --project 'AIE' --type 'Story' --assignee '@me' --summary '<title>' --description-file 01-x.adf.json --json
 ```
+
+### Update an existing issue
+
+A bare Jira key from step 1 ends here as an update, not a create. Save the issue as fetched, with `acli jira workitem view 'ABC-123' --fields summary,description,labels,issuetype --json > old.json`. In the step 5 report, show the new summary and description. If the template picked a different type, report the mismatch and do not change the type. On approval:
+
+```bash
+jq '{type:"doc",version:1,content:([{type:"heading",attrs:{level:3},content:[{type:"text",text:"Previous description"}]}] + .fields.description.content)}' old.json > old-comment.json &&
+acli jira workitem comment create --key 'ABC-123' --body-file old-comment.json &&
+acli jira workitem edit --key 'ABC-123' --summary '<title>' --description-file 01-x.adf.json --yes
+```
+
+- The `&&` runs the edit only after the comment succeeds, so that the old text is never lost. Skip the comment when the old description is empty.
+- Change only the summary, the description, and the `ready-for-agent` label. `--labels` adds to the existing labels, so pass only `ready-for-agent`. Do not remove a label that the issue had before.
+- After the edit, fetch the issue again and run the same checks as for a create.
 
 If neither path works, the files in `/tmp/jira-tickets/<run-slug>/` are the deliverable. The `#` line is the Jira Summary, and the rest is the Description. Jira Cloud converts pasted Markdown.
