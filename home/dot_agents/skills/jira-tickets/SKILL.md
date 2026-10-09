@@ -63,12 +63,11 @@ Show the tickets in chat, epic first. Then show a short report:
 
 ## 6. Write to Jira, only with approval
 
-Create or update issues only after the user approves the specific action. Use a Jira write tool from the Atlassian MCP when one exists. If not, use `acli` when `acli jira auth status` succeeds. Create the epic first, then the children with the epic as parent. Create one issue and make sure that Jira accepts it before you create the others. If Jira rejects a create for a missing required field, fetch an existing issue of the same project and type, and copy only that field. Then replace the `#` numbers in each `Depends on` with the new keys, and add each dependency as a Jira "is blocked by" link. Add the `ready-for-agent` label to each ticket whose `Ready for an agent` is `yes`. Then an agent can find ready work with a JQL query.
+Create or update issues only after the user approves the specific action. Use a Jira write tool from the Atlassian MCP when one exists. If not, use `acli` when `acli jira auth status` succeeds. Create the epic first, then the children with the epic as parent. Create one issue and make sure that Jira accepts it before you create the others. If Jira rejects a create for a missing required field, fetch an existing issue of the same project and type, and copy only that field. Then replace the `#` numbers in each `Depends on` with the new keys, and link each dependency as in "Link dependencies" below. Add the `ready-for-agent` label to each ticket whose `Ready for an agent` is `yes`. Then an agent can find ready work with a JQL query.
 
-After the writes, fetch each issue again and check three things:
+After the writes, fetch each issue again and check two things:
 
 - The `- [ ]` items show as Jira checkboxes, not as text.
-- Each "is blocked by" link points the correct direction. Some Jira sites invert it.
 - Remove the labels that the tool added on its own, for example `created-with-atlassian-mcp`. Keep `ready-for-agent`.
 
 Jira refuses a link to a closed issue. Report the refused link and continue.
@@ -79,6 +78,22 @@ Jira refuses a link to a closed issue. Report the refused link and continue.
 python3 <skill-dir>/scripts/md_to_adf.py 01-x.md > 01-x.adf.json
 acli jira workitem create --project 'AIE' --type 'Story' --assignee '@me' --summary '<title>' --description-file 01-x.adf.json --json
 ```
+
+### Link dependencies
+
+`acli jira workitem link create --out X --in Y --type Blocks` prints "X Blocks Y", but Jira stores "Y blocks X". Do not call it directly. Use the script, which takes pairs of the blocked issue and then its blocker, the same order as `Depends on`. It reads each link back and prints `FAIL` for a missing or reversed link.
+
+```bash
+bash <skill-dir>/scripts/link_blocks.sh 'AIE-12' 'AIE-11' 'AIE-13' 'AIE-11'
+```
+
+After a batch, spawn one review subagent (in Claude Code, `general-purpose`, model `haiku`). Give it the ticket files and the map from `#` numbers to the new keys. Tell it to do these steps:
+
+1. Write the expected sentence for each `Depends on`, for example "AIE-12 is blocked by AIE-11".
+2. Run `acli jira workitem view <KEY> --fields issuelinks --json` for each new issue. On each key, an entry with `inwardIssue` reads "KEY is blocked by" that issue, and an entry with `outwardIssue` reads "KEY blocks" that issue.
+3. Report each expected link as ok, missing, or reversed, and each Blocks link that no ticket asked for. Do not change Jira.
+
+Fix each reversed link: delete it with `acli jira workitem link delete --id <id> --yes`, then run the script again for that pair.
 
 ### Update an existing issue
 

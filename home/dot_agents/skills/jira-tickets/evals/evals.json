@@ -68,6 +68,21 @@
         "No command removes an existing label, and no command uses --remove-labels.",
         "Does not claim that it ran any write command against Jira."
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "I created the pokedex batch in jira: POKE-61 type filter, POKE-62 filtered export (depends on POKE-61), POKE-63 saved teams (depends on POKE-61). acli can't reach jira from this box, so I dumped each issue with acli jira workitem view --fields issuelinks --json into evals/fixtures/pokemon-service/links/. are the blocking links right? give me the exact fix commands, don't run them",
+      "expected_output": "POKE-62 is blocked by POKE-61: ok. POKE-63 is blocked by POKE-61: reversed, because the dump shows POKE-63 blocks POKE-61 (link id 9002). The fix deletes link 9002 with acli jira workitem link delete --id 9002, then runs link_blocks.sh 'POKE-63' 'POKE-61'. It does not call acli link create with --out POKE-61 --in POKE-63 or other hand-ordered flags.",
+      "files": [
+        "evals/fixtures/pokemon-service"
+      ],
+      "expectations": [
+        "Reports POKE-62 is blocked by POKE-61 as correct.",
+        "Reports the POKE-63 link as reversed: POKE-63 blocks POKE-61 instead of being blocked by it.",
+        "Names link id 9002 and gives acli jira workitem link delete --id 9002 as the first fix step.",
+        "Recreates the link with link_blocks.sh with POKE-63 first and POKE-61 second, not with a hand-written acli link create.",
+        "Does not claim that it ran any write command against Jira."
+      ]
     }
   ]
 }
