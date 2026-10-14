@@ -1,0 +1,29 @@
+{
+  "key": "POKE-61",
+  "fields": {
+    "issuelinks": [
+      {
+        "id": "9001",
+        "type": {
+          "name": "Blocks",
+          "inward": "is blocked by",
+          "outward": "blocks"
+        },
+        "outwardIssue": {
+          "key": "POKE-62"
+        }
+      },
+      {
+        "id": "9002",
+        "type": {
+          "name": "Blocks",
+          "inward": "is blocked by",
+          "outward": "blocks"
+        },
+        "inwardIssue": {
+          "key": "POKE-63"
+        }
+      }
+    ]
+  }
+}

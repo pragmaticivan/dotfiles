@@ -1,0 +1,88 @@
+{
+  "skill_name": "jira-tickets",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "can you write a jira ticket for this? support says trainers exporting the full pokedex get a csv that just stops, we have 1025 pokemon and one trainer only got 151 rows. been happening since at least last week, ~60 trainers/week hit it. repo is evals/fixtures/pokemon-service. don't push anything to jira yet, just give me the ticket",
+      "expected_output": "A Bug ticket in the bug template: symptom title, TL;DR, Impact with severity and the 60 trainers a week, numbered Repro, Expected 1025 rows and Actual 151, Acceptance Criteria with a regression test item. Agent notes name pokedex/export.py and MAX_ROWS = 151 as the suspected cause and give a verify command based on python3 -m unittest. It writes nothing to Jira.",
+      "files": [
+        "evals/fixtures/pokemon-service"
+      ],
+      "expectations": [
+        "Classifies the ticket as a Bug and uses Repro, Expected, and Actual sections.",
+        "Names pokedex/export.py and the MAX_ROWS = 151 slice as the suspected cause.",
+        "Gives a Verify command that runs the unittest suite, for example python3 -m unittest discover -s tests.",
+        "Has a Acceptance Criteria checklist with a regression test item that fails before the fix.",
+        "States the impact with the about 60 trainers a week figure.",
+        "Does not create or update a Jira issue.",
+        "Tags as [blocking] only questions whose answer changes the fix. A scoping detail such as which trainer store.all() returns is not [blocking]."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "PM wants the pokedex list to get: filter by type, export only the filtered pokemon to csv, and saved teams per trainer. break it into tickets so we can hand them to a few coding agents at once. code is in evals/fixtures/pokemon-service",
+      "expected_output": "An Epic with a success measure, scope, and a Breakdown table of child tickets with types, dependencies, and lanes, plus one ticket file for each child. Tickets that edit the same file (pokedex/filters.py, pokedex/api.py) share a lane or have explicit dependencies. Saved teams gets a blocking question about storage, because the repository has no persistence for trainer data. Each child has Agent notes with verified paths and a Ready for an agent line.",
+      "files": [
+        "evals/fixtures/pokemon-service"
+      ],
+      "expectations": [
+        "Produces an Epic with a Breakdown table that lists each child with a Type, a Depends on value, and a Lane.",
+        "Produces a separate ticket for each of the three features: the type filter, the filtered export, and saved teams.",
+        "The lanes or dependencies stop two parallel tickets from editing the same file, such as pokedex/filters.py or pokedex/api.py.",
+        "Flags as a blocking open question, or as not ready for an agent, that saved teams need storage the repository does not have.",
+        "Each child ticket has Agent notes with a Ready for an agent line and paths that exist in the repository.",
+        "Reports which lanes or tickets can start in parallel now.",
+        "No ticket adds scope the request did not ask for, such as a new exception type, a latency target, or a metric.",
+        "Each child ticket delivers a behavior a person can verify end to end. No child covers only one layer, such as saved-team storage without the API that uses it."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "need a task ticket: move the nightly pokedex sync onto our redis queue so it stops blocking the api workers. repo: evals/fixtures/pokemon-service",
+      "expected_output": "A Task ticket. The validation surfaces that the repository has no Redis or queue code: the nightly sync in pokedex/jobs.py runs on a thread, so the premise is not verified. The ticket carries this as a blocking open question with an owner, sets Ready for an agent to no, and does not invent Redis paths or modules.",
+      "files": [
+        "evals/fixtures/pokemon-service"
+      ],
+      "expectations": [
+        "Classifies the ticket as a Task.",
+        "Points out that the repository has no Redis or queue code and that the sync runs on a thread in pokedex/jobs.py.",
+        "Adds a blocking open question with an owner about which Redis queue to use or whether it exists.",
+        "Sets Ready for an agent to no.",
+        "Does not name a Redis file, module, or class as if it exists in the repository.",
+        "Does not state as fact a runtime claim that the repository does not show, such as which process calls run_nightly_sync."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "POKE-42 is a mess, rewrite it in place. acli can't reach jira from this box so I dumped the issue with acli view --json to evals/fixtures/pokemon-service/POKE-42.json. code is in the same folder. give me the rewritten ticket and the exact commands you'd run once I say go",
+      "expected_output": "The ticket rewritten in the Story template, because trainers notice the sort, with the existing Jira type Task reported as a mismatch and not changed. The by-type sort is an open question, not a silent addition. The commands, not run, convert the ticket with md_to_adf.py, then run acli jira workitem edit with a single-quoted summary and --description-file. No command posts a comment, and no command removes the team-trainers or created-with-atlassian-mcp labels.",
+      "files": [
+        "evals/fixtures/pokemon-service"
+      ],
+      "expectations": [
+        "Rewrites the ticket in the Story template with an outcome title, TL;DR, Acceptance Criteria checkboxes, and Agent notes.",
+        "Reports that the template type (Story) differs from the Jira type (Task) and does not change the issue type.",
+        "Carries the by-type sort as an open question instead of adding it to Acceptance Criteria.",
+        "Does not post the old description as a comment.",
+        "Lists an acli jira workitem edit command with a single-quoted --summary and a --description-file that points to ADF made by md_to_adf.py.",
+        "No command removes an existing label, and no command uses --remove-labels.",
+        "Does not claim that it ran any write command against Jira."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I created the pokedex batch in jira: POKE-61 type filter, POKE-62 filtered export (depends on POKE-61), POKE-63 saved teams (depends on POKE-61). acli can't reach jira from this box, so I dumped each issue with acli jira workitem view --fields issuelinks --json into evals/fixtures/pokemon-service/links/. are the blocking links right? give me the exact fix commands, don't run them",
+      "expected_output": "POKE-62 is blocked by POKE-61: ok. POKE-63 is blocked by POKE-61: reversed, because the dump shows POKE-63 blocks POKE-61 (link id 9002). The fix deletes link 9002 with acli jira workitem link delete --id 9002, then runs link_blocks.sh 'POKE-63' 'POKE-61'. It does not call acli link create with --out POKE-61 --in POKE-63 or other hand-ordered flags.",
+      "files": [
+        "evals/fixtures/pokemon-service"
+      ],
+      "expectations": [
+        "Reports POKE-62 is blocked by POKE-61 as correct.",
+        "Reports the POKE-63 link as reversed: POKE-63 blocks POKE-61 instead of being blocked by it.",
+        "Names link id 9002 and gives acli jira workitem link delete --id 9002 as the first fix step.",
+        "Recreates the link with link_blocks.sh with POKE-63 first and POKE-61 second, not with a hand-written acli link create.",
+        "Does not claim that it ran any write command against Jira."
+      ]
+    }
+  ]
+}

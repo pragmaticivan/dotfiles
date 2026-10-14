@@ -1,0 +1,15 @@
+{
+  "key": "POKE-42",
+  "fields": {
+    "summary": "pokedex sorting",
+    "issuetype": {"name": "Task"},
+    "labels": ["team-trainers", "created-with-atlassian-mcp"],
+    "description": {
+      "type": "doc",
+      "version": 1,
+      "content": [
+        {"type": "paragraph", "content": [{"type": "text", "text": "sort the pokedex list. trainers want it by name and also by id, default should prob be id. see the slack thread from last week. also maybe by type?"}]}
+      ]
+    }
+  }
+}
