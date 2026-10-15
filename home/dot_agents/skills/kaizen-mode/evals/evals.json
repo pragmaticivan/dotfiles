@@ -113,6 +113,31 @@
         "Says wrong findings get a dismissal with a reason, not a code change.",
         "Says it stops after the bot's pass, without a CI watch loop or a merge."
       ]
+    },
+    {
+      "id": 8,
+      "prompt": "/kaizen-mode complete the lead judgment for this handed-off review. Do not launch more reviewers or edit production code. Scope is the Python function `expired(now, deadline): return now >= deadline` at immutable revision review-a. The contract says expiry includes the deadline. Three reviewers call equality a critical bug and want `>` instead. One reviewer says the current code is correct and reports `expired(10, 10) == True`. A second candidate says an unreachable internal caller can pass null, but provides no caller. Resolve the findings with a local executable check and report evidence, severity, dispositions, and limits. Do not publish a PR.",
+      "expected_output": "The agent runs the actual function with before, at, and after deadline values. It refutes the majority finding using the contract and observed results, does not inflate severity from votes, and investigates or preserves uncertainty for the unsupported null claim. It keeps the review read-only and binds the verdict to review-a.",
+      "files": [],
+      "expectations": [
+        "Runs an executable check of the supplied expired function before, at, and after the deadline",
+        "Refutes the equality finding because the contract includes the deadline, despite the majority",
+        "Does not raise impact severity or evidence strength from reviewer count",
+        "Does not confirm or fix the null claim without a reachable caller, and records the missing evidence",
+        "Reports revision review-a and keeps production code unchanged"
+      ]
+    },
+    {
+      "id": 9,
+      "prompt": "/kaizen-mode finish this review-fix handoff. The declared budget was one discovery pass and one fresh review after authorized fixes. Both passes are spent. Revision review-a passed its regression test. The owner then changed a shared parser contract in revision review-b. The fresh reviewer cannot check one consumer because its source is unavailable, and the new revision has not run the old regression. Other reviewers say review-a was clean, so approve review-b and stop. Give the verdict and the remaining work. Do not edit files or launch more agents.",
+      "expected_output": "The agent reports blocked or incomplete for review-b. It rejects stale evidence and the vote-based approval. It names the regression rerun and affected-consumer review as unfinished work without resetting the exhausted budget or assuming missing behavior.",
+      "files": [],
+      "expectations": [
+        "Reports blocked or incomplete for revision review-b, not approval",
+        "States that review-a evidence does not establish correctness of review-b",
+        "Names the regression rerun and affected shared-contract consumer as unfinished checks",
+        "Does not reset the spent budget, launch further review, or claim defect-free code"
+      ]
     }
   ]
 }

@@ -1,12 +1,14 @@
 ---
 # Source: https://github.com/cursor/plugins/blob/main/pstack/skills/interrogate/SKILL.md
 name: interrogate
-description: "Adversarially review a change with one reviewer per configured model, then synthesize the verdict. Agreement across models is the signal."
+description: "Use for adversarial review of a change with one reviewer per configured model. Resolve findings with evidence, not votes. Return a review-only verdict."
 ---
 
 # Interrogate
 
-Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric. The adversarial signal comes from model diversity, not assigned personas. Models differ in blind spots, priors, and reasoning patterns. Agreement across models is high-confidence signal; lone-model findings are worth reading but lower confidence.
+Spawn one reviewer per configured model to adversarially review code changes. Each model gets the same prompt and rubric, without assigned personas.
+Use the [adversarial review protocol](../kaizen-mode/references/adversarial-review.md) for independence, finding records, evidence checks, and the review budget.
+Agreement can prioritize investigation. A supported minority finding outweighs an unsupported majority.
 
 The deliverable is a synthesized verdict. Do not apply changes, even when the user also asks you to fix what you find or the change is small. A fix request does not replace the review. Run the reviewers, deliver the verdict, and ask which Act On items to apply. The user approves fixes after seeing the verdict, because a fix that skips the cross-model check loses the signal the user asked for.
 
@@ -47,9 +49,12 @@ For each reviewer:
 - `model`: the configured `interrogate reviewers` entry, or the table default with no configured line
 - `readonly`: `true`
 
-If a model slug is rejected as unresolvable when you try to spawn the subagent, check the valid slugs in the Agent tool's error message, pick the closest equivalent (prefer the highest-reasoning tier of the same family), spawn with the valid slug, and open a separate PR to update the configured value or default table. Do not block the review on the slug issue. If the configured value is `inherit-parent` or `auto`, omit `model` instead; never treat those aliases as broken slugs or enter this fallback for them.
+If a model slug is unavailable, check the host's model list for a supported replacement within the declared budget.
+Report the substitution and any change in model diversity. Do not edit configuration or open a PR during review-only work.
+If the configured value is `inherit-parent` or `auto`, omit `model`. Do not treat those aliases as broken slugs.
 
-If a spawn fails for capacity, such as a concurrent subagent limit, or another transient reason, do not drop that reviewer. Spawn it again each time a running reviewer finishes, one at a time when parallel spawns keep failing. The verdict depends on agreement across models, so a one-model pass is not a complete result. Report a reviewer as not run only if it still cannot start after the others finish, and say in the Agreement Map that the agreement signal is partial.
+If capacity prevents a reviewer from starting, retry after a running reviewer finishes, within the declared budget.
+Report unavailable reviewers in the Agreement Map. Do not present reduced review coverage as a completed configured pass.
 
 Read `references/reviewer-prompt.md` and fill in the template with:
 1. The stated intent
@@ -66,10 +71,10 @@ Each reviewer produces structured findings as described in the prompt template.
 As results come back, build a unified picture:
 
 1. **Parse all findings** from the reviewers
-2. **Identify consensus**. Findings raised by 2+ models independently are highest signal.
-3. **Identify lone-model findings**. Still worth reading, but weight accordingly.
+2. **Record agreement** for attribution, not evidence strength or impact severity.
+3. **Check minority findings** against the same evidence standard as shared findings.
 4. **Deduplicate**. Different models may describe the same issue differently. Merge these and note which models raised it.
-5. **Note disagreements**. If one model flags something and another explicitly says the opposite, that's useful context for the verdict.
+5. **Resolve factual disagreements** with the protocol's targeted checks. Preserve unresolved claims when the evidence is insufficient.
 
 ## Step 5, Lead Judgment
 
@@ -88,6 +93,7 @@ For each finding, include:
 - Which model(s) raised it
 - The category (act on / consider / noted / dismissed)
 - A one-line rationale for the categorization
+- The evidence disposition and any verification gap. Keep unresolved blockers visible rather than listing them as dismissed.
 
 ## Output Format
 
@@ -112,4 +118,7 @@ Present the verdict in this structure:
 [Rejected findings with brief rationale. This shows the user what was filtered out and why, so they can override your judgment if they disagree.]
 
 ### Agreement Map
-[Where did models agree, where did they diverge, and what does the pattern of agreement/disagreement tell us?]
+[Reporter overlap, disagreements, unavailable reviewers, and the evidence that settled each disputed claim. Do not use vote counts as proof.]
+
+### Verification and limits
+[Reviewed revision, checks and results, unresolved claims, unreviewed scope, and the budget stop reason.]

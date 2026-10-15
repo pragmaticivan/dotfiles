@@ -30,6 +30,8 @@ Remaining triggers:
 - Code crossing a function boundary → the **architect** skill, parallel design exploration before implementing.
 - Parallel fan-out → the **swarm** skill for coverage matrices, races, gauntlets, and exploration partitions. Use its compete mode for design or code bakeoffs with base selection and grafting.
 - Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
+- Agent review or a review-fix loop → [adversarial review protocol](references/adversarial-review.md). Use evidence to resolve claims. Keep the owning skill's edit authority.
+- Test design or coverage claims → [adversarial test design](../test-driven-development/references/adversarial-tests.md). Select cases from the contract and challenge test sensitivity.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface, and every diff before commit → the **stop-slop** skill. Your reply is a prose surface; write it per **Writing the reply**. Agent-facing prose also follows the **skill-creator** skill.
 - Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill.
@@ -70,8 +72,10 @@ Read the linked file in full for any principle you apply. Each entry names when 
 **Verification**
 
 - **Prove It Works** (`principles/prove-it-works.md`). After a task, before declaring done. Verify against the real artifact, not a proxy or "it compiles".
+- **Evidence Outranks Agreement** ([principle](principles/evidence-outranks-agreement.md)). Assessing findings or review completion. Resolve claims with evidence, not votes.
 - **Explain the Number** (`principles/explain-the-number.md`). Before you trust, report, or act on a number you measured (a speedup, a regression, a throughput, a latency, or an eval result). Find what limits it, and rule out that it measured something other than the work you think.
-- **Test Behavior, Not Implementation** (`principles/test-behavior-not-implementation.md`). Writing, changing, or keeping a test. Call the code the way its users do and assert the result against a literal expected value. If the test would still pass when every imported function returns `undefined`, rewrite the assertion or delete the test.
+- **Test Behavior, Not Implementation** (`principles/test-behavior-not-implementation.md`). Writing, changing, or keeping a test. Assert observable behavior against an independent oracle.
+- **Challenge the Tests** ([principle](principles/challenge-the-tests.md)). Designing tests or assessing coverage. Find plausible wrong behavior that the suite could still accept.
 - **Fix Root Causes** (`principles/fix-root-causes.md`). Debugging. Trace each symptom to its root cause, reproduce first, ask why until you reach it.
 - **Sequence Work into Verifiable Units** (`principles/sequence-verifiable-units.md`). Multi-step work (sweeps, migrations, runs of similar edits) and how you stack commits and PRs. Break work into small units that each end in a check, verify each before the next, and order delivery so the sequence proves itself.
 
@@ -100,7 +104,7 @@ Read the linked file in full for any principle you apply. Each entry names when 
 
 **Defaults for every `Agent` call.** `run_in_background: true`, a tool set scoped to the role, file pointers not inlined context, explicit model per role (defaults `sonnet` for code, `opus` for prose and judgment). Code delegates tier by difficulty. The hardest changes (cross-cutting design, gnarly concurrency, subtle algorithms) go to your strongest judgment model (`opus`) when the task needs judgment or the intent is vague, and to your strongest instruction-following model (`fable`) when the work is a precisely specified sequence of steps to execute to the letter; trivial mechanical edits go to your fast code model (`haiku`). Per-role lines in `~/.claude/kaizen-models.md` override these defaults and the model choices in the routed skills (`how`, `why`, `swarm`, `architect`, `interrogate`, `reflect`); a role with no line keeps its default, and a role line of `inherit-parent` or `auto` runs that role on the parent chat model (omit the `Agent` call's `model`).
 
-You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A second opinion is the same prompt against a different model. Agreement is high-signal.
+You own every subagent's work. Review the diff and write your own summary, don't pass through what it said. A second opinion is the same prompt against a different model. Agreement can prioritize investigation, but only evidence settles a claim.
 
 **Fresh subagents by default.** Give new work to a fresh subagent with consolidated scope: the original brief, every later directive, and the prior agent's report and branch. This holds for a fix round, a follow-up, a retry, and the next queue item. Resume or message an existing subagent only when the new work needs state that lives in that agent and is costly to move: its local checkout, its uncommitted changes, or a process it still runs, such as a dev server or a watcher. A stop or hold order to a running agent is not reuse. Interrupt-chained resumes silently drop directives, so fire a fresh subagent rather than trusting a "done" summary.
 

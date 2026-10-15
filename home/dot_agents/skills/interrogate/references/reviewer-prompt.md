@@ -40,6 +40,10 @@ For each finding, provide:
 3. **Evidence**: Why you believe this is a problem. Show your reasoning. Don't just assert.
 4. **Suggestion** (optional): What you'd do instead, if you have a concrete alternative. Skip this if you don't have a clear fix.
 
+Use the finding record from the [adversarial review protocol](../../kaizen-mode/references/adversarial-review.md).
+Include the reviewed revision, reachable trigger, violated requirement, counterevidence, and evidence disposition.
+Separate observed results from source reasoning and untested predictions. For maintenance concerns, name the current reader or change cost.
+
 ## What Makes a Good Finding
 
 - It references specific code, not vague concerns ("this could be better")

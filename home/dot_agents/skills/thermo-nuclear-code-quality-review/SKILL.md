@@ -6,6 +6,9 @@ description: "Extremely strict maintainability audit of a branch: abstraction qu
 
 # Thermo-Nuclear Code Quality Review
 
+Use the [adversarial review protocol](../kaizen-mode/references/adversarial-review.md) for independent discovery, finding records, and stop rules.
+Ground structural findings in current maintenance costs. Do not claim runtime defects without correctness evidence.
+
 Use this skill for an unusually strict review focused on implementation quality, maintainability, abstraction quality, and codebase health.
 
 Above all, this skill should push the reviewer to be **ambitious** about code structure. Do not merely identify local cleanup opportunities. Actively search for "code judo" moves: restructurings that preserve behavior while making the implementation dramatically simpler, smaller, more direct, and more elegant.
@@ -27,8 +30,8 @@ So a finding has to clear this bar before it goes in the report:
   "The regex and the table could drift apart if someone adds a unit" is speculation until someone
   adds the unit. Missing tests, error-message wording, and unsupported input the caller never
   passes are not structural findings.
-- It survives the question "what breaks today if this ships unchanged?" If the answer is nothing,
-  it is at most an optional note, and it says so in those words.
+- It names a concrete current maintenance cost or runtime consequence. Runtime breakage is not necessary for a structural finding.
+  Without either cost, it is at most an optional note, and it says so in those words.
 - It does not change behavior for any input. A proposal that adds validation, widens accepted
   input, or changes a return type is a feature request, and it belongs in a different conversation.
 

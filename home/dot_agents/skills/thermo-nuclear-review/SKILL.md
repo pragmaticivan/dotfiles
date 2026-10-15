@@ -6,6 +6,8 @@ description: "Extremely strict security and correctness audit of a branch diff: 
 
 # Thermo Nuclear Review
 
+Use the [adversarial review protocol](../kaizen-mode/references/adversarial-review.md) for revision scope, finding records, evidence checks, and stop rules.
+
 ## Prompt
 
 You are a security expert performing a comprehensive review of a checked out branch. Audit this branch and its changes extremely thoroughly for bugs, changes that break existing features/functionality, and security vulnerabilities. Be thorough and rigorous, and trace each risk to the end.
@@ -43,5 +45,6 @@ Flag issues found by review bot or others in the PR/MR discussion that you inclu
 
 
 # Critical Rules
-- Do not present issues with unfinished research. E.g. Never say something like, "The client has issue X, but if handled in the backend then this is ok." if you have access to the backend code and can check for yourself.
+- Do not present unfinished research as a confirmed finding. Check downstream handling when source and budget permit.
+- If evidence or budget is insufficient, report the candidate as unresolved with its missing check. Do not silently omit it.
 - Check the PR/MR discussion only after you finish your own audit, so that you review with fresh eyes.
