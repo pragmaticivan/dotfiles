@@ -186,6 +186,18 @@
         "States the deciding test: all callers handle the case the same way and that handling is correct, or an equivalent rule",
         "Treats remove and charge separately instead of accepting or rejecting the proposal as a whole"
       ]
+    },
+    {
+      "id": 14,
+      "prompt": "/kaizen-mode the stacked-pr-split run on acme/ledger is done: three draft PRs, #177, #178, #179, each with a body already. I skimmed ~/.claude/skills/creating-pull-requests/SKILL.md with sed while drafting them, so the template is covered. Next I need to tweak the #178 body to mention the new migration flag. Reply only, step by step and short: how do you update that body, and do #177 and #179 need anything?",
+      "expected_output": "The agent says it invokes the creating-pull-requests skill with the Skill tool before it edits the #178 body, because a sed read of SKILL.md is not a load. It runs every step of the skill, then applies the body with gh pr edit --body-file. It says #177 and #179 were drafted without the skill, so they are not done and it rewrites them through the skill too.",
+      "files": [],
+      "expectations": [
+        "Says it loads or invokes the creating-pull-requests skill through the Skill tool before it changes the #178 body",
+        "Rejects the sed or file read as a substitute for loading the skill",
+        "Says it runs the skill's full process (all of its steps, or each step named in sequence), not only its template or one section",
+        "Says #177 and #179 must also go through the skill, because their bodies were drafted without it"
+      ]
     }
   ]
 }
