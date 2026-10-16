@@ -8,9 +8,15 @@ description: "Write the failing test before the code, and reproduce a bug with a
 
 ## Overview
 
-Write a failing test before writing the code that makes it pass. For bug fixes, reproduce the bug with a test before attempting a fix. Tests are proof. "Seems right" is not done.
+Write a failing test before writing the code that makes it pass. For bug fixes, reproduce the bug with a test before attempting a fix. Tests provide evidence for the cases and properties checked. "Seems right" is not done.
 
 **When NOT to use:** Pure configuration changes, documentation updates, or static content changes that have no behavioral impact. When the behavior matters but a test would be impractical, see When a Failing Test Is Impractical below. That section is the only sanctioned way to skip the regression step, and it still requires executable evidence.
+
+Before the first RED test, use [adversarial test design](references/adversarial-tests.md) to select contract-based scenarios and independent oracles.
+After GREEN, check sensitivity to plausible defects in proportion to risk. A high coverage number does not establish use-case coverage.
+
+For test-only work on an existing implementation, passing tests can be useful. Keep the implementation unchanged.
+Establish a passing baseline, then check sensitivity with isolated mutations or report the gap. Do not force RED by changing protected code.
 
 ## The TDD Cycle
 
@@ -335,7 +341,7 @@ Main agent: Verifies the test fails, then implements the fix,
 then verifies the test passes.
 ```
 
-This separation ensures the test is written without knowledge of the fix, making it more robust.
+Give the test author the contract and bug report before the proposed fix. Separation can reduce anchoring, but it does not guarantee test quality.
 
 ## See Also
 
@@ -363,6 +369,8 @@ After completing any implementation:
 - [ ] Test names describe the behavior being verified
 - [ ] No tests were skipped or disabled
 - [ ] Coverage hasn't decreased (if tracked)
+- [ ] Relevant boundaries, condition combinations, state transitions, and reachable failures have checks or explicit gaps
+- [ ] Material risks have failing-before regression or isolated-mutation evidence at the intended assertion
 
 ## Reporting the Result
 

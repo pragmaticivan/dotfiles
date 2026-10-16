@@ -17,7 +17,8 @@ You have the full conversation context. Use it.
 
 ### Nitpick Gravity
 
-Reviewers, especially adversarial ones, tend to fill their review. If they don't find critical issues, they'll inflate nits to fill the space. If a reviewer's findings are all nits and style preferences, the code is probably fine. Say so.
+Reviewers can inflate nits when they find no substantial issue. Dismiss unsupported style preferences with a reason.
+A nit-only report does not establish correctness or complete review coverage.
 
 ### Hypothetical vs. Actual
 
@@ -38,21 +39,23 @@ Watch for findings that reveal the reviewer didn't understand the context:
 - Flagging patterns that are consistent with the rest of the codebase (the reviewer just doesn't know that)
 - Recommending approaches that conflict with constraints you know about
 
-These are honest mistakes from reviewers working with limited information. Dismiss them gracefully.
+Use these signals to investigate missing context. Consistency with existing code does not refute a defect.
+Dismiss a finding only when the context defeats its specific claim. Otherwise keep it confirmed or unresolved according to the evidence.
 
 ## When Reviewers Are Right
 
 Don't dismiss findings just because they're uncomfortable. The whole point of adversarial review is to catch things you'd miss. Signs a finding deserves attention:
 
-- Multiple models flag the same issue independently (consensus signal)
+- A targeted check supports the finding, regardless of how many models reported it
 - The finding identifies a concrete execution path, not a hypothetical
 - The finding reveals a gap in your mental model of the code
-- You read the finding and think "...yeah, actually"
+- The finding survives the strongest code-grounded counterargument
 
 Be especially careful about dismissing security findings and correctness bugs. These deserve more scrutiny even when they come from a single model.
 
 ## Verdict Calibration
 
-A good verdict is useful, not comprehensive. The user should be able to read the "Act On" section, fix those issues, and ship with confidence. If your "Act On" list has more than 5 items, you're probably not filtering hard enough.
+A good verdict gives every supported finding a disposition. Do not cap actionable findings to make the report look selective.
+Prioritize by impact. Report incomplete checks and unresolved blockers without implying approval.
 
 The "Dismissed" section is not busywork. It's a trust mechanism. Showing the user what you rejected and why lets them override your judgment where they disagree. This is more valuable than hiding the rejected findings.

@@ -21,7 +21,7 @@
     {
       "id": 2,
       "prompt": "Double thermo review on feat/pricing-engine-v2 (repo is in evals/fixtures/pricing-engine). New function computeAdjustedPremium in src/pricing/engine.ts is ~340 lines, added in this diff, replaces three old small functions that used to live in separate files. Go.",
-      "expected_output": "The assistant scopes to feat/pricing-engine-v2, pulls the diff and the new computeAdjustedPremium function body, then launches both subagents together in one message with run_in_background true and identical context. When both return, the synthesis recognizes that the giant function is the same underlying issue flagged by both reviewers — a maintainability/structure problem per the code-quality reviewer and a latent correctness/bug risk per the security-and-correctness reviewer — and merges it into one weighted finding rather than listing it twice under two headings. It does not present the two reviewers' takes on this function as unrelated, separate findings, and it resolves any residual disagreement (e.g. on severity) with its own stated judgment.",
+      "expected_output": "The assistant scopes to feat/pricing-engine-v2 and gathers the diff and function body. It launches both reviewers independently with the same scope. It merges duplicate claims while retaining distinct concrete failures. It derives impact severity from consequences and evidence disposition from checks, not reporter count. It resolves factual disagreements with evidence or reports the remaining uncertainty.",
       "files": [
         "evals/fixtures/pricing-engine"
       ],
@@ -29,9 +29,9 @@
         "Response establishes scope as feat/pricing-engine-v2 and gathers the diff, including the computeAdjustedPremium function, before launching subagents",
         "Reply attributes the computeAdjustedPremium finding to both reviewers by name (the bug/security review and the code-quality review), and does not describe one review as run after, or fed by, the other",
         "Both subagents receive the same scoped context including the new ~340-line function and its replacement of the three prior functions",
-        "Synthesis explicitly merges the maintainability finding and the correctness/bug-risk finding about computeAdjustedPremium into a single deduplicated finding, and the correctness side names a concrete regression the inlining caused, such as the dropped 25% total-discount cap or the age surcharge boundary moved from under 25 to 25 and under",
-        "The merged finding is called out as higher-confidence or higher-priority because both reviewers independently flagged it",
-        "Response does not list the computeAdjustedPremium issue twice under separate reviewer-specific headings",
+        "Synthesis merges duplicate claims about computeAdjustedPremium but keeps distinct maintenance problems and concrete regressions separate, such as the dropped 25% total-discount cap or the changed age surcharge boundary",
+        "Shared findings record both reporters but derive severity from consequences and disposition from evidence, not reviewer agreement",
+        "Response does not duplicate the same claim under reviewer-specific headings or combine unrelated claims merely because they concern computeAdjustedPremium",
         "Response does not skip or omit launching either one of the two required subagent types"
       ]
     },

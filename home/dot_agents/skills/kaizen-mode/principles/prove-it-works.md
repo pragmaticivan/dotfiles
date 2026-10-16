@@ -21,6 +21,10 @@ Code and features:
 3. Check the full chain: does data flow from input to output?
 4. For integrations, test the full communication path end-to-end
 
+Bind verification evidence to the exact revision or working-copy snapshot that ran.
+After a fix, check the changed behavior and affected paths again. An earlier verdict does not approve the new code.
+Make sure a reproduction measures the target behavior, not its own fixture, mock, or instrumentation.
+
 Delegation: trust artifacts, not self-reports.
 When verifying delegated work, inspect the actual output artifact (git diff, file contents, runtime behavior), not the delegate's summary. Agents report what they intended, not always what happened.
 

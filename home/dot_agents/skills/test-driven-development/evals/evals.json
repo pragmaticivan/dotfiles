@@ -48,6 +48,31 @@
         "Does not claim the fix is correct without running any test or check",
         "Does not add a full end-to-end Stripe integration test suite when a narrower check on the idempotency logic is sufficient"
       ]
+    },
+    {
+      "id": 4,
+      "prompt": "Write Python unittest tests for the quota counter in evals/fixtures/quota-counter. Read README.md as the contract. The implementation is supplied and must remain unchanged. Use only the standard library. Save test_counter.py and a short report. Run the tests. Check the important risks rather than aiming for a test-count or line-coverage target. Do not add features or dependencies.",
+      "expected_output": "The agent derives scenarios and independent expected results from the contract. Tests cover capacity boundaries, invalid amounts, accumulated usage, replay at capacity, rejection without state changes, rejected-key reuse, and reset with old-key reuse. It checks sensitivity in an isolated copy where useful and reports gaps without claiming exhaustive coverage.",
+      "files": ["evals/fixtures/quota-counter"],
+      "expectations": [
+        "The generated tests pass against the supplied correct implementation without changing counter.py",
+        "Tests detect rejection at exact capacity, acceptance above capacity, and acceptance of a zero amount",
+        "Tests detect duplicate counting and forgotten accumulated usage across distinct keys",
+        "Tests detect consumed rejected keys and failure to forget keys on reset",
+        "Reports contract-based risks, sensitivity evidence or an explicit gap, and no exhaustive-coverage claim"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Review this testing proposal without editing files. A stable lookup legitimately returns an empty list for a missing key. Its tests include a separate present-key case with a known nonempty answer. Another test checks that normalizing a valid identifier twice equals normalizing it once, but the normalizer could return the same constant for every input. Should we delete every empty-result test, require literal outputs in every test, and add a new property-testing framework to cover everything? Explain what evidence or cases we actually need.",
+      "expected_output": "The agent keeps justified empty-result and property tests, identifies that idempotence alone accepts constant-output defects, adds a contract-derived known-answer or discriminating case, and avoids blanket undefined heuristics, exhaustive claims, and unnecessary dependencies.",
+      "files": [],
+      "expectations": [
+        "Keeps the justified missing-key case and its contrasting present-key evidence",
+        "Explains that the idempotence relation alone permits a constant implementation",
+        "Uses a contract-derived known answer or independent model to distinguish the plausible defect",
+        "Does not require literal outputs in every test, a new framework, or exhaustive input coverage"
+      ]
     }
   ]
 }
