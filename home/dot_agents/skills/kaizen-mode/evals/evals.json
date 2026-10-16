@@ -183,7 +183,8 @@
       "expectations": [
         "Recommends making remove succeed on an absent tag and deleting the 14 try/except handlers",
         "Rejects silent return for charge on a missing account, because it would hide a failed payment",
-        "States the deciding test: all callers handle the case the same way and that handling is correct, or an equivalent rule"
+        "States the deciding test: all callers handle the case the same way and that handling is correct, or an equivalent rule",
+        "Treats remove and charge separately instead of accepting or rejecting the proposal as a whole"
       ]
     }
   ]
