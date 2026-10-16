@@ -138,6 +138,54 @@
         "Names the regression rerun and affected shared-contract consumer as unfinished checks",
         "Does not reset the spent budget, launch further review, or claim defect-free code"
       ]
+    },
+    {
+      "id": 10,
+      "prompt": "/kaizen-mode tidy this up before I add a feature to it. Just show me the cleaned-up version in your reply, don't touch files. No git history is available in this copy.\n\n```python\nimport time\nimport os\n\ndef sync_accounts(client, accounts):\n    results = []\n    unused_total = 0\n    for acct in accounts:\n        if acct.id == 0:\n            continue\n        resp = client.push(acct)\n        time.sleep(0.2)\n        if resp.status == 409:\n            resp = client.push(acct)\n        results.append(resp)\n    return results\n```",
+      "expected_output": "The agent removes the provably dead items (the unused os import and unused_total). It keeps the unexplained account-0 skip, the sleep, and the single 409 retry, or keeps them and flags them as open questions. It names how to find their reason (git log -S or blame, tests, callers, the client's rate limits). It does not delete them on a guess.",
+      "files": [],
+      "expectations": [
+        "Removes the unused os import and the unused unused_total variable",
+        "Does not delete the acct.id == 0 skip, the time.sleep(0.2), or the 409 retry without a stated reason that they no longer apply",
+        "Flags the unexplained lines as open questions rather than calling them dead code",
+        "Names at least one concrete way to find why the lines exist, such as git log -S, git blame, a test, or the client's API docs"
+      ]
+    },
+    {
+      "id": 11,
+      "prompt": "/kaizen-mode small cleanup on our `invctl` CLI, which other teams call from their deploy scripts. I want `invctl list --json` to emit items sorted by name instead of insertion order, rename the `qty` field to `quantity`, and change the error `item not found` to `No such item: <id>`. It's basically a refactor, right? Give me the plan in your reply. Don't edit files.",
+      "expected_output": "The agent says this is not a refactor, because each of the three changes is observable to the scripts that consume the CLI. It plans to find the consumers first and lists each observable change. For consumers it does not own, it keeps the old behavior, adds the new behavior behind an option or version, or makes an announced break with a changelog entry.",
+      "files": [],
+      "expectations": [
+        "Says the change is not a pure refactor because consumers can observe it",
+        "Names all three observable changes: the sort order, the qty field rename, and the error text",
+        "Plans to find the consuming scripts or teams before the change, for example a search of downstream repositories",
+        "Proposes a compatibility path for consumers it does not own: keep the old behavior, an opt-in flag or version, or an announced break with a changelog"
+      ]
+    },
+    {
+      "id": 12,
+      "prompt": "/kaizen-mode `test_rate_limit` fails with `KeyError: 'rate_limit'` inside `handle_request`. Make it pass. Show the patch in your reply, don't touch files.\n\n```python\n# config.py\nimport json\n\ndef load_config(path):\n    try:\n        with open(path) as f:\n            return json.load(f)\n    except Exception:\n        return {}\n\n# handler.py\ndef handle_request(cfg, req):\n    limit = cfg['rate_limit']\n    return req.count <= limit\n\n# test_handler.py\ndef test_rate_limit():\n    cfg = load_config('tests/fixtures/config.json')\n    assert handle_request(cfg, Req(count=3))\n```\n\nThe fixture file is at `tests/fixture/config.json` (singular) and contains `{\"rate_limit\": 5}`.",
+      "expected_output": "The agent finds the root cause: the test path names tests/fixtures but the file is in tests/fixture, and load_config hides the FileNotFoundError by returning {}. It fixes the path and removes or narrows the broad except so a missing or invalid file fails with a message that names the path. It does not add cfg.get('rate_limit', default) or another fallback.",
+      "files": [],
+      "expectations": [
+        "Identifies the fixtures versus fixture path mismatch as the cause",
+        "Identifies that the broad except in load_config hides the real error by returning {}",
+        "Removes or narrows the broad except so a missing or unreadable file raises an error that names the path",
+        "Does not add a default value for rate_limit, a .get fallback, or another catch to make the test pass"
+      ]
+    },
+    {
+      "id": 13,
+      "prompt": "/kaizen-mode design question, reply only. Our `TagStore` has `remove(tag)` that raises `TagNotFound` when the tag is absent, and `charge(account_id, cents)` that raises `AccountNotFound`. A grep shows 14 call sites that wrap `remove` in `try/except TagNotFound: pass`. A teammate proposes we make both methods return silently on a missing key so callers stop writing try/except. What should we do?",
+      "expected_output": "The agent makes remove idempotent: removing an absent tag is success, so the 14 handlers go away. It keeps AccountNotFound on charge, because a caller must know that a payment did not happen, and a silent return would hide a real failure. It gives the test it used: do all callers handle the case in the same way, and is that correct.",
+      "files": [],
+      "expectations": [
+        "Recommends making remove succeed on an absent tag and deleting the 14 try/except handlers",
+        "Rejects silent return for charge on a missing account, because it would hide a failed payment",
+        "States the deciding test: all callers handle the case the same way and that handling is correct, or an equivalent rule",
+        "Treats remove and charge separately instead of accepting or rejecting the proposal as a whole"
+      ]
     }
   ]
 }

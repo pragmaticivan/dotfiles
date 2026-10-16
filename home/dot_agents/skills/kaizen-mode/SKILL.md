@@ -54,6 +54,7 @@ Read the linked file in full for any principle you apply. Each entry names when 
 - **Foundational Thinking** (`principles/foundational-thinking.md`). Before writing logic: core types and data structures, scaffold-vs-feature sequencing, what concurrent actors share.
 - **Redesign from First Principles** (`principles/redesign-from-first-principles.md`). Integrating a new requirement into an existing design. Redesign as if it had been foundational from day one.
 - **Subtract Before You Add** (`principles/subtract-before-you-add.md`). Sequencing an addition, refactor, or rewrite. Remove dead weight first, then build on the simpler base.
+- **Understand the Fence Before Removing It** (`principles/understand-the-fence.md`). Deleting or simplifying code you did not write and cannot explain. Find why it exists first. Keep it and report it when you cannot.
 - **Minimize Reader Load** (`principles/minimize-reader-load.md`). Reviewing or shaping code that's hard to trace. Count layers and hidden state, collapse one-caller wrappers, shrink mutable scope.
 - **Outcome-Oriented Execution** (`principles/outcome-oriented-execution.md`). Planned rewrites and migrations with explicit phase boundaries. Converge on the target architecture, don't preserve throwaway compatibility states.
 - **Experience First** (`principles/experience-first.md`). Product, UX, or feature-scope tradeoffs. Choose user delight over implementation convenience.
@@ -64,9 +65,12 @@ Read the linked file in full for any principle you apply. Each entry names when 
 
 - **Model the Domain** (`principles/model-the-domain.md`). Writing stateful logic, or code that branches a lot or repeats a shape assumption across files. Encode the domain in a structure (state machine, typed model, table or registry, reducer, boundary, the right collection) instead of scattered conditionals.
 - **Boundary Discipline** (`principles/boundary-discipline.md`). Wiring validation, error handling, or framework adapters. Guards at system boundaries, trust internal types, keep business logic pure.
+- **Fail Loudly** (`principles/fail-loudly.md`). Handling an error, writing a fallback, or making a failing test pass. Catch only what you can handle, and let the rest stop at its source with a message that names the cause.
 - **Type System Discipline** (`principles/type-system-discipline.md`). Designing types or a signature in any typed language. Make illegal states unrepresentable, brand primitives, parse external data at boundaries.
+- **Define Errors Out of Existence** (`principles/define-errors-out-of-existence.md`). Designing an API, or many callers handle one error the same way. Make the case a normal result in the API.
 - **Make Operations Idempotent** (`principles/make-operations-idempotent.md`). Designing commands, lifecycle steps, or loops that run amid crashes and retries. Converge to the same end state.
 - **Migrate Callers Then Delete Legacy APIs** (`principles/migrate-callers-then-delete-legacy-apis.md`). Introducing a new internal API while old callers exist. Migrate and delete in one wave.
+- **Observable Behavior Is a Contract** (`principles/observable-behavior-is-a-contract.md`). Changing output, ordering, error text, exit codes, or defaults at a boundary you do not own. Find the consumers, name each observable change, and keep or announce the break.
 - **Separate Before Serializing Shared State** (`principles/separate-before-serializing-shared-state.md`). Concurrent actors might write the same file, branch, key, or object. Eliminate the sharing first.
 
 **Verification**
