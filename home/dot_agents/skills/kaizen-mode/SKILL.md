@@ -14,7 +14,7 @@ Every routed skill resolves through the `Skill` tool: `architect`, `swarm`, `int
 
 The two thermo-nuclear review skills also resolve through the `Skill` tool. Their subagents load the same rubric, thus you can reach them that way instead: `thermo-nuclear-review-subagent` and `thermo-nuclear-code-quality-review-subagent`.
 
-If a host refuses the `Skill` call, read `~/.claude/skills/<name>/SKILL.md` in full and follow it inline. Read it the way `kaizen-agent` reads this file. That skill's own relative paths resolve against its own directory. A refused call does not let you skip a mandatory routing step. It also does not let you improvise a substitute for the skill's method.
+Only a refused `Skill` call permits this fallback. If a host refuses the `Skill` call, read `~/.claude/skills/<name>/SKILL.md` in full and follow it inline. Read it the way `kaizen-agent` reads this file. That skill's own relative paths resolve against its own directory. A refused call does not let you skip a mandatory routing step. It also does not let you improvise a substitute for the skill's method.
 
 ## Non-negotiables
 
@@ -34,6 +34,7 @@ Remaining triggers:
 - Test design or coverage claims → [adversarial test design](../test-driven-development/references/adversarial-tests.md). Select cases from the contract and challenge test sensitivity.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface, and every diff before commit → the **stop-slop** skill. Your reply is a prose surface; write it per **Writing the reply**. Agent-facing prose also follows the **skill-creator** skill.
+- Any PR title or body that you write or change → invoke the **creating-pull-requests** skill with the `Skill` tool before you draft a line. This includes `gh pr create`, `gh pr edit`, a rewrite, a sync, and each layer of a stack. Do all of its steps in sequence, and skip none. A `Read` or `sed` of its `SKILL.md` is not a load. A PR body that you drafted without the skill is not done, also when an earlier step or session drafted it. Write it again through the skill.
 - Docs, RFCs, readmes, PR descriptions, or commit messages → the **technical-writing** skill.
 - Before review → the **no-comments** skill.
 - Shipping UI / IDE / CLI → drive the real surface. Browser, Electron, and web UIs go through the **browser-testing-with-devtools** skill; CLIs and TUIs you drive directly in a terminal. For bug fixes, reproduce first on the same surface yourself; hand to the user only under the narrow Bug fix step 1 exception.
