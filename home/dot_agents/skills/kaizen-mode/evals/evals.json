@@ -222,6 +222,19 @@
         "Fixes the loader or the client so an unset or 0 timeout fails loudly or gets a real default, not only the manifest",
         "Says the manifest edit alone is a symptom fix that does not stop the same hang in another environment"
       ]
+    },
+    {
+      "id": 17,
+      "prompt": "/kaizen-mode last night I said \"run until the checkout e2e suite is green, going to bed\". The run is over. Here is your own run log, since gh is not reachable from this box:\n\n- 23:10 predicate: checkout e2e suite 100% green on 3 consecutive CI runs.\n- 23:40 fixed race in cart polling, PR acme/web#1511 (head 7ac91e2), CI green, not merged: waits on a human approval (branch protection).\n- 01:15 coupon spec flake: shared DB row; fixed in acme/web#1512 (head c03d5b8), CI green, 3/3 runs.\n- 02:30 found the payment sandbox key expires Friday; rotating it needs the vendor dashboard, which I have no login for.\n- 03:05 tried a retry wrapper for the address spec, discarded (hid the bug).\n- 03:50 address spec fixed with an event wait, folded into #1512.\n- 04:20 predicate met: 3 consecutive green runs (builds 9921, 9922, 9923).\n\nI'm back. Write the reply you would give me now.",
+      "expected_output": "The agent catches the user up per the ketchup skill. It opens with one sentence that names what waits on the user, gives a short plain account (predicate met, the retry wrapper discarded), and lists action items with numbers, risk, and a pick: approve or merge #1511 and #1512, and rotate the payment sandbox key before Friday because the agent has no login. It leaves out commit hashes and build numbers.",
+      "files": [],
+      "expectations": [
+        "Opens with one short sentence that names what waits on the user, before the account of the run",
+        "Lists #1511 and #1512 by number as items that wait on the user, each with a risk and a pick",
+        "Lists the payment sandbox key rotation as an action item and states the Friday deadline as the cost of waiting",
+        "Does not show commit hashes (7ac91e2, c03d5b8) or build numbers (9921, 9922, 9923)",
+        "Says it uses the ketchup skill for this reply, or follows its shape: a short plain account, then action items that each have a pick and a risk"
+      ]
     }
   ]
 }

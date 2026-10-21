@@ -10,4 +10,4 @@
 5. Checkpoint every iteration via the **show-me-your-work** skill, a row for what changed and whether the predicate moved. A run with no trail can't be audited or resumed.
 6. Stop when the predicate is met. A plateau is not a stop, so keep going and pivot your approach to push past it. Surface a genuine dead end rather than spinning, and never relax the predicate to declare victory.
 
-**Reply:** the exit condition, iterations run, what landed, what was discarded, final predicate state.
+**Reply:** catch the user up per the **ketchup** skill, covering the exit condition, iterations run, what landed, what was discarded, final predicate state.
