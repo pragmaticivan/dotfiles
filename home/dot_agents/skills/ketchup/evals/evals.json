@@ -1,0 +1,61 @@
+{
+  "skill_name": "ketchup",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "This is the chat so far. You are the assistant. gh and CI are not reachable from this box, so the status lines below are the latest you have.\n\n---\nUSER (last night, 23:40): Fix the slow search on the orders page and make the export button stop timing out. Also pick a color for the new beta badge. Going to bed, open PRs and I'll look in the morning.\n\nASSISTANT (23:52): Plan: profile search, profile export, mock two badge colors.\n\n[subagent report 01:10] Search: p95 went from 2.8s to 210ms after adding a composite index on orders(customer_id, created_at). Migration 0147_orders_idx. PR acme/shop#812 opened, head 9f3c2ab, CI green, 1 approval from Dana. Migration takes ~4 min lock-free on prod-size copy.\n\n[subagent report 02:30] Export: timeout came from loading all rows into memory before writing CSV. Switched to streaming. Found and fixed a second bug on the way: dates were exported in UTC with no offset marker, so finance saw rows on the wrong day. PR acme/shop#813, head 41be0d7, CI green, no reviews yet. Streaming export changes the column order of two columns (status, total swapped back to spec order).\n\n[subagent report 03:05] Badge: two screenshots captured, badge-amber.png and badge-teal.png. Amber has contrast 4.8:1 on white, teal 3.1:1 (fails WCAG AA for small text). PR not opened, needs a pick.\n\n[CI notification 06:12] acme/shop#812 nightly e2e: 214/214 passed, build 88412.\n---\n\nUSER (now): /ketchup",
+      "expected_output": "One opening sentence names what waits on the user (merge #812, review or merge #813, pick a badge color). A short what-happened section in plain words, with the extra date bug named and the badge screenshots shown inline or marked. Then action items: #812 and #813 each with its number, change for users, evidence, risk (including the migration on #812 and the column-order change on #813), and a pick; the badge is a call between amber and teal with each option's gain and cost and a pick of amber. No commit hashes, build numbers, migration file names, or test counts.",
+      "files": [],
+      "expectations": [
+        "Opens with one short sentence that names what waits on the user, before any account of what happened",
+        "Mentions the second bug found on the way (export dates in the wrong day or missing time zone) as a fixed bug",
+        "Gives #812 and #813 each by number in the action items, each with a risk statement",
+        "States the column-order change on #813 as a risk or user-facing change",
+        "Presents the badge as a choice between amber and teal, gives a gain and a cost for each option, and recommends one",
+        "Does not show commit hashes (9f3c2ab, 41be0d7), the build number 88412, the migration name 0147_orders_idx, or the 214/214 test count",
+        "Does not use a Markdown table as the only visual and does not draw a diagram of a status list or of the action items",
+        "The account of what happened, outside the action items and pictures, is under about 100 words"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Context: you are the assistant in this chat. I asked you yesterday to bump the logging library across our services. Since then you opened one PR per service. All are green on CI and wait only for my merge. Here is what your subagents reported:\n\n- acme/billing#301: logging 2.4 -> 3.0. Changes log field `msg` to `message`; the billing alert in Grafana queries `msg`.\n- acme/auth#122: logging 2.4 -> 3.0. No log-format consumers found.\n- acme/cart#455: logging 2.4 -> 3.0. No consumers found.\n- acme/search#78: logging 2.4 -> 3.0. Drops support for the custom JSON encoder; search used it for request IDs, now replaced with built-in field.\n- acme/notify#209: logging 2.4 -> 3.0. No consumers found.\n- acme/catalog#630: logging 2.4 -> 3.0. No consumers found.\n- acme/payments#917: logging 2.4 -> 3.0. Payments has a log-based fraud detector that reads `msg`; not updated.\n- acme/inventory#64: logging 2.4 -> 3.0. No consumers found.\n\n/ketchup",
+      "expected_output": "One shared call (merge these PRs) with the pick given once, then a bullet per PR, all eight, riskiest first (payments and billing first because they break a consumer reading `msg`), each with its link or number, what it changes for users, evidence, and risk, including 'low risk' for the ones with no consumers. The pick differs for payments and billing (hold or fix the consumer first). It must not collapse the low-risk PRs into a count such as 'the other six are fine'.",
+      "files": [],
+      "expectations": [
+        "Lists all eight PRs by number or link, each in its own bullet",
+        "Does not fold several PRs into a count or a single line such as 'the other six'",
+        "Puts payments#917 and billing#301 before the PRs with no consumers",
+        "Gives a risk for each PR, including a stated low risk for the PRs with no consumers",
+        "Gives a different pick for payments#917 and billing#301 than for the rest, such as fix the consumer or hold before merge",
+        "Writes the shared call and the shared pick one time, not once per PR"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Chat so far:\n\nUSER: Can you check whether the staging deploy from this morning finished?\nASSISTANT: Yes. It finished at 09:14 and the health check passes. Nothing else is open on my side.\nUSER: Thanks.\n\nUSER (now): /ketchup",
+      "expected_output": "A one- or two-sentence reply that says nothing new happened since the user's last message and nothing waits on them, then stops. No diagram, no headings, no restated summary of the deploy.",
+      "files": [],
+      "expectations": [
+        "Says that nothing changed since the last message and nothing waits on the user",
+        "Is at most about two sentences long",
+        "Has no diagram, no headings, and no list of action items",
+        "Does not repeat the deploy result from before the user's last message as news"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "You are the assistant. The user wrote their last message three hours ago: \"Clean up the flaky checkout tests, and remember the vendor contract question from Monday is still open on my side.\" On Monday you had asked them: \"Should we renew the PDF vendor at $18k/yr or switch to the open-source renderer (2 weeks of work)?\" They never answered.\n\nSince their last message:\n- You fixed 3 of the 4 flaky checkout tests (timing waits replaced with event waits) in acme/web#1402, CI green 5 runs in a row.\n- The 4th flake (checkout_coupon_spec) comes from a shared test database row; you have a fix drafted locally and can finish it yourself.\n- You noticed the README badge for CI is broken. Nobody asked about it, it is not needed for the work, and fixing it is reversible.\n- Deleting the old `checkout-v1` S3 bucket would save $40/month. The bucket has no reads in 90 days. Nobody asked for it, and deletion cannot be undone.\n\n/ketchup",
+      "expected_output": "Action items include the Monday vendor question (still waiting, raised before the last message) with both options' gain and cost and a pick, merging #1402 with risk, and the irreversible S3 deletion as one line with no visual. The 4th flake is named as work left that the assistant will do itself, not an action item. The README badge is not an action item.",
+      "files": [],
+      "expectations": [
+        "Includes the Monday vendor renewal question as an action item even though it was raised before the user's last message",
+        "Gives both vendor options with what each gets the user and what each costs, and a pick",
+        "Names the 4th flaky test as work the assistant will do itself, not as an action item for the user",
+        "Does not list the README badge fix as an action item for the user",
+        "Mentions the S3 bucket deletion as an item that waits on the user in one line, with no diagram for it",
+        "Asks for a merge of #1402 by number and gives its risk"
+      ]
+    }
+  ]
+}
