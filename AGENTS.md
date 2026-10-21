@@ -39,6 +39,7 @@ Run the smallest applicable check first.
 | General chezmoi state | `chezmoi apply --dry-run` |
 | OpenCode plugin | `chezmoi apply ~/.config/opencode && npm test --prefix ~/.config/opencode` |
 | OpenCode worktree launcher | `bats tests/opencode2-worktree.bats` |
+| Kaizen worktree audit script | `bats tests/kaizen-worktree-audit.bats` |
 | Pi OpenCode interface | `node --test tests/pi-open-tui-statusline.test.ts` |
 | Pi rewind behavior | `node --test tests/pi-rewind-*.test.ts` |
 

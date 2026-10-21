@@ -40,3 +40,45 @@ merged_column() {
     [ "${status}" -eq 0 ]
     [ "$(merged_column)" = "YES" ]
 }
+
+@test "names the base in the header and on stderr when -b is absent" {
+    run bash "${SCRIPT}" "${TEST_ROOT}/repo"
+
+    [ "${status}" -eq 0 ]
+    printf '%s\n' "${output}" | grep -qx '# base: origin/master'
+    printf '%s\n' "${output}" | grep -q 'warn: no -b given; MERGED checks against origin/master'
+}
+
+@test "-b fetches a base branch the clone does not have yet" {
+    git -C "${TEST_ROOT}/seed" checkout -q -b release
+    git -C "${TEST_ROOT}/seed" push -q "${TEST_ROOT}/origin" release
+    git -C "${TEST_ROOT}/repo" remote set-branches origin master
+    ! git -C "${TEST_ROOT}/repo" rev-parse --verify --quiet origin/release
+
+    run bash "${SCRIPT}" -b origin/release "${TEST_ROOT}/repo"
+
+    [ "${status}" -eq 0 ]
+    printf '%s\n' "${output}" | grep -qx '# base: origin/release'
+    [ "$(merged_column)" = "YES" ]
+}
+
+@test "-b with a ref that does not exist exits 1" {
+    run bash "${SCRIPT}" -b origin/nope "${TEST_ROOT}/repo"
+
+    [ "${status}" -eq 1 ]
+    printf '%s\n' "${output}" | grep -q 'error: base ref not found: origin/nope'
+}
+
+@test "-h prints the usage and exits 0" {
+    run bash "${SCRIPT}" -h
+
+    [ "${status}" -eq 0 ]
+    printf '%s\n' "${output}" | grep -q 'Usage: worktree-audit.sh'
+}
+
+@test "an unknown option exits 2" {
+    run bash "${SCRIPT}" --bogus "${TEST_ROOT}/repo"
+
+    [ "${status}" -eq 2 ]
+    printf '%s\n' "${output}" | grep -q 'error: unknown option: --bogus'
+}
