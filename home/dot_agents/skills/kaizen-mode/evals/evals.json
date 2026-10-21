@@ -235,6 +235,18 @@
         "Does not show commit hashes (7ac91e2, c03d5b8) or build numbers (9921, 9922, 9923)",
         "Says it uses the ketchup skill for this reply, or follows its shape: a short plain account, then action items that each have a pick and a risk"
       ]
+    },
+    {
+      "id": 18,
+      "prompt": "/kaizen-mode two things on acme/ledger. First, I'm about to touch internal/settle/retry.go: settlement retries with an idempotency table and a lease, three pods race on it, and a double settle costs real money. The unit tests are green but none of them interleave the pods. Second, the repo already has .claude/skills/verify-ledger-lease/SKILL.md, synced at 8c1d2e4, and about a dozen PRs touched internal/lease/ since then without anyone running it. Reply only, short: which skills do you reach for on each, and how do you load them?",
+      "expected_output": "For the retry code, the agent offers or routes to the create-formal-verification-skill skill, because the code races, a bug is costly, and tests do not reach the interleavings. For the stale verify skill, it routes to the maintain-formal-verification-skill skill, because merges touched covered code without rechecking it. It loads each through the Skill tool, not by reading its SKILL.md.",
+      "files": [],
+      "expectations": [
+        "Names create-formal-verification-skill as the main route for the retry.go race, as a known routed skill, not hedged as conditional on whether it exists or listed as one option among several workflows",
+        "Routes the stale verify-ledger-lease skill to the maintain-formal-verification-skill skill",
+        "Says it loads these skills through the Skill tool, not by reading or skimming their SKILL.md files",
+        "Ties the formal-verification choice to the race between pods that the unit tests do not interleave, not only to adding more unit tests"
+      ]
     }
   ]
 }

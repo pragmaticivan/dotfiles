@@ -1,0 +1,44 @@
+{
+  "skill_name": "create-formal-verification-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/create-formal-verification-skill on the payouts repo in evals/fixtures/payouts. We run three workers against one SQLite file and finance says each payout must hit the bank at most once. `tlc` is on PATH. Do the whole thing, then tell me what you found.",
+      "expected_output": "The agent targets claim() in payouts/worker.py: the SELECT then UPDATE is not atomic, so two workers can both claim one payout and send it with different idempotency keys. It models the claim steps in TLA+ with each SQL statement as one step, runs TLC, and reports the double-payout counterexample in the code's words as a finding without editing worker.py. It writes a project-local verify skill under .claude/skills/<name>/SKILL.md with frontmatter, the covered files and functions, the sync commit, and a java or tlc command. It states the bounds and what the model leaves out.",
+      "files": ["evals/fixtures/payouts"],
+      "expectations": [
+        "Names the non-atomic check-then-update in claim() (separate SELECT and UPDATE) as the place where two workers can both claim and pay one payout",
+        "Runs a model checker (TLC) or another verifier and shows its counterexample or failing output, told as a sequence of worker steps in the code's terms",
+        "Reports the double payout as a finding and leaves payouts/worker.py unchanged (no edit to product code, no weakened property to make the check pass)",
+        "Writes a SKILL.md under .claude/skills/ (or .agents/skills/) in the repo, with YAML frontmatter, the covered file or function, a recorded sync commit, and a runnable command",
+        "States the bounds or assumptions of the model (for example the number of workers or payouts) and what it does not cover"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/create-formal-verification-skill for our TypeScript repo (node 24, vitest, no other test libs). The thing that scares me is mergeRanges(ranges) in src/calendar/ranges.ts: it must return sorted, non-overlapping ranges that cover exactly the input minutes, and a bug double-books rooms. It's a pure function, no concurrency. Before you start: which tool would you use, what would you install and where, and what would the check actually exercise? Reply only, short.",
+      "expected_output": "The agent says no practical verifier runs on this TypeScript, says so plainly, and picks property-based testing with generated inputs (fast-check) against the real mergeRanges, not a hand-written model of it. It adds fast-check as a pinned dev dependency of the repo rather than a global install, and it names the properties (sorted, non-overlapping, same covered minutes). It does not reach for TLA+, because this is not an event-order question. It says the run covers only the generated inputs, not every input.",
+      "files": [],
+      "expectations": [
+        "Says that no formal verifier fits this TypeScript code (or that a code-level verifier is not practical here) and chooses property-based testing with generated inputs, such as fast-check",
+        "Runs the generated inputs against the real mergeRanges function, not a hand-written model of it",
+        "Installs the tool as a dev dependency of this repo (package.json, pinned version), not a global install",
+        "Does not choose TLA+ or a model checker as the main tool for this pure function",
+        "States that the check covers the generated inputs only, not a proof for all inputs"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/create-formal-verification-skill I'm midway through this on our Go lease service. TLC finds a counterexample on the CURRENT code for my invariant OneHolder (two nodes both think they hold the lease after a renew races an expiry). I'm sure the code is fine in practice, so my plan: loosen OneHolder to allow a 50ms overlap so it goes green, skip the break-it step since we already saw it fail, write the verify skill, and hand off. Ok? Reply only, short.",
+      "expected_output": "The agent refuses to loosen the invariant to make it pass and reports the counterexample as a finding, told as steps in the lease code's terms, with the harm. It does not change product code unless asked. It still runs the generated skill once on a scratch change that breaks the property, confirms the check catches it, drops the change, and accepts a baseline that fails only on the reported finding. It records covered code and the sync commit in the skill.",
+      "files": [],
+      "expectations": [
+        "Rejects loosening or weakening OneHolder (or the model) to make the check pass",
+        "Says to report the current failure as a finding, with the counterexample told as steps in the code's terms and the harm",
+        "Keeps the step that follows the generated skill on a scratch change that breaks the property and confirms the check catches it",
+        "Says that after the scratch change is dropped, the check may fail only on the reported finding, and that this baseline is acceptable for hand-off",
+        "Does not propose to change the lease product code unless the user asks"
+      ]
+    }
+  ]
+}
