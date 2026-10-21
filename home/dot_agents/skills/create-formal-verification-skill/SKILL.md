@@ -48,7 +48,7 @@ From the skill alone, the next agent must be able to do these tasks:
 3. Tell a real bug from a model error.
 4. Update the verification when a change is intended.
 
-Put the coverage record and the sync commit in the skill. Tell the next agent to move the sync commit forward only after it confirms that the verification agrees with the code at the new commit. Use the real commands, paths, and nouns of this repo. Leave no placeholders. Do not make the command depend on the `tlc` command of this host. Write the `java` command and the jar version so that each developer can run it.
+Put the coverage record and the sync commit in the skill. Tell the next agent to move the sync commit forward only after it confirms that the verification agrees with the code at the new commit. Use the real commands, paths, and nouns of this repo. Leave no placeholders. Do not make the command depend on the `tlc` command of this host. Give the `java` command, the jar version, its download URL, and one fixed path for the jar. A `/path/to/` placeholder is not a path.
 
 ## Prove it before you hand off
 
