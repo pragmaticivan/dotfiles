@@ -15,6 +15,7 @@ When debugging, do not paper over symptoms. Trace every problem to its root caus
 - If a workaround needs a paragraph-long comment to justify it, the code is wrong (fix the code, not the comment)
 - Check for the pattern, not just the instance (grep for the same pattern, fix all instances)
 - When stuck, instrument. Don't guess (add logging, read the actual error)
+- When the deciding fact took a long search to find, propose the cheap, always-on signal that shows it at first look (a startup log of the effective config, a check that fails on a bad value)
 
 **Restart bugs: suspect state before code**
 
