@@ -1,6 +1,10 @@
 import { describe, expect, it } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   ChecksUnavailable,
+  GhGitHubReader,
   WatcherQueryError,
   mapRollupNode,
   orderStack,
@@ -254,6 +258,69 @@ it("annotates review bot threads with distinct review-pass counts", () => {
   expect(threads).toHaveLength(2);
   expect(threads.map((thread) => thread.isReviewBot)).toEqual([true, true]);
   expect(threads.map((thread) => thread.reviewBotReviewPasses)).toEqual([3, 3]);
+});
+
+describe("review threads past the first GraphQL page", () => {
+  const threadNode = (id: string, isResolved: boolean) => ({
+    id,
+    isResolved,
+    comments: {
+      nodes: [
+        {
+          body: "please fix",
+          createdAt: "now",
+          path: "a.ts",
+          line: 1,
+          author: { login: "someone" },
+        },
+      ],
+    },
+  });
+  const page = (nodes: readonly unknown[], endCursor: string | null) => ({
+    data: {
+      repository: {
+        pullRequest: {
+          reviewThreads: {
+            pageInfo: { hasNextPage: endCursor !== null, endCursor },
+            nodes,
+          },
+        },
+      },
+    },
+  });
+
+  it("sees the unresolved thread when it is number 101", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "watch-pr-gh-"));
+    const resolved = Array.from({ length: 100 }, (_, index) =>
+      threadNode(`thread-${index + 1}`, true)
+    );
+    writeFileSync(join(dir, "page-1.json"), JSON.stringify(page(resolved, "page-2")));
+    writeFileSync(
+      join(dir, "page-2.json"),
+      JSON.stringify(page([threadNode("thread-101", false)], null))
+    );
+    writeFileSync(
+      join(dir, "gh"),
+      [
+        "#!/usr/bin/env bash",
+        'for arg in "$@"; do',
+        '  case "$arg" in after=*) cat "$(dirname "$0")/page-2.json"; exit 0 ;; esac',
+        "done",
+        'cat "$(dirname "$0")/page-1.json"',
+        "",
+      ].join("\n"),
+      { mode: 0o755 }
+    );
+    const path = process.env.PATH;
+    process.env.PATH = `${dir}:${path}`;
+    try {
+      const threads = await new GhGitHubReader().reviewThreads(context);
+      expect(threads.map((thread) => thread.id)).toEqual(["thread-101"]);
+    } finally {
+      process.env.PATH = path;
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
 });
 
 describe("context and stack discovery", () => {
