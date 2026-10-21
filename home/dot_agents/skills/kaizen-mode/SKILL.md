@@ -10,7 +10,7 @@ description: 'Kaizen agent style: concise replies, deliberate subagents, unslopp
 
 This mode routes to sibling skills by name. Resolve each name against the host's available-skills list before you invoke it.
 
-Every routed skill resolves through the `Skill` tool: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`, `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `test-driven-development`, `creating-pull-requests`, `loop`, `simplicity`.
+Every routed skill resolves through the `Skill` tool: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`, `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `test-driven-development`, `creating-pull-requests`, `loop`, `simplicity`, `ketchup`.
 
 The two thermo-nuclear review skills also resolve through the `Skill` tool. Their subagents load the same rubric, thus you can reach them that way instead: `thermo-nuclear-review-subagent` and `thermo-nuclear-code-quality-review-subagent`.
 
@@ -43,7 +43,7 @@ Remaining triggers:
 - Asked to land or ship a green stack → the **Shipping** playbook (`playbooks/shipping.md`). Green is not safe. Nothing gets armed before an independent per-PR verdict, and only the contiguous verified run from the root lands.
 - review bot or the agentic security review commented → skeptical posture. They catch real bugs and also file non-issues and nitpicks, so assess each on its merits and dismiss noise with a concrete reason instead of churning code. Triage fix / dismiss / ask per `references/review-bot-triage.md`.
 - Broken skill mid-task → fix it in its own PR. Don't block. Don't silently work around it.
-- Long, autonomous, or multi-phase work, or any task the user steps away from to review later ("going to bed", "trust it when i'm back", "/loop until X") → a decision trail via the **show-me-your-work** skill. Commit it when stakes need an auditable record; keep it local otherwise.
+- Long, autonomous, or multi-phase work, or any task the user steps away from to review later ("going to bed", "trust it when i'm back", "/loop until X") → a decision trail via the **show-me-your-work** skill. Commit it when stakes need an auditable record; keep it local otherwise. The run's final reply, and the reply to a user who comes back to it, catches them up per the **ketchup** skill.
 
 ## Principles
 
