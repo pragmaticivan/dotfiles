@@ -1,13 +1,19 @@
 import { describe, expect, it } from "bun:test";
+import { mkdtempSync, rmSync, writeFileSync } from "node:fs";
+import { tmpdir } from "node:os";
+import { join } from "node:path";
 import {
   ChecksUnavailable,
+  GhGitHubReader,
   WatcherQueryError,
   mapRollupNode,
+  buildReviewThreads,
   orderStack,
   parsePullRequest,
-  parseReviewThreads,
+  parseReviewThreadPage,
   resolveChecks,
   resolveContext,
+  resolveReviewThreads,
 } from "./github.ts";
 import {
   fakeReader,
@@ -198,6 +204,7 @@ it("annotates review bot threads with distinct review-pass counts", () => {
       repository: {
         pullRequest: {
           reviewThreads: {
+            pageInfo: { hasNextPage: false, endCursor: null },
             nodes: [
               {
                 id: "one",
@@ -250,10 +257,131 @@ it("annotates review bot threads with distinct review-pass counts", () => {
       },
     },
   };
-  const threads = parseReviewThreads(response);
+  const threads = buildReviewThreads(parseReviewThreadPage(response).threads);
   expect(threads).toHaveLength(2);
   expect(threads.map((thread) => thread.isReviewBot)).toEqual([true, true]);
   expect(threads.map((thread) => thread.reviewBotReviewPasses)).toEqual([3, 3]);
+});
+
+describe("review threads past the first GraphQL page", () => {
+  const threadNode = (id: string, isResolved: boolean) => ({
+    id,
+    isResolved,
+    comments: {
+      nodes: [
+        {
+          body: "please fix",
+          createdAt: "now",
+          path: "a.ts",
+          line: 1,
+          author: { login: "someone" },
+        },
+      ],
+    },
+  });
+  const page = (nodes: readonly unknown[], endCursor: string | null) => ({
+    data: {
+      repository: {
+        pullRequest: {
+          reviewThreads: {
+            pageInfo: { hasNextPage: endCursor !== null, endCursor },
+            nodes,
+          },
+        },
+      },
+    },
+  });
+
+  it("sees the unresolved thread when it is number 101", async () => {
+    const dir = mkdtempSync(join(tmpdir(), "watch-pr-gh-"));
+    const resolved = Array.from({ length: 100 }, (_, index) =>
+      threadNode(`thread-${index + 1}`, true)
+    );
+    writeFileSync(join(dir, "page-1.json"), JSON.stringify(page(resolved, "page-2")));
+    writeFileSync(
+      join(dir, "page-2.json"),
+      JSON.stringify(page([threadNode("thread-101", false)], null))
+    );
+    writeFileSync(
+      join(dir, "gh"),
+      [
+        "#!/usr/bin/env bash",
+        'for arg in "$@"; do',
+        '  case "$arg" in after=*) cat "$(dirname "$0")/page-2.json"; exit 0 ;; esac',
+        "done",
+        'cat "$(dirname "$0")/page-1.json"',
+        "",
+      ].join("\n"),
+      { mode: 0o755 }
+    );
+    const path = process.env.PATH;
+    process.env.PATH = `${dir}:${path}`;
+    try {
+      const threads = await resolveReviewThreads(new GhGitHubReader(), context);
+      expect(threads.map((thread) => thread.id)).toEqual(["thread-101"]);
+    } finally {
+      process.env.PATH = path;
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  const thread = (id: string, resolved = false) => ({
+    id,
+    firstComment: {
+      authorLogin: "someone",
+      body: "please fix",
+      path: "a.ts",
+      line: 1,
+      createdAt: "now",
+    },
+    resolved,
+  });
+
+  it("walks pages until the cursor is exhausted", async () => {
+    const reader = fakeReader({
+      threadPages: [
+        { threads: [thread("one")], endCursor: "next" },
+        { threads: [thread("two", true)], endCursor: "last" },
+        { threads: [thread("three")], endCursor: null },
+      ],
+    });
+    const threads = await resolveReviewThreads(reader, context);
+    expect(threads.map((item) => item.id)).toEqual(["one", "three"]);
+    expect(reader.calls).toEqual([
+      "reviewThreadPage:null",
+      "reviewThreadPage:next",
+      "reviewThreadPage:last",
+    ]);
+  });
+
+  it("counts review bot passes across every page", async () => {
+    const bot = (id: string, runId: string) => ({
+      id,
+      firstComment: {
+        authorLogin: "review-bot",
+        body: `RUN_ID: ${runId}`,
+        path: "a.ts",
+        line: 1,
+        createdAt: "now",
+      },
+      resolved: false,
+    });
+    const reader = fakeReader({
+      threadPages: [
+        { threads: [bot("one", "run-1")], endCursor: "next" },
+        { threads: [bot("two", "run-2")], endCursor: null },
+      ],
+    });
+    const threads = await resolveReviewThreads(reader, context);
+    expect(threads.map((item) => item.reviewBotReviewPasses)).toEqual([2, 2]);
+  });
+
+  it("rejects a page with no pageInfo instead of assuming one page", () => {
+    const response = {
+      data: { repository: { pullRequest: { reviewThreads: { nodes: [] } } } },
+    };
+    expect(() => parseReviewThreadPage(response)).toThrow(WatcherQueryError);
+  });
 });
 
 describe("context and stack discovery", () => {

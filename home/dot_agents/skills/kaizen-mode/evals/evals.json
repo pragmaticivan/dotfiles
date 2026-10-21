@@ -198,6 +198,30 @@
         "Says it runs the skill's full process (all of its steps, or each step named in sequence), not only its template or one section",
         "Says #177 and #179 must also go through the skill, because their bodies were drafted without it"
       ]
+    },
+    {
+      "id": 15,
+      "prompt": "/kaizen-mode reply only, short. I am running the autopilot-full queue on acme/billing. PR #212 got a clean full swarm verdict at its code-ready head 4f1c2aa: gates, the ten live lanes, perf, and audit all PASS. The owner then rebased onto trunk to clear a merge conflict in CHANGELOG.md and pushed head 9b7e03d. The patch is otherwise the same. Does 9b7e03d need another full swarm before the owner merges, or what runs at the new head?",
+      "expected_output": "The agent says the full swarm ran once at the code-ready head and does not run again for a rebase that only clears a conflict. One verifier runs at 9b7e03d, and the verdict covers that head once it passes. It names the cases that need another full swarm: new behavior, a redesign, or a large new diff. It does not let the owner merge on the old verdict with no check at the new head.",
+      "files": [],
+      "expectations": [
+        "Says a single verifier runs at the new head 9b7e03d, not another full swarm",
+        "Names new behavior, a redesign, or a large new diff as the cases that need another full swarm",
+        "Does not let the owner merge 9b7e03d on the old verdict alone, with no check at the new head",
+        "Gives the owner the next step: run the verifier at 9b7e03d, then merge on its pass"
+      ]
+    },
+    {
+      "id": 16,
+      "prompt": "/kaizen-mode reply only, short. Three hours of digging on the checkout-worker hang. Root cause: the staging deploy manifest never set CHECKOUT_TIMEOUT_MS, the worker's config loader turns an unset variable into 0, and the HTTP client treats 0 as no timeout, so the pool filled with stuck requests. I found it only after I attached a debugger and read the live client config. I am about to set the variable in the manifest and open a PR. Anything to add to that PR before I do?",
+      "expected_output": "The agent treats the unset variable as the trigger and the loader that turns unset into 0 as the root cause. It says the fix is in the loader or the client: an unset timeout fails at startup with a message that names the variable, or gets a real default, instead of 0 meaning no timeout. It proposes the cheap, always-on signal that would have shown the fact at first look: the worker logs its effective timeout at startup, or a startup check rejects 0. It says the manifest edit alone is a symptom fix.",
+      "files": [],
+      "expectations": [
+        "Proposes an always-on signal that shows the effective timeout at first look, such as a startup log of the resolved config or a startup check on the value",
+        "Says the signal stays in the code for every run, not only a debug print or a debugger session for this incident",
+        "Fixes the loader or the client so an unset or 0 timeout fails loudly or gets a real default, not only the manifest",
+        "Says the manifest edit alone is a symptom fix that does not stop the same hang in another environment"
+      ]
     }
   ]
 }
