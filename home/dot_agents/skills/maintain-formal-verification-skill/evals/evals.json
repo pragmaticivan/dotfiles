@@ -1,0 +1,44 @@
+{
+  "skill_name": "maintain-formal-verification-skill",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "/maintain-formal-verification-skill on our lease service. The repo has .claude/skills/verify-lease/SKILL.md, which runs `tlc spec/Lease.tla` for the invariant OneHolder and records sync commit 3f2a91c. It covers lease/store.go: Renew() and Expire(). Since then:\n\n```\n$ git log --oneline 3f2a91c..HEAD -- lease/\n9be0d14 perf: split Renew into read and conditional write\n71c3e08 chore: rename helper, gofmt\n```\n\n9be0d14 replaced the single `UPDATE leases SET expires_at=? WHERE id=? AND holder=?` in Renew with a `SELECT holder` followed by an unconditional `UPDATE ... WHERE id=?`. The spec still models Renew as one atomic step, and `tlc` passes today. Reply only, short: walk me through your pass and how you'd report each commit.",
+      "expected_output": "The agent runs the check once as it is and records the pass, but says that pass only shows the old description holds. It classifies 71c3e08 as no effect after checking it against the model, and 9be0d14 as the verification no longer describing the code: Renew is now two steps. It updates Lease.tla from the code first (split Renew into a read and a write), then reruns. If TLC then fails, it replays the counterexample against the real code, calls it a bug introduced in 9be0d14, and says the old pass was on a stale description. If it passes, it breaks the new code to show the check can still fail. It edits only the spec and skill, moves the sync commit, and puts the verification change in its own commit.",
+      "files": [],
+      "expectations": [
+        "Runs the existing check before changing anything and says the current pass does not show the code is correct",
+        "Classifies 9be0d14 as a change that makes the model no longer describe the code, and 71c3e08 as no effect (checked against the model)",
+        "Updates the spec from the code (Renew split into a read step and a write step) before rerunning, not by tuning it until TLC passes",
+        "If the rerun fails, replays the counterexample against the real code and reports a bug introduced in 9be0d14, saying the old pass was on a stale or outdated description",
+        "Edits only the spec and verify skill (not lease/store.go), and updates the sync commit in the verify skill"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "/maintain-formal-verification-skill ran into trouble on the billing repo. .claude/skills/verify-invoice-state/SKILL.md (sync commit a1c00de) model-checks InvoiceMachine.tla against billing/invoice.py. Since a1c00de, a refactor moved the state transitions into a new billing/fsm/ package generated from YAML at build time, and the generator is not in this checkout, so I can't read the code that the model is meant to describe. TLC itself still runs green on the old spec. What outcome do you give this check, what happens to the sync commit, and what goes in the report? Reply only, short.",
+      "expected_output": "The agent gives the check the outcome blocked, with the exact cause: the covered code moved to generated code that is not in the checkout, so it cannot confirm the model describes the code. It does not treat the green TLC run as in sync. It leaves the sync commit at a1c00de and says so in the report. It edits no product code, and it lists the new fsm package as code the verification should cover and does not.",
+      "files": [],
+      "expectations": [
+        "Gives the check the outcome blocked, not in sync or updated",
+        "States the exact cause: the covered transitions moved to generated code that is not in the checkout, so the model cannot be compared with the code",
+        "Says the green TLC run is not evidence of sync because it runs against a stale description",
+        "Leaves the sync commit at a1c00de and says so in the report",
+        "Names the new billing/fsm code as code the verification does not cover"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "/maintain-formal-verification-skill on the rate limiter. .claude/skills/verify-limiter/SKILL.md (sync 5d7e2b0) checks NeverExceed: a client never gets more than `limit` tokens in a window. One commit since then touches covered code:\n\n```\ne40a9f1 feat: allow a one-time burst of 2x limit for new clients\n```\n\nThe CHANGELOG entry and a new test `test_new_client_burst` both say new clients may take up to 2*limit in their first window. TLC now fails NeverExceed with a trace where a new client takes 2*limit tokens. Is this drift or a bug, what do you change, and what do you report? Reply only, short.",
+      "expected_output": "The agent classifies e40a9f1 as a promise that changed on purpose, citing the CHANGELOG entry and test_new_client_burst. It changes the property (and the model, if the burst path is not modeled) to allow 2*limit in a new client's first window, and it writes down the old wording, the new wording, and the evidence. It reruns, and on a pass it breaks the new code (for example removes the first-window guard) to show the updated check still fails on a real violation. The outcome is updated, not bug. It moves the sync commit to the checked commit and keeps the verification change in its own commit.",
+      "files": [],
+      "expectations": [
+        "Classifies the failure as an intended change of the promise (drift in the property), not a bug, and cites the CHANGELOG entry and test_new_client_burst as evidence",
+        "Changes the property to allow 2*limit in a new client's first window and records the old wording, the new wording, and the evidence",
+        "After the rerun passes, breaks the new code in the way the property guards against to show the updated check can still fail",
+        "Gives the outcome updated and moves the sync commit to the checked commit",
+        "Keeps the verification change in a commit of its own and does not edit the limiter product code"
+      ]
+    }
+  ]
+}
