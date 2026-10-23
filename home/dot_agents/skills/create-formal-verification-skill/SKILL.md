@@ -20,12 +20,25 @@ A good target is a promise that the code makes, where a break causes harm to use
 
 Choose the tool that answers the question at the lowest cost: a model checker, a proof assistant, an SMT-backed verifier, or a different tool.
 
-- **Event order.** For a question about events in a bad order, use a model checker on a small model of the design. TLA+ is the default for this, in all languages.
+- **Event order.** For a question about events in a bad order, use a model checker on a small model of the design. Quint is the default for this, in all languages.
 - **Code behavior for each input.** For memory safety, overflow, or a data-structure invariant, use a verifier that runs on the code.
 - **No verifier for the language.** Tell the user. Then test the real code with generated inputs, not a hand model of the function. Use fast-check for TypeScript, Hypothesis for Python, and native fuzzing or `rapid` for Go.
 - **All sizes.** A property that must hold at each size, where a bound is not sufficient, can need a proof.
 
-This host supplies TLA+ only. The `tlc` command runs TLC from `~/.local/share/tlaplus/tla2tools.jar` (v1.7.4) with the Java from mise. The project brings its own verifier for all other tools, such as Kani, Dafny, or z3. Use the verifier that the repo has, or add one as a pinned dev dependency of the repo. Do not install a verifier globally. Prefer a tool that the developers of the repo can install and run. Tell the user why you chose the tool.
+Run Quint at a pinned version, for example `npx --yes @informalsystems/quint@0.33.0`, or add it as a pinned dev dependency of the repo. Use the `quint` command of this host only while you draft the model. Do not make the verify command depend on it. If the repo already verifies with TLA+, keep its specs. The project brings its own verifier for all other tools, such as Kani, Dafny, or z3. Use the verifier that the repo has, or add one as a pinned dev dependency of the repo. Do not install a verifier globally. Prefer a tool that the developers of the repo can install and run. Tell the user why you chose the tool.
+
+## Use Quint well
+
+- Use `quint run` while you write the model. It samples random traces and needs no Java. A pass from `quint run` is not a proof.
+- Use `quint verify --backend tlc` for the check. It visits every reachable state. It needs Java 21 or later, and it downloads Apalache on the first run, which takes a few minutes.
+- Keep the state in one record variable, and update it with `{ ...state, field: value }`. Each action then names only the fields that it changes.
+- Give each step of a request a sum type value, for example `type Step = Idle | Check | Done`.
+- Put each configuration in its own module that imports the model with its constants, for example `module twoWorkers { import payouts(WORKERS = Set(1, 2)).* }`. Select it with `--main twoWorkers`.
+- The TLC backend names each violated invariant `q_inv`. When a result must name the invariant, check one invariant in each run.
+- Read the result from the `[ok] No violation found` or `[violation]` line.
+- In a TLC trace, the sum type value `Done` prints as `[Done |-> [tag |-> "UNIT"]]`. Tell the next agent how to read it.
+- Quint writes `_apalache-out/` in the current directory. Add it to `.gitignore`.
+- Quint does not accept a doc comment (`///`) on a record field. Use `//` there.
 
 ## Make it good
 
@@ -35,7 +48,7 @@ This host supplies TLA+ only. The `tlc` command runs TLC from `~/.local/share/tl
 - **Honest about scope.** Say what you verified, with which bounds and assumptions, and what you did not include. A pass covers the model or the bound, not the full system.
 - **Readable without the tool.** Give the property in one plain sentence and the harm in one plain sentence. Tell a counterexample as a short sequence of steps in the words of the code.
 - **Cheap to run again.** Give one command, a tool version that does not change, and a run sufficiently short that the next agent uses it on each applicable change.
-- **In step with the code.** Record the files and functions that each check covers. Record the commit where you last confirmed that the verification agrees with them. When the covered code changes after that commit, the next agent can see that the verification needs a new look.
+- **In step with the code.** Record the files and functions that each check covers. Record the commit where you last confirmed that the verification agrees with them. When the covered code changes after that commit, the next agent can see that the verification needs a new look. Add a conformance check that runs before the model: a short script that finds each step that the model assumes in the covered code, in order, and fails when a step moved or changed. Then a model that no longer describes the code cannot give a pass.
 
 ## Write the verify skill
 
@@ -48,7 +61,7 @@ From the skill alone, the next agent must be able to do these tasks:
 3. Tell a real bug from a model error.
 4. Update the verification when a change is intended.
 
-Put the coverage record and the sync commit in the skill. Tell the next agent to move the sync commit forward only after it confirms that the verification agrees with the code at the new commit. Use the real commands, paths, and nouns of this repo. Leave no placeholders. Do not make the command depend on the `tlc` command of this host. Give the `java` command, the jar version, its download URL, and one fixed path for the jar. A `/path/to/` placeholder is not a path.
+Put the coverage record and the sync commit in the skill. Tell the next agent to move the sync commit forward only after it confirms that the verification agrees with the code at the new commit. Use the real commands, paths, and nouns of this repo. Leave no placeholders. Pin the Quint version in the command. Name what the command needs: Node, Java 21 or later for the TLC backend, and the download on the first run. A `/path/to/` placeholder is not a path.
 
 ## Prove it before you hand off
 
