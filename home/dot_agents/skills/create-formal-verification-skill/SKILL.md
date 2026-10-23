@@ -25,7 +25,7 @@ Choose the tool that answers the question at the lowest cost: a model checker, a
 - **No verifier for the language.** Tell the user. Then test the real code with generated inputs, not a hand model of the function. Use fast-check for TypeScript, Hypothesis for Python, and native fuzzing or `rapid` for Go.
 - **All sizes.** A property that must hold at each size, where a bound is not sufficient, can need a proof.
 
-Run Quint at a pinned version, for example `npx --yes @informalsystems/quint@0.33.0`, or add it as a pinned dev dependency of the repo. If the repo already verifies with TLA+, keep its specs. The project brings its own verifier for all other tools, such as Kani, Dafny, or z3. Use the verifier that the repo has, or add one as a pinned dev dependency of the repo. Do not install a verifier globally. Prefer a tool that the developers of the repo can install and run. Tell the user why you chose the tool.
+Run Quint at a pinned version, for example `npx --yes @informalsystems/quint@0.33.0`, or add it as a pinned dev dependency of the repo. Use the `quint` command of this host only while you draft the model. Do not make the verify command depend on it. If the repo already verifies with TLA+, keep its specs. The project brings its own verifier for all other tools, such as Kani, Dafny, or z3. Use the verifier that the repo has, or add one as a pinned dev dependency of the repo. Do not install a verifier globally. Prefer a tool that the developers of the repo can install and run. Tell the user why you chose the tool.
 
 ## Use Quint well
 
