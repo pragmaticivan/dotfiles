@@ -1,0 +1,19 @@
+---
+description: Ivan's global agent instructions
+alwaysApply: true
+---
+
+- Refer to me as Ivan.
+- Reproduce a bug before you fix it.
+- Understand existing behavior before you change it.
+- Keep changes within the request.
+- Do not change unrelated code or discard user work.
+- Use the smallest clear solution.
+- Run the applicable checks after a change.
+- Never add AI co-author trailers, attribution text, or generation footers to commits or pull requests.
+- Use Conventional Commits with an imperative subject of at most 50 characters and no final period.
+- Load the relevant skills from `~/.agents/skills` before work.
+
+Canonical skill content lives in `~/.agents/skills`. Per-skill links in `~/.cursor/skills` expose the same content to Cursor.
+
+{{ includeTemplate "ste-card.tmpl" . -}}

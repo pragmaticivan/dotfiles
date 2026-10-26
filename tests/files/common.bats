@@ -150,7 +150,8 @@
     [ ! -e "${HOME}/.claude/hooks/ste-mode.sh" ]
     ! grep -q "ste-mode" "${HOME}/.claude/settings.json"
 
-    for doc in "${HOME}/.claude/CLAUDE.md" "${HOME}/.copilot/copilot-instructions.md"; do
+    for doc in "${HOME}/.claude/CLAUDE.md" "${HOME}/.copilot/copilot-instructions.md" \
+        "${HOME}/.cursor/plugins/local/dotfiles/rules/global.mdc"; do
         echo "Checking ${doc}"
         grep -q "STE MODE" "${doc}"
         grep -q "simplified-technical-english" "${doc}"
@@ -166,9 +167,8 @@
     # No python. The skill is judgment plus a lookup.
     [ ! -d "${skill}/scripts" ]
 
-    # Claude needs the symlink. Copilot reads ~/.agents/skills itself, so it
-    # gets the skill from the canonical copy and needs no symlink of its own.
     [ -e "${HOME}/.claude/skills/simplified-technical-english" ]
+    [ -e "${HOME}/.cursor/skills/simplified-technical-english" ]
 }
 
 @test "[common] the STE card stays small" {
@@ -189,9 +189,7 @@
 @test "[common] agent skills are individually symlinked" {
     [ -d "${HOME}/.agents/skills" ]
 
-    # Only Claude gets per-skill symlinks. Copilot discovers ~/.agents/skills
-    # on its own, so a symlink tree under ~/.copilot would duplicate it.
-    for parent in "${HOME}/.claude/skills"; do
+    for parent in "${HOME}/.claude/skills" "${HOME}/.cursor/skills"; do
         echo "Checking skills directory ${parent}"
         [ -d "${parent}" ]
         [ ! -L "${parent}" ]

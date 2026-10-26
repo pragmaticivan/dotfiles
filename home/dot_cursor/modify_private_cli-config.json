@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+jq -s '
+    if length > 1 then error("Expected one JSON document.") else .[0] // {} end
+    | .version = 1
+    | .editor = ({vimMode: false} + .editor)
+    | .permissions = ({allow: [], deny: []} + .permissions)
+    | .attribution = (.attribution + {
+        attributeCommitsToAgent: false,
+        attributePRsToAgent: false
+    })
+'

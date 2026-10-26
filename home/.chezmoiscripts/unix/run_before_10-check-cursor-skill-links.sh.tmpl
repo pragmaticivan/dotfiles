@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+skills=(
+{{ range glob (joinPath .chezmoi.sourceDir "dot_cursor/skills/symlink_*.tmpl") }}  "{{ . | base | trimPrefix "symlink_" | trimSuffix ".tmpl" }}"
+{{ end }}{{ range $name, $_ := .external_skills }}  "{{ $name }}"
+{{ end }})
+
+for name in "${skills[@]}"; do
+  path="$HOME/.cursor/skills/$name"
+  if [ -e "$path" ] && [ ! -L "$path" ]; then
+    echo "Cannot link skill. A personal file or directory exists at $path" >&2
+    exit 1
+  fi
+done

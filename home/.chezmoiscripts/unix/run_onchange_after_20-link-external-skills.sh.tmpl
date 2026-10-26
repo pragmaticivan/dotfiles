@@ -14,15 +14,17 @@ fi
 
 canonical="$HOME/.agents/skills"
 
-# Copilot and OpenCode V2 read $canonical themselves, thus only Claude needs
-# the symlinks.
-agent_dir="$HOME/.claude/skills"
-mkdir -p "$agent_dir"
-
 for name in "${skills[@]}"; do
   if [ ! -d "$canonical/$name" ]; then
     echo "external skill '$name' missing from $canonical — check its path in .chezmoidata/skills.yaml" >&2
     exit 1
   fi
-  ln -sfn "$canonical/$name" "$agent_dir/$name"
+  for agent_dir in "$HOME/.claude/skills" "$HOME/.cursor/skills"; do
+    mkdir -p "$agent_dir"
+    if [ -e "$agent_dir/$name" ] && [ ! -L "$agent_dir/$name" ]; then
+      echo "Cannot link skill. A personal file or directory exists at $agent_dir/$name" >&2
+      exit 1
+    fi
+    ln -sfn "$canonical/$name" "$agent_dir/$name"
+  done
 done

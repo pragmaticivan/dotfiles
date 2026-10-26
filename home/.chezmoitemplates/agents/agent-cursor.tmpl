@@ -1,0 +1,13 @@
+{{- /*
+Renders a complete Cursor agent file for ~/.cursor/agents.
+Call with (dict "ctx" . "id" "<agent-id>" "body" <rendered body>).
+*/ -}}
+{{- $a := index .ctx.agents .id -}}
+---
+name: {{ .id }}
+description: {{ $a.description | quote }}
+model: inherit
+readonly: {{ not $a.write }}
+---
+
+{{ .body }}

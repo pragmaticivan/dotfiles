@@ -1,0 +1,20 @@
+{{ range $plugin := .agent_plugins }}
+{{ if get $plugin "cursor_plugin" }}
+[".cursor/plugins/local/{{ $plugin.name }}"]
+type = "archive"
+url = "https://github.com/{{ $plugin.repo }}/archive/{{ $plugin.sha }}.tar.gz"
+include = [
+{{- range $path := $plugin.include }}
+  "*/{{ $path }}",
+{{- end }}
+]
+stripComponents = 1
+{{ end }}
+{{ with get $plugin "cursor_skill" }}
+[".cursor/skills/{{ $plugin.name }}"]
+type = "archive"
+url = "https://github.com/{{ $plugin.repo }}/archive/{{ $plugin.sha }}.tar.gz"
+include = ["*/{{ . }}/**"]
+stripComponents = {{ add 1 (len (splitList "/" .)) }}
+{{ end }}
+{{ end }}

@@ -96,6 +96,41 @@ The global `opencode.jsonc` uses a chezmoi modifier. Add machine-local providers
 directly to `~/.config/opencode/opencode.jsonc`; `chezmoi apply` preserves unrelated top-level
 keys. Chezmoi owns `$schema`, `shell`, `update`, `snapshots`, `watcher`, and `permissions`.
 
+### Cursor
+
+Chezmoi supplies native agents in `~/.cursor/agents`. Cursor uses these before agents with
+the same name in Claude or Codex compatibility directories. Cursor discovers canonical skills
+directly from `~/.agents/skills`. Per-skill symlinks in `~/.cursor/skills` point to the same canonical content.
+Before it creates skill links, chezmoi rejects same-name personal files or directories.
+
+For Cloud Agents, enable **Sync Skills for Cloud Agents** under **Settings → Agents → Context and Tools**.
+Cursor syncs only `~/.cursor/skills`, not `~/.agents/skills`. Cloud upload through these symlinks remains unverified.
+
+Chezmoi installs actual files at these paths:
+
+- `~/.cursor/plugins/local/dotfiles` supplies always-on global instructions and the shared STE card.
+- `~/.cursor/plugins/local/compound-engineering` supplies the native Compound Engineering plugin.
+- `~/.cursor/skills/worktrunk` supplies only the Worktrunk skill, without Claude activity hooks.
+
+Compound Engineering and Worktrunk use the existing pins in `home/.chezmoidata/skills.yaml`.
+The `~/.cursor/cli-config.json` modifier disables commit and PR attribution. It preserves user settings,
+permissions, model selection, authentication data, and unknown keys. It adds absent required defaults.
+The CLI config uses mode `0600`.
+The Cursor CLI needs a separate installation. This configuration does not install it.
+
+The CLI attribution settings do not control the IDE. Disable commit and PR attribution separately
+in Cursor Settings. Chezmoi does not manage Cursor editor settings or its state database.
+The `~/.cursor/mcp.json` file stays machine-local and unmanaged. There is no shared MCP registry.
+
+Apply the dotfiles, including shared skills and their links:
+
+```shell
+chezmoi apply
+```
+
+Run **Developer: Reload Window** in Cursor. Check the plugins, rules, agents, and skills in **Customize**.
+Enterprise policy can block local plugin imports.
+
 ### 🔀 macOS install profiles (personal vs restricted)
 
 On macOS, Homebrew apps are installed from a templated `Brewfile` that respects a profile:

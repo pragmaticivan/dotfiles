@@ -34,6 +34,7 @@ agent_plugins:
     marketplace: compound-engineering-plugin
     repo: EveryInc/compound-engineering-plugin
     sha: 4e6738223d7dd66d765a598673c48c136fb78f95
+    cursor_plugin: true
     include:
       - .agents
       - .agents/plugins
@@ -42,6 +43,8 @@ agent_plugins:
       - .claude-plugin/**
       - .codex-plugin
       - .codex-plugin/**
+      - .cursor-plugin
+      - .cursor-plugin/**
       - assets
       - assets/**
       - plugin.json
@@ -51,6 +54,7 @@ agent_plugins:
     marketplace: worktrunk
     repo: max-sixty/worktrunk
     sha: 852f6ea288b360f10bdaab0a4925c255c68f9b50
+    cursor_skill: plugins/worktrunk/skills/worktrunk
     include:
       - .agents
       - .agents/plugins
