@@ -5,35 +5,35 @@
 external_skills:
   gh-stack:
     repo: github/gh-stack
-    sha: 14fc42ed9b6c376a53b2f999f138d3bd26dac546
+    sha: 2a49e6751238633db504655d8a8eba3e433e827d
     path: skills/gh-stack
   skill-creator:
     repo: anthropics/claude-plugins-official
-    sha: b819188d2eea14e0400556ca29dbd1179a7c595b
+    sha: a7ba5b93db0c7c8d17f3f1d25853adca79598a1a
     path: plugins/skill-creator/skills/skill-creator
   shadcn:
     repo: shadcn-ui/ui
-    sha: a85299a9edd2a961e32f01ced86963a852652bd2
+    sha: c0d63c339d6cd2fc26135590a54cf1f362269451
     path: skills/shadcn
   show-me:
     repo: humanlayer/skills
-    sha: 3c2629142c5d437428269b1b722b08c0b87f574d
+    sha: 69d5fc61d6ca6f7056d283a2ee2a045be741a1d6
     path: plugins/show-me/skills/show-me
   impeccable:
     repo: pbakaus/impeccable
-    sha: 63b04e2530f5c7b41ea83c133daab24f34912456
+    sha: f5c80432f883a0ee437735305eafc2a9e1bdb7a0
     path: .agent/skills/impeccable
   # The repo holds a roster of skills. Only the flagship one is installed.
   taste-skill:
     repo: Leonxlnx/taste-skill
-    sha: ccbc15639c97057cbfcf32ecebc38ef716e4bb37
+    sha: 12af471f627f866411b4bd785b19646d3672784c
     path: skills/taste-skill
 
 agent_plugins:
   - name: compound-engineering
     marketplace: compound-engineering-plugin
     repo: EveryInc/compound-engineering-plugin
-    sha: 4e6738223d7dd66d765a598673c48c136fb78f95
+    sha: 3449230705a508229a5a298671e9031e489f0278
     cursor_plugin: true
     include:
       - .agents
@@ -53,7 +53,7 @@ agent_plugins:
   - name: worktrunk
     marketplace: worktrunk
     repo: max-sixty/worktrunk
-    sha: 852f6ea288b360f10bdaab0a4925c255c68f9b50
+    sha: e2c8a7d669a6c2766d5c476934efa406763b8daf
     cursor_skill: plugins/worktrunk/skills/worktrunk
     include:
       - .agents
