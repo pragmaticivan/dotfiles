@@ -1,0 +1,26 @@
+{{- $p := index .catppuccin.palettes .catppuccinDarkFlavour -}}
+{
+  "background": {{ $p.base | quote }},
+  "foreground": {{ $p.text | quote }},
+  "selection": {{ $p.surface2 | quote }},
+  "cursor": {{ $p.rosewater | quote }},
+  "ansi": [
+    {{ $p.surface1 | quote }}, {{ $p.red | quote }}, {{ $p.green | quote }}, {{ $p.yellow | quote }}, {{ $p.blue | quote }}, {{ $p.pink | quote }}, {{ $p.teal | quote }}, {{ $p.subtext1 | quote }},
+    {{ $p.surface2 | quote }}, {{ $p.red | quote }}, {{ $p.green | quote }}, {{ $p.yellow | quote }}, {{ $p.blue | quote }}, {{ $p.pink | quote }}, {{ $p.teal | quote }}, {{ $p.subtext0 | quote }}
+  ],
+  "colors": {
+    "chrome": {{ $p.mantle | quote }},
+    "canvas": {{ $p.crust | quote }},
+    "surface": {{ $p.surface0 | quote }},
+    "hover": {{ $p.surface0 | quote }},
+    "selected": {{ $p.surface1 | quote }},
+    "border": {{ $p.surface1 | quote }},
+    "muted": {{ $p.subtext0 | quote }},
+    "dim": {{ $p.overlay0 | quote }},
+    "accent": {{ index $p .catppuccinAccentColor | quote }},
+    "working": {{ $p.blue | quote }},
+    "blocked": {{ $p.red | quote }},
+    "done": {{ $p.green | quote }},
+    "idle": {{ $p.overlay1 | quote }}
+  }
+}

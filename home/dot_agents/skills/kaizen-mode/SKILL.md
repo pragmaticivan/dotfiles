@@ -10,7 +10,7 @@ description: 'Kaizen agent style: concise replies, deliberate subagents, unslopp
 
 This mode routes to sibling skills by name. Resolve each name against the host's available-skills list before you invoke it.
 
-Every routed skill resolves through the `Skill` tool: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`, `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `test-driven-development`, `creating-pull-requests`, `loop`, `simplicity`, `ketchup`, `create-formal-verification-skill`, `maintain-formal-verification-skill`.
+Every routed skill resolves through the `Skill` tool: `architect`, `swarm`, `interrogate`, `reflect`, `figure-it-out`, `no-comments`, `technical-writing`, `show-me-your-work`, `how`, `why`, `blast-radius`, `stop-slop`, `skill-creator`, `browser-testing-with-devtools`, `testing`, `creating-pull-requests`, `loop`, `simplicity`, `ketchup`, `create-formal-verification-skill`, `maintain-formal-verification-skill`.
 
 The two thermo-nuclear review skills also resolve through the `Skill` tool. Their subagents load the same rubric, thus you can reach them that way instead: `thermo-nuclear-review-subagent` and `thermo-nuclear-code-quality-review-subagent`.
 
@@ -32,7 +32,7 @@ Remaining triggers:
 - Contested design → the **interrogate** skill (multi-model adversarial) before shipping.
 - Concurrency, retries, a state machine, a parser, or unsafe code where a bug is costly and tests miss the interleavings → offer the **create-formal-verification-skill** skill. A change to code that a project verify skill covers, after merges that skipped it → the **maintain-formal-verification-skill** skill.
 - Agent review or a review-fix loop → [adversarial review protocol](references/adversarial-review.md). Use evidence to resolve claims. Keep the owning skill's edit authority.
-- Test design or coverage claims → [adversarial test design](../test-driven-development/references/adversarial-tests.md). Select cases from the contract and challenge test sensitivity.
+- Test design or coverage claims → [adversarial test design](../testing/references/adversarial-tests.md). Select cases from the contract and challenge test sensitivity.
 - Nontrivial multi-step → write the throughput checkpoint (Feature step 3).
 - Any prose surface, and every diff before commit → the **stop-slop** skill. Your reply is a prose surface; write it per **Writing the reply**. Agent-facing prose also follows the **skill-creator** skill.
 - Any PR title or body that you write or change → invoke the **creating-pull-requests** skill with the `Skill` tool before you draft a line. This includes `gh pr create`, `gh pr edit`, a rewrite, a sync, and each layer of a stack. Do all of its steps in sequence, and skip none. A `Read` or `sed` of its `SKILL.md` is not a load. A PR body that you drafted without the skill is not done, also when an earlier step or session drafted it. Write it again through the skill.
