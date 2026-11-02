@@ -20,6 +20,18 @@ An oracle is the rule that determines the expected result. Coverage shows which 
 | Shared state | Duplicate delivery, stale reads, cancellation, and controlled interleavings when concurrent actors exist. |
 | Compatibility | Existing consumers and boundary formats affected by the change. |
 
+Example for "gold users get 15% off orders over $200, silver users get 5% off orders over $100, others get nothing":
+
+| Risk | Scenario | Oracle |
+| --- | --- | --- |
+| `>=` in place of `>` | Gold at exactly 200 | 0 (the contract says "over") |
+| Threshold swapped between tiers | Silver at 150, gold at 150 | 5% of 150 is 7.50, and 0 for gold |
+| Rate applied to the wrong tier | Gold at 300 | 45 |
+| Unknown tier falls into a discount | `bronze` and `none` at 10,000 | 0 |
+| Floating-point leak | Gold at 200.01 | 30.00 after rounding to cents |
+
+The happy-path test "gold at 300 gets 45" alone accepts the first, second, and fourth defects.
+
 Test the contract at the boundary that owns it. Do not add internal null guards or retry behavior merely to satisfy invented cases.
 For concurrency tests, control scheduling rather than depending on sleeps.
 

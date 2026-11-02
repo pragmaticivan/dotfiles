@@ -47,7 +47,7 @@ Keep a supported minority finding. Require concrete counterevidence before dismi
 ## Fix and re-review
 
 Apply only authorized fixes. A review-only skill remains review-only.
-Before a correctness fix, reproduce the failure through the [test-driven-development skill](../../test-driven-development/SKILL.md), or state its executable-check exception.
+Before a correctness fix, reproduce the failure through the [testing skill](../../testing/SKILL.md), or state its executable-check exception.
 Keep unresolved requirements and consequential tradeoffs for human judgment.
 
 After a fix, give a fresh reviewer the new revision, requirements, and affected scope before the prior conclusions.

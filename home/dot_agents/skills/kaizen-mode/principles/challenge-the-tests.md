@@ -11,4 +11,4 @@ Ask which plausible wrong behavior could still pass. Derive cases from requireme
 - Report important gaps. Passing tests, line coverage, and mutation scores do not establish complete use-case coverage.
 
 Keep the effort proportional. A focused regression can be sufficient for a small fix. No new tool or agent is mandatory.
-Use [adversarial test design](../../test-driven-development/references/adversarial-tests.md) for scenario selection and checks of test sensitivity.
+Use [adversarial test design](../../testing/references/adversarial-tests.md) for scenario selection and checks of test sensitivity.
