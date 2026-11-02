@@ -1,0 +1,20 @@
+:root { font-family: system-ui, sans-serif; color: #192a30; background: #f7faf9; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+.container { max-width: 1120px; margin-inline: auto; padding: 24px; }
+header { display: flex; justify-content: space-between; }
+a { color: inherit; }
+h1 { font-size: clamp(2.5rem, 6vw, 4.8rem); line-height: 1.05; letter-spacing: -0.05em; max-width: 14ch; }
+h2 { line-height: 1.2; }
+.eyebrow { color: #286153; }
+.intro { max-width: 58ch; line-height: 1.6; }
+.plans { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-block: 48px; }
+article { border: 1px solid #b5c6c1; border-radius: 16px; padding: 24px; background: white; }
+article p { line-height: 1.5; }
+.badge { color: #286153; margin: 0; }
+.price { font-size: 2rem; font-weight: 700; }
+.price span { font-size: 0.875rem; font-weight: 400; }
+button { padding: 12px 20px; border: 0; border-radius: 8px; color: white; background: #205f4c; cursor: pointer; white-space: nowrap; }
+button:focus-visible, summary:focus-visible { outline: 3px solid #d45216; outline-offset: 4px; }
+#help { margin-top: 40px; min-height: 400px; }
+summary { cursor: pointer; }

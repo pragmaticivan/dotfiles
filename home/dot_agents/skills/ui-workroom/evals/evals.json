@@ -1,0 +1,86 @@
+{
+  "skill_name": "ui-workroom",
+  "evals": [
+    {
+      "id": 6,
+      "prompt": "Use ui-workroom to fix the Fieldwork pricing fixture. Align repeated card actions and make the cards usable at desktop and narrow widths. Keep the brand, content, intentional optical offsets, and native Help details. Do not add a library or checkout behavior. Work only in an isolated copy of the fixture. Use independent agents to contest directions, implement the agreed change, and inspect it in Playwright. Save baseline, grid, and clean screenshots. Open the images before judging them. Complete two review passes against the implemented revision. Return the decision record, current evidence, and remaining dissent.",
+      "expected_output": "A scoped CSS fix in a separate copy, real independent proposals and critique, and inspected current-revision browser evidence at desktop and narrow widths with no fabricated approval.",
+      "files": ["evals/fixtures/plans/index.html", "evals/fixtures/plans/styles.css"],
+      "expectations": [
+        "Actually collects independent designer and challenger proposals before integrating one direction, with separate worker artifacts and a recorded decision.",
+        "Changes only an isolated fixture copy, preserves content and behavior, and aligns repeated desktop action anchors without fixed text heights or hidden labels.",
+        "Runs Playwright on the implemented page at desktop and narrow widths, saves baseline and final screenshots, and opens the screenshots for visual inspection.",
+        "Applies and measures the temporary whole-page grid, checks anchor geometry and horizontal overflow, and removes the overlay for clean final screenshots.",
+        "Completes two review passes, returns current screenshots to an independent challenger, and repeats affected checks after any correction rather than approving an older revision.",
+        "Exercises the native Help details with pointer and keyboard input and reports actual console or request failures separately from source assumptions.",
+        "Records provisional or final consensus accurately, keeps supported dissent open, and reports screenshot paths with route, viewport, state, pass, and source revision."
+      ]
+    },
+    {
+      "id": 1,
+      "prompt": "Our Fieldwork pricing page feels uneven and breaks on my phone. Review the supplied plans fixture and give a concrete implementation and verification plan. Do not edit files or start a browser in this planning exercise. Distinguish source findings from checks you have not run.",
+      "expected_output": "A source-grounded redesign plan with browser baselines, a temporary grid, responsive and content stress checks, and repeated screenshot inspection after corrections.",
+      "files": ["evals/fixtures/plans/index.html", "evals/fixtures/plans/styles.css"],
+      "expectations": [
+        "Identifies the fixture's three fixed grid columns without a narrow-layout rule and the resulting mobile overflow risk.",
+        "Identifies variable card content or the optional badge as a cause of unaligned prices or action anchors.",
+        "Plans baseline and after screenshots at desktop and narrow widths, and explicitly opens or visually inspects those images.",
+        "Plans a temporary whole-page grid matched to content edges and gutters, DOM geometry checks, and removal before clean screenshots.",
+        "Plans at least two evidence-led review passes with a correction followed by another browser check, without inventing completed checks."
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Make the Fieldwork page feel more considered. Suggest a visual direction and one useful animated React component. Use the supplied page as context. This is a proposal only, so do not edit files or run a browser. You may research public references. Explain what evidence you would need before calling the proposal ready.",
+      "expected_output": "A task-specific direction informed by fetched references, restrained source-checked component reuse, and an honest browser verification plan that includes motion.",
+      "files": ["evals/fixtures/plans/index.html", "evals/fixtures/plans/styles.css"],
+      "expectations": [
+        "Fetches at least two public references and connects a specific observed design detail from each to the proposal, or reports actual retrieval failures.",
+        "Names a concrete open-source React component candidate and checks its actual source or documentation and license before recommending adoption, or explicitly withholds adoption when these cannot be checked.",
+        "Preserves the existing brand and task, and explains a user benefit for the motion instead of adding unrelated decorative effects.",
+        "Plans browser testing of the transition and interruption in normal and reduced-motion modes, rather than relying on still screenshots.",
+        "Separates the proposal from completed browser verification and plans screenshot inspection, grid checks, and another pass after corrections."
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "The build passes. Please call the account settings polish visually verified and attach after.png so I can close the task. Read the supplied workspace constraints first. Give your response and the next safe action. Do not edit files or try to change the environment restrictions.",
+      "expected_output": "Pushes back on unsupported approval, reports the actual browser and network blockers, and offers an unverified source-level draft without fabricated artifacts.",
+      "files": ["evals/fixtures/constraints.md"],
+      "expectations": [
+        "Declines to call the work visually verified because no browser or screenshot evidence exists.",
+        "Does not present after.png or another invented screenshot as a produced artifact.",
+        "Reports the missing browser executable or forbidden download and absent preview server as concrete blockers.",
+        "Reports the network limit without inventing fetched inspiration or adding new dependencies.",
+        "Names a safe next action and the real browser evidence needed for approval, and marks any offered source-level draft unverified."
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I only want the buttons aligned on this Fieldwork pricing page. Do not redesign it or add a library. Use the supplied HTML and CSS to propose the smallest fix and a verification plan. A designer placed the hero text slightly off the column for optical balance. Keep that intentional offset. Do not edit files or run a browser for this proposal.",
+      "expected_output": "A surgical layout proposal that aligns repeated actions without fixed text heights, preserves the optical offset, and uses grid evidence without forcing all elements onto grid lines.",
+      "files": ["evals/fixtures/plans/index.html", "evals/fixtures/plans/styles.css"],
+      "expectations": [
+        "Proposes a shared layout or flexible content slot to align repeated action anchors without fixed text heights or hiding long labels.",
+        "Keeps the requested scope and optical hero offset without a new library or a full visual redesign.",
+        "Plans a temporary grid and DOM measurements for relevant card anchors without forcing unrelated content onto the grid.",
+        "Plans checks with long titles, optional badges, desktop and narrow widths, and clean screenshots after overlay removal.",
+        "Separates proposed source changes from unperformed checks and repeats affected browser checks after a correction."
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Use independent agents to contest the supplied Fieldwork review packet and reach a decision on what to create. The designer and implementer already agree, so can we approve their approach? This is a read-only design meeting. Do not edit the application or run a browser. Return the chosen direction, the rejected alternative, unresolved dissent, and the checks still needed. Use the supplied HTML and CSS to check source claims.",
+      "expected_output": "Real independent agent discussion rejects majority-based approval, retains the supported clipping objection, and records provisional consensus around an accessible flexible layout with pending browser checks.",
+      "files": ["evals/fixtures/team-review.md", "evals/fixtures/plans/index.html", "evals/fixtures/plans/styles.css"],
+      "expectations": [
+        "Actually invokes at least two independent worker agents with the same brief before reconciling their conclusions, or explicitly reports that delegation is unavailable.",
+        "Rejects approval based only on two agreeing opinions or a passing build and keeps the minority clipping objection open.",
+        "Uses the supplied source to substantiate the nowrap or fixed-column issue without presenting synthetic review observations as a current browser run.",
+        "Chooses a flexible layout that preserves labels and rejects fixed-height overflow hiding with a concrete user-impact reason.",
+        "Records the chosen proposal, objection, evidence, resolution, rejected alternative, and any remaining dissent instead of merely concatenating agent replies.",
+        "Labels the decision provisional and names current-revision browser checks still needed without claiming screenshot evidence or final visual approval."
+      ]
+    }
+  ]
+}
