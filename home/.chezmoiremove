@@ -54,3 +54,8 @@
 .claude/agents/ui-ux-tester.md
 # Copilot reads ~/.agents/skills itself, so the per-skill symlinks are dead weight.
 .copilot/skills
+.agents/compound-engineering-plugin
+.cursor/plugins/local/compound-engineering
+.agents/skills/decider
+.claude/skills/decider
+.claude/hooks/message-styler.py

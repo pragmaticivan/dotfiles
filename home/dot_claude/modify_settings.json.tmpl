@@ -29,16 +29,7 @@ managed=$(
     "command": "~/.claude/hooks/statusline.sh"
   },
   "outputStyle": "Concise",
-  "skillOverrides": {
-    "compound-engineering:ce-compound-refresh": "on",
-    "compound-engineering:ce-plan": "on",
-    "compound-engineering:ce-polish": "on",
-    "compound-engineering:ce-resolve-pr-feedback": "on",
-    "compound-engineering:ce-setup": "on",
-    "compound-engineering:ce-test-xcode": "on",
-    "compound-engineering:ce-work": "on",
-    "compound-engineering:lfg": "on"
-  },
+  "skillOverrides": {},
   "hooks": {
     "PreToolUse": [
       {
@@ -62,17 +53,6 @@ managed=$(
           }
         ],
         "matcher": "*"
-      }
-    ],
-    "MessageDisplay": [
-      {
-        "hooks": [
-          {
-            "command": "/usr/bin/python3 '{{ .chezmoi.homeDir }}/.claude/hooks/message-styler.py'",
-            "timeout": 5,
-            "type": "command"
-          }
-        ]
       }
     ]{{ if $pixooEnabled }},
     "Notification": [
@@ -152,17 +132,6 @@ managed=$(
       "Bash(diskutil eraseDisk:*)",
       "Bash(dd if=/dev/zero:*)",
       "Bash(shred:*)",
-      "Bash(curl:*)",
-      "Bash(wget:*)",
-      "Bash(nc:*)",
-      "Bash(ncat:*)",
-      "Bash(netcat:*)",
-      "Bash(ssh:*)",
-      "Bash(scp:*)",
-      "Bash(sftp:*)",
-      "Bash(rsync:*)",
-      "Bash(ngrok:*)",
-      "Bash(cloudflared:*)",
       "Bash(aws:*)",
       "Bash(gcloud:*)",
       "Bash(az:*)",
@@ -242,38 +211,7 @@ managed=$(
       "Bash(git push --force origin main:*)",
       "Bash(git push --force origin master:*)",
       "Bash(git push origin HEAD:main)",
-      "Bash(git push origin HEAD:master)",
-      "Bash(npm install -g:*)",
-      "Bash(pip install:*)",
-      "Bash(pip3 install:*)",
-      "Bash(brew install:*)",
-      "Bash(apt-get install:*)",
-      "Bash(apt install:*)",
-      "Bash(yum install:*)",
-      "Bash(dnf install:*)"
-    ],
-    "ask": [
-      "Bash(git push --force:*)",
-      "Bash(git push -f:*)",
-      "Bash(gh pr merge:*)",
-      "Bash(git reset --hard:*)",
-      "Bash(git clean -fd:*)",
-      "Bash(git tag:*)",
-      "Bash(git stash drop:*)",
-      "Bash(chmod:*)",
-      "Bash(make deploy:*)",
-      "Bash(make release:*)",
-      "Bash(npm run deploy:*)",
-      "Bash(npm run release:*)",
-      "Bash(docker rm:*)",
-      "Bash(docker rmi:*)",
-      "Bash(docker system prune:*)",
-      "Bash(docker-compose down:*)",
-      "Bash(psql:*)",
-      "Bash(mysql:*)",
-      "Bash(mongosh:*)",
-      "Bash(redis-cli:*)",
-      "Bash(sqlite3:*)"
+      "Bash(git push origin HEAD:master)"
     ],
     "allow": [
       "Read(**)",
@@ -454,7 +392,47 @@ managed=$(
       "Read(~/.claude/**)",
       "Bash(~/.claude/skills/*)",
       "Bash(brew info:*)",
-      "Bash(brew list:*)"
+      "Bash(brew list:*)",
+      "Bash(curl:*)",
+      "Bash(wget:*)",
+      "Bash(nc:*)",
+      "Bash(ncat:*)",
+      "Bash(netcat:*)",
+      "Bash(ssh:*)",
+      "Bash(scp:*)",
+      "Bash(sftp:*)",
+      "Bash(rsync:*)",
+      "Bash(ngrok:*)",
+      "Bash(cloudflared:*)",
+      "Bash(npm install -g:*)",
+      "Bash(pip install:*)",
+      "Bash(pip3 install:*)",
+      "Bash(brew install:*)",
+      "Bash(apt-get install:*)",
+      "Bash(apt install:*)",
+      "Bash(yum install:*)",
+      "Bash(dnf install:*)",
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(git clean -fd:*)",
+      "Bash(git tag:*)",
+      "Bash(git stash drop:*)",
+      "Bash(chmod:*)",
+      "Bash(make deploy:*)",
+      "Bash(make release:*)",
+      "Bash(npm run deploy:*)",
+      "Bash(npm run release:*)",
+      "Bash(docker rm:*)",
+      "Bash(docker rmi:*)",
+      "Bash(docker system prune:*)",
+      "Bash(docker-compose down:*)",
+      "Bash(psql:*)",
+      "Bash(mysql:*)",
+      "Bash(mongosh:*)",
+      "Bash(redis-cli:*)",
+      "Bash(sqlite3:*)"
     ]
   }
 }

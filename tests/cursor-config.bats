@@ -266,19 +266,11 @@ JSON
     [ "${status}" -ne 0 ]
 }
 
-@test "Cursor archives reuse plugin pins and preserve native plugin and skill paths" {
+@test "Cursor archives reuse the Worktrunk pin and preserve its skill path" {
     render home/.chezmoiexternals/cursor-plugins.toml.tmpl >"${BATS_TEST_TMPDIR}/externals.toml"
     chezmoi execute-template --source "${REPO_ROOT}" \
         "{{ include \"${BATS_TEST_TMPDIR}/externals.toml\" | fromToml | toJson }}" >"${BATS_TEST_TMPDIR}/externals.json"
-    jq -e 'keys == [".cursor/plugins/local/compound-engineering", ".cursor/skills/worktrunk"] and
-        (.[".cursor/plugins/local/compound-engineering"] | del(.url)) == {
-            type: "archive",
-            include: ["*/.agents", "*/.agents/plugins", "*/.agents/plugins/**",
-                "*/.claude-plugin", "*/.claude-plugin/**", "*/.codex-plugin", "*/.codex-plugin/**",
-                "*/.cursor-plugin", "*/.cursor-plugin/**", "*/assets", "*/assets/**",
-                "*/plugin.json", "*/skills", "*/skills/**"],
-            stripComponents: 1
-        } and
+    jq -e 'keys == [".cursor/skills/worktrunk"] and
         (.[".cursor/skills/worktrunk"] | del(.url)) == {
             type: "archive",
             include: ["*/plugins/worktrunk/skills/worktrunk/**"],
@@ -293,4 +285,18 @@ JSON
                 $archives[".cursor/plugins/local/" + .name].url == $url
             else $archives[".cursor/skills/" + .name].url == $url end)' \
         "${BATS_TEST_TMPDIR}/externals.json"
+}
+
+@test "Claude settings remove Compound Engineering and keep Worktrunk" {
+    render home/dot_claude/modify_settings.json.tmpl >"${BATS_TEST_TMPDIR}/modifier.sh"
+    bash "${BATS_TEST_TMPDIR}/modifier.sh" <<'JSON' >"${BATS_TEST_TMPDIR}/settings.json"
+{"enabledPlugins":{"compound-engineering@compound-engineering-plugin":true,"worktrunk@worktrunk":true},"skillOverrides":{"compound-engineering:ce-plan":"on"},"unknown":42}
+JSON
+    jq -e '.enabledPlugins == {"worktrunk@worktrunk": true} and
+        .skillOverrides == {} and .unknown == 42' "${BATS_TEST_TMPDIR}/settings.json"
+
+    render home/.chezmoiexternals/agent-plugins.toml.tmpl >"${BATS_TEST_TMPDIR}/plugins.toml"
+    ! grep -q 'compound-engineering' "${BATS_TEST_TMPDIR}/plugins.toml"
+    render home/.chezmoiscripts/unix/run_after_40-install-agent-plugins.sh.tmpl >"${BATS_TEST_TMPDIR}/installer.sh"
+    ! grep -q 'compound-engineering' "${BATS_TEST_TMPDIR}/installer.sh"
 }

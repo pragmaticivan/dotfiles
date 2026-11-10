@@ -30,26 +30,6 @@ external_skills:
     path: skills/taste-skill
 
 agent_plugins:
-  - name: compound-engineering
-    marketplace: compound-engineering-plugin
-    repo: EveryInc/compound-engineering-plugin
-    sha: 4e6738223d7dd66d765a598673c48c136fb78f95
-    cursor_plugin: true
-    include:
-      - .agents
-      - .agents/plugins
-      - .agents/plugins/**
-      - .claude-plugin
-      - .claude-plugin/**
-      - .codex-plugin
-      - .codex-plugin/**
-      - .cursor-plugin
-      - .cursor-plugin/**
-      - assets
-      - assets/**
-      - plugin.json
-      - skills
-      - skills/**
   - name: worktrunk
     marketplace: worktrunk
     repo: max-sixty/worktrunk

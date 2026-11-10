@@ -2,7 +2,7 @@
 # herdr
 # ---------------------------------------------------------------------------------------------------------------------
 # HERDR_PANE_ID is exported inside herdr panes, so this never nests.
-if [[ -o interactive ]] \
+if [[ -o interactive && -t 0 && -t 1 ]] \
   && [[ -z "$HERDR_PANE_ID" ]] \
   && [[ -z "$TMUX" ]] \
   && [[ -z "$VSCODE_INJECTION" ]] \

@@ -64,7 +64,9 @@ install_copilot_plugins() {
   fi
 
 {{ range $plugin := .agent_plugins -}}
-  copilot plugin marketplace add "${plugin_sources}/{{ $plugin.name }}-plugin"
+  # Copilot fails when the marketplace is already registered.
+  copilot plugin marketplace list | grep -q "• {{ $plugin.marketplace }} (" ||
+    copilot plugin marketplace add "${plugin_sources}/{{ $plugin.name }}-plugin"
   copilot plugin install "{{ $plugin.name }}@{{ $plugin.marketplace }}"
 {{ end }}
   record_install copilot

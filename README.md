@@ -109,10 +109,9 @@ Cursor syncs only `~/.cursor/skills`, not `~/.agents/skills`. Cloud upload throu
 Chezmoi installs actual files at these paths:
 
 - `~/.cursor/plugins/local/dotfiles` supplies always-on global instructions and the shared STE card.
-- `~/.cursor/plugins/local/compound-engineering` supplies the native Compound Engineering plugin.
 - `~/.cursor/skills/worktrunk` supplies only the Worktrunk skill, without Claude activity hooks.
 
-Compound Engineering and Worktrunk use the existing pins in `home/.chezmoidata/skills.yaml`.
+Worktrunk uses the existing pin in `home/.chezmoidata/skills.yaml`.
 The `~/.cursor/cli-config.json` modifier disables commit and PR attribution. It preserves user settings,
 permissions, model selection, authentication data, and unknown keys. It adds absent required defaults.
 The CLI config uses mode `0600`.
