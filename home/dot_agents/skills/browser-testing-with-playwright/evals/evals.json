@@ -1,5 +1,5 @@
 {
-  "skill_name": "browser-testing-with-devtools",
+  "skill_name": "browser-testing-with-playwright",
   "evals": [
     {
       "id": 1,
@@ -42,12 +42,28 @@
         "evals/fixtures/export-reports"
       ],
       "expectations": [
-        "Does not launch Chrome or invoke any Chrome DevTools MCP tool (no screenshot, DOM inspection, console, network, or performance trace)",
+        "Does not launch a browser or run any Playwright MCP tool or playwright-cli command (no screenshot, snapshot, console, network, or trace)",
         "Recognizes the task is a backend/CLI script outside the browser-testing skill's scope",
         "Investigates and fixes the off-by-one pagination bug directly in reports/export_csv.py (the min(offset + PAGE_SIZE, total - 1) bound)",
         "Verifies the fix by running the script or a test rather than by any browser-based check, and shows 25 exported rows",
         "Does not fabricate console output, network requests, or any browser-observed data since none was captured",
         "Does not follow the browser debugging workflow (reproduce/inspect DOM/screenshot) since it does not apply here"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I added a 'Most popular' badge to the Pro plan card on branch feat/popular-badge. The repo is in evals/fixtures/plan-badge (npm start serves /pricing, and PORT sets the port). Check it in the browser before I open the PR, and get me the screenshots the PR needs. gh isn't authed here, so save the PNGs under evals/fixtures/plan-badge/shots/ and list them.",
+      "expected_output": "The agent drives a real browser through Playwright (the MCP, playwright-cli, or the local npx playwright) on the running /pricing page. It saves an after screenshot of the page and one cropped to the Pro card, and before screenshots of the same page and card from main in a separate worktree or checkout. It opens the images and sees that the badge renders at the top right of the page, not on the Pro card, because .card has no position: relative. It reads the console.",
+      "files": [
+        "evals/fixtures/plan-badge"
+      ],
+      "expectations": [
+        "Drives a real browser with Playwright (the Playwright MCP, playwright-cli, or npx playwright) on the running /pricing page",
+        "Saves an after screenshot of the page and an after screenshot cropped to the Pro card element",
+        "Saves before screenshots of the same page and the Pro card from main, taken in a separate worktree or checkout",
+        "Reports from the screenshot that the badge renders at the page corner and not on the Pro card, and names the missing position: relative on .card as the cause",
+        "Reads the browser console as part of the check",
+        "Does not call the change visually correct without having viewed a screenshot of it"
       ]
     }
   ]

@@ -26,7 +26,7 @@ The author built a mental model of the problem over hours. The description hands
 4. **Size it** with the table below and lock the section budget before you write.
 5. **Draft the TL;DR first.** If it does not fit in two sentences, you do not understand the PR yet. Re-read the diff.
 6. **Cut.** For each sentence, ask whether the reviewer could learn it from the diff. If yes, delete it. Delete any section whose absence would not slow the reviewer.
-7. **Apply.** `gh pr create --draft --title ... --body-file /tmp/pr-body.md`, or `gh pr edit <n> --title ... --body-file ...`.
+7. **Apply.** `gh pr create --draft --title ... --body-file /tmp/pr-body.md`, or `gh pr edit <n> --title ... --body-file ...`. A UI PR needs its number for the screenshot links: create it, upload the screenshots per **Screenshots**, then `gh pr edit` the body with the links.
 
 ## Size gate
 
@@ -38,7 +38,7 @@ A long description on a small diff reads as "AI-generated, ignore".
 | Medium: 50 to 200 lines | TL;DR, Summary, and at most two more that earn their place. Body shorter than the diff. |
 | Large: 200+ lines or several concerns | Every section that applies. Summary with a start-here file view and Reviewer notes are required. |
 
-Merge Danger overrides the gate. Add it at any size when the change is a one-way door or its blast radius reaches past the diff.
+Merge Danger overrides the gate. Add it at any size when the change is a one-way door or its blast radius reaches past the diff. Screenshots also overrides the gate. Add it at any size when the change alters UI that users see.
 
 ## Template
 
@@ -55,7 +55,14 @@ Sentence 2: what the PR does about it. Optional: what is out of scope.>
 ## Evidence
 
 **Before:** <screenshot, output, or failing test>
-**After:** <screenshot, output, or passing test>
+**After:** <output or passing test>
+
+## Screenshots
+
+| | Before | After |
+|---|---|---|
+| Page | ![before-page](url) | ![after-page](url) |
+| <Component> | ![before-component](url) | ![after-component](url) |
 
 ## Merge Danger
 
@@ -95,7 +102,13 @@ Before the visual, name the design idea in one sentence ("small entries go to Re
 
 ### Evidence
 
-Show proof that it works, as before and after. "Tests pass" alone is not proof. Name the test that covers the new behavior, or show the number that moved. A screenshot is the best evidence for a visual change. Execution is next: the test that failed and now passes, or the command output. Put long logs and benchmarks in `<details><summary>label</summary>`. The PR must make sense without expanding them.
+Show proof that it works, as before and after. "Tests pass" alone is not proof. Name the test that covers the new behavior, or show the number that moved. Screenshots of a visual change go in **Screenshots**. Execution is next: the test that failed and now passes, or the command output. Put long logs and benchmarks in `<details><summary>label</summary>`. The PR must make sense without expanding them.
+
+### Screenshots
+
+Add this section when the PR changes UI that users see, such as a React component. Capture the images per the **browser-testing-with-playwright** skill: the page in context and the changed component cropped to its element, each before and after. When there is no "before", for example a new component, drop that column and say why in one line.
+
+Upload the images with `scripts/upload-pr-screenshots.sh <pr-number> <image>...`. The script pushes them to the folder `pr-<number>/` on the shared orphan branch `pr-screenshots` and prints one Markdown image link for each image. Each PR writes only to its own folder, thus parallel PRs do not conflict. The links contain a commit SHA, thus a later upload does not break an earlier description. Do not commit the images to the PR branch, and do not upload them outside the repository.
 
 ### Merge Danger
 

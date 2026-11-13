@@ -59,3 +59,6 @@
 .agents/skills/decider
 .claude/skills/decider
 .claude/hooks/message-styler.py
+.agents/skills/browser-testing-with-devtools
+.claude/skills/browser-testing-with-devtools
+.cursor/skills/browser-testing-with-devtools
