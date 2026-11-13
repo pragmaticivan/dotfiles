@@ -13,8 +13,10 @@
 homebrew_trust:
   formulae:
     - argoproj/tap/kubectl-argo-rollouts # Argo Rollouts kubectl plugin
+    - atlassian/acli/acli # Atlassian CLI for Jira and Confluence
     - coleam00/archon/archon # Archon
     - hashicorp/tap/nomad # HashiCorp Nomad
     - hashicorp/tap/packer # HashiCorp Packer
+    - rootlyhq/tap/rootly-cli # Rootly incident CLI
   taps:
     - aws/tap # AWS tools, and the tap holds more than one of them

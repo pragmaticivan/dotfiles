@@ -5,14 +5,15 @@ legacy_version_file = false
 legacy_version_file_disable_tools = ["terraform"]
 
 [tools]
-go = ["1.26"]
-nodejs = ["lts"]
+go = "latest"
 python = ["3.14"]
-terraform = ["1.15.5"]
+terraform = "1.16.0"
 terraform-docs = ["0.18.0"]
 java = ["21"]
 shellcheck = ["0.10.0"]
 kotlin = ["2.4.0"]
 gradle = ["9.5.1"]
-uv = ["0.11.19"]
+uv = "0.13.4"
 bun = "latest"
+"github:railwayapp/railpack" = "v0.39.0"
+node = "lts"
