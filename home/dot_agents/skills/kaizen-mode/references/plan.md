@@ -94,7 +94,7 @@ Each phase needs both:
 
 **Runtime.** Exercise the feature on the matching surface via the relevant control skill:
 
-- Browser / Electron / Web UIs: the `browser-testing-with-devtools` skill.
+- Browser / Electron / Web UIs: the `browser-testing-with-playwright` skill.
 - CLIs and TUIs: driving the CLI directly in a terminal.
 - Native mobile: whatever simulator-driving skill your team has.
 - No control skill for the touched surface: flag it in the plan.

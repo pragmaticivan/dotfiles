@@ -53,7 +53,7 @@ When a reproduction test is impractical (production-only state, vague steps, a h
 - Do not skip, disable, or `.only` a test to get a green run.
 - In test-only work on protected code, keep the implementation unchanged. Mutate only an isolated copy.
 - Do not add a test framework or dependency unless the existing tools cannot express a material case.
-- For browser behavior, reproduce through the real surface and commit a Playwright spec. Use the **browser-testing-with-devtools** skill for traces, computed styles, and performance.
+- For browser behavior, reproduce through the real surface and commit a Playwright spec. Use the **browser-testing-with-playwright** skill for traces, computed styles, and performance.
 
 ## Report the result
 

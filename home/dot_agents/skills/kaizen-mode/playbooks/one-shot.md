@@ -60,7 +60,7 @@ Route elsewhere when the shape differs. A queue of independent PRs is `autopilot
 
    Gate: the file exists in a commit.
 
-6. **Re-verify after the review fixes.** Step 2 already proved the artifact works. This step proves the fixes from steps 3 and 4 did not break it. Re-run the gate run, then exercise the surface again the same way. Browser, Electron, and web UIs go through the **browser-testing-with-devtools** skill. CLIs and TUIs you drive yourself in a terminal. A change to a stateful resource rebuilds it in a scratch location, verifies, and drops it.
+6. **Re-verify after the review fixes.** Step 2 already proved the artifact works. This step proves the fixes from steps 3 and 4 did not break it. Re-run the gate run, then exercise the surface again the same way. Browser, Electron, and web UIs go through the **browser-testing-with-playwright** skill. CLIs and TUIs you drive yourself in a terminal. A change to a stateful resource rebuilds it in a scratch location, verifies, and drops it.
 
    The verdict is VERIFIED, NOT VERIFIED, or INCONCLUSIVE. Inconclusive is not a pass. A green gate run is not a pass either, because unit tests show that a branch behaves a certain way and do not prove the feature works.
 

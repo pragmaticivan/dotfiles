@@ -8,10 +8,12 @@ Invoked at the end of every other playbook.
 
 **PRs.** Write the PR title and body through the **creating-pull-requests** skill, loaded before you draft a line of it. It owns the size gate, the section budget, the prose rules, and the draft-mode and no-attribution rules. `/stop-slop` the diff before commit; `/no-comments` the diff before review; apply the **stop-slop** skill to the PR description and commit bodies. Small PRs, 5 narrow over 1 fat; stack follow-ups, branch off main only for genuinely independent work. For stacked PRs, use whatever stacking tool your team uses; the principle is small, ordered slices with the stack visible to reviewers. `gh pr view <number>` before referencing PR status. Rebase on `main` before substantial stack work. No `## Summary` / `## Test plan` boilerplate on small PRs; commit bodies don't restate the subject. Push back when feedback drifts from intent.
 
+**Screenshots.** A PR that changes UI that users see is not ready without the `## Screenshots` section of the **creating-pull-requests** skill. Capture the images per the **browser-testing-with-playwright** skill, before you mark the PR ready.
+
 **Review-bot watch.** After you open a PR in a repo where a review bot comments, run the **Babysit** playbook (`babysit.md`) in `threads-only` mode until the bot's first pass arrives, for about 10 minutes at most. Fix each valid finding, push, reply with the commit SHA, and resolve the thread. Dismiss the rest with a disproof. Then stop and report. Do not keep watching CI.
 
 **Sizing.** "Small" has a number. About 100 changed lines reviews in one sitting. About 300 is acceptable for a single logical change. About 1000 is too large, so split it. One change is one self-contained modification that addresses one thing, carries its tests, and leaves the system working. Complete file deletions and mechanical refactors can run larger, because the reviewer verifies intent rather than every line. Refactoring plus new behavior is two PRs.
 
 Split a fat PR by stacking (sequential dependencies), by file group (different reviewers), horizontally (shared code and stubs first, then consumers), or vertically (smaller full-stack slices).
 
-A subagent that opens a PR runs `interrogate`, `/stop-slop`, and `/no-comments`, returns the URL, and does not babysit. Return to the parent.
+A subagent that opens a PR runs `/stop-slop` and `/no-comments`, returns the URL, and does not babysit, unless it is an Autopilot-full or Autopilot-stack owner. That owner's brief assigns the babysit loop. Return to the parent.

@@ -247,6 +247,68 @@
         "Says it loads these skills through the Skill tool, not by reading or skimming their SKILL.md files",
         "Ties the formal-verification choice to the race between pods that the unit tests do not interleave, not only to adding more unit tests"
       ]
+    },
+    {
+      "id": 19,
+      "prompt": "/kaizen-mode the nightly usage report on acme/billing keeps dying on HTTP 429 from the rates API, and finance gets an empty email every morning. Add retry with backoff to fetchRates in src/rates.ts. Reply only, short: your first message on this task.",
+      "expected_output": "The agent opens by restating, in its own words, the goal (finance gets a complete nightly report) and the problem (429s from the rates API kill the run), and names the smallest change it expects to meet it. It does not stop to ask for confirmation before it starts.",
+      "files": [],
+      "expectations": [
+        "Opens by restating the user's goal in its own words, as the outcome the user wants (a complete nightly report for finance), not only the requested code edit",
+        "Names the problem being solved: 429 responses from the rates API make the nightly run fail",
+        "Names the smallest change it expects to meet the goal, scoped to fetchRates or its call site",
+        "Does not ask the user to confirm the restatement or the plan before it proceeds"
+      ]
+    },
+    {
+      "id": 20,
+      "prompt": "/kaizen-mode own this migration until it lands: move 40 services in acme/platform from logger v1 to v2, one PR per service. It will take several days, and I will check in twice a day. Reply only, short: how you run it. Say where the program state lives, who writes each PR branch, who verifies each PR, and how you start.",
+      "expected_output": "The agent routes to the Orchestrate playbook and runs it with its own tools: the Agent tool, a notes file, and gh. It uses no bookkeeping script or CLI and no store of TSV ledgers. Each PR has one owner who is the only writer of its branch. Each PR gets a verifier that is not its author, on a different model family, and the owner merges only on that pass at the current head. It starts with one unit end to end before it fans out.",
+      "files": [],
+      "expectations": [
+        "Routes to the Orchestrate playbook",
+        "Keeps program state with its own tools (for example a notes file and gh), and names no bookkeeping script or CLI such as orch, and no units.tsv, ledger.tsv, or inbox files",
+        "Gives each PR one owner that is the only writer of its branch",
+        "Gives each PR a verifier that is not its author, on a different model family, and merges only on that verifier's pass at the current head",
+        "Starts with one unit carried through to merge before it fans out to the other services"
+      ]
+    },
+    {
+      "id": 21,
+      "prompt": "/kaizen-mode autopilot these four PRs on acme/shop, but don't merge, I will land them. PR 3 builds on PR 2. The others are independent. The verifier on PR 4 found three things: (a) a test that is flaky and also fails on main, (b) a typo in a README line that PR 4 does not touch, (c) PR 4's new checkout endpoint returns 500 on an empty cart, reproduced at the PR head. Later, PR 1 gets a wording-only change to a doc string. Reply only, short: which playbook, how you base each PR, which findings block PR 4, and what verification PR 1's new head needs.",
+      "expected_output": "The agent runs Autopilot-stack, which is Autopilot-full without the merge: it stops at verified and hands the PRs to the operator. PR 3 is based on PR 2's branch and the others on trunk. Only finding (c) blocks PR 4, because it is a bug a user would hit shown by a run at the head. (a) is a problem the base already has and (b) is outside the PR, so both go to follow-ups. A wording-only change gets no verifier.",
+      "files": [],
+      "expectations": [
+        "Routes to the Autopilot-stack playbook and says no PR merges, the PRs are handed to the operator once verified",
+        "Bases PR 3 on PR 2's branch and the other PRs on trunk, with no single linear chain of all four",
+        "Says only finding (c) blocks PR 4",
+        "Puts (a) and (b) in follow-ups because trunk already has (a) and PR 4 did not cause (b)",
+        "Says PR 1's wording-only change needs no verifier"
+      ]
+    },
+    {
+      "id": 22,
+      "prompt": "/kaizen-mode I'm about to benchmark the new JSON parser against the old one to decide whether we ship it. Before I run anything, reply only, short: what do you write down first, and when do you stop running?",
+      "expected_output": "Before the run, the agent writes the decision: the result that would change it (for example the speedup that makes the parser worth shipping) and the noise floor. It stops when the run-to-run spread is larger than the effect.",
+      "files": [],
+      "expectations": [
+        "Writes down, before any run, the result that would change the ship decision, as a concrete threshold",
+        "Writes down the noise floor or the expected run-to-run spread before the run",
+        "Says to stop when the run-to-run spread is larger than the effect",
+        "Does not add runs after the first results to chase a win, and calls a gap smaller than the noise no measurable difference"
+      ]
+    },
+    {
+      "id": 23,
+      "prompt": "/kaizen-mode I'm changing the empty state of ResultsList.jsx in acme/search-web, the React list users see when a search returns nothing. Reply only, short: how do you check the change before you call it done, and what does its PR need that a backend PR does not?",
+      "expected_output": "The agent checks the change in a real browser with the browser-testing-with-playwright skill (Playwright MCP, else the CLI), and it opens a screenshot of the empty state to compare with the intent. The PR gets a Screenshots section per creating-pull-requests: the page and the component, before and after.",
+      "files": [],
+      "expectations": [
+        "Routes the visual check to the browser-testing-with-playwright skill, not to a DevTools or generic browser skill",
+        "Says the change is done only after it opens a screenshot of the empty state and compares it with the intent",
+        "Says the PR needs a Screenshots section with a page screenshot and a component screenshot",
+        "Asks for before and after screenshots, with the before taken from the base branch"
+      ]
     }
   ]
 }
