@@ -15,7 +15,7 @@ When the request gives one comment URL (`.../pull/<PR>#discussion_r<id>`), work 
 1. Fetch it with `gh api repos/{owner}/{repo}/pulls/comments/{id}`. Read the code it points at.
 2. Give a verdict first: valid or not valid, with the reason from the code.
 3. If the request says to fix ("if yes, fix", "fix and resolve"), a valid comment needs no more confirmation. Fix it, commit, and push. For a comment that is not valid, change no code and give the disproof.
-4. Do Step 7 for the reply and the resolve.
+4. Do Step 7 for the reply and the resolve. If the author is a review bot, post the reply even when the request does not say "reply".
 
 ## Usage
 
@@ -108,6 +108,8 @@ Execute whatever the user chooses. If they choose a code change, make it and com
 
 By default, do not reply to, post on, or resolve threads on the PR.
 "Reply" in the request allows replies. "Resolve" allows resolving threads. Each word gives only its own permission.
+
+A review bot is the exception for replies. A review bot is an author whose `user.type` is `Bot` or whose login ends in `[bot]`, such as Copilot, CodeRabbit, or Cursor Bugbot. After you push a fix for a review-bot comment, or decide that the comment is not valid, reply on its thread. The request does not have to say "reply". The reply closes the loop for the human reviewers who read the thread. Resolving a review-bot thread still needs "resolve".
 
 When posting replies:
 - Do not add an AI attribution prefix, and do not mention Claude, AI, or an assistant.

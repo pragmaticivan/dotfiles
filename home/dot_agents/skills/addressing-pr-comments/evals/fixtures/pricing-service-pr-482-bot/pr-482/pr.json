@@ -1,0 +1,8 @@
+{
+  "number": 482,
+  "title": "feat: retry quote API calls with exponential backoff",
+  "author": {"login": "jlee"},
+  "headRefName": "feat/quote-api-retries",
+  "baseRefName": "main",
+  "url": "https://github.com/everquote/pricing-service/pull/482"
+}

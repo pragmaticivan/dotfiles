@@ -1,0 +1,16 @@
+{
+  "comments": [
+    {
+      "id": "IC_kwDOpricing482a",
+      "author": {"login": "codecov"},
+      "body": "## Codecov Report\nPatch coverage is `88.23%` with 2 lines in your changes missing coverage. Project coverage is 91.40% (-0.31%).",
+      "createdAt": "2026-10-05T14:06:51Z"
+    },
+    {
+      "id": "IC_kwDOpricing482b",
+      "author": {"login": "marco-b"},
+      "body": "Thanks for picking this up, the quote API flakes a lot in staging.",
+      "createdAt": "2026-10-05T15:20:03Z"
+    }
+  ]
+}

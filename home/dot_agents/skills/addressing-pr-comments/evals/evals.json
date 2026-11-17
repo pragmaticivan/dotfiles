@@ -67,6 +67,22 @@
         "Gives a GraphQL resolveReviewThread mutation to resolve the thread, plus a way to find the thread ID for comment 1849355.",
         "No reply text has an AI attribution prefix or mentions Claude, AI, or an assistant."
       ]
+    },
+    {
+      "id": 5,
+      "prompt": "fix this https://github.com/everquote/pricing-service/pull/482#discussion_r1849412 . gh isn't authed on this box, so i dumped the PR comments to evals/fixtures/pricing-service-pr-482-bot/pr-482/ and the checkout is in evals/fixtures/pricing-service-pr-482-bot/pricing-service. commit the fix locally, then put every gh command you would run on the PR into gh-commands.sh, since you can't post from here.",
+      "expected_output": "The agent reads only comment 1849412, posted by copilot-pull-request-reviewer[bot], a review bot. It confirms the off-by-one in the backoff on retry_client.py line 35, fixes it, and commits without asking. Because the author is a review bot, it writes a reply command into gh-commands.sh that cites the fix commit SHA, even though the request says only 'fix'. It does not resolve the thread, because the request did not say 'resolve'.",
+      "files": [
+        "evals/fixtures/pricing-service-pr-482-bot"
+      ],
+      "expectations": [
+        "States that comment 1849412 is valid, with a reason from retry_client.py (the first retry sleeps 2x base_delay because attempt is already 1).",
+        "Fixes the backoff so the first retry sleeps base_delay (for example `2 ** (attempt - 1)`), and commits the fix without asking the user to confirm first.",
+        "Does not change code for the other comments on the PR (the unused import, the docstring typo, or the retry-logic comment from dave-k).",
+        "gh-commands.sh has a reply command for comment 1849412 that cites the fix commit SHA, although the request did not say 'reply'.",
+        "gh-commands.sh has no resolveReviewThread mutation, because the request did not say 'resolve'.",
+        "No reply text has an AI attribution prefix or mentions Claude, AI, or an assistant."
+      ]
     }
   ]
 }
