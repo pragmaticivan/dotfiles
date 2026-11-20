@@ -1,12 +1,8 @@
 #!/usr/bin/python3
-"""Show the Claude Code state on a Divoom Pixoo 64, and alert the Mac.
+"""Show the Claude Code state on a Divoom Pixoo 64.
 
 The script draws the full 64x64 frame here, then sends one picture to the
 device. Thus the layout does not depend on the fonts of the device.
-
-The device stays quiet. `terminal-notifier` shows a macOS notification with
-the state, the project, and the message, and it plays a system sound.
-Install it with `brew install terminal-notifier`.
 
 The script uses the system Python, and not `env python3`. A Python that mise
 installs can have no permission for the local network, thus it cannot reach
@@ -24,18 +20,12 @@ import base64
 import json
 import os
 import re
-import shutil
-import subprocess
 import sys
 import urllib.request
 from datetime import datetime
 
 SIZE = 64
 REQUEST_TIMEOUT = 1.2
-NOTIFIER_PATHS = (
-    "/opt/homebrew/bin/terminal-notifier",
-    "/usr/local/bin/terminal-notifier",
-)
 
 BACKGROUND = (8, 8, 10)
 DIVIDER = (38, 38, 46)
@@ -47,33 +37,21 @@ STATES = {
         "words": ["NEEDS", "YOU"],
         "icon": "bell",
         "accent": (255, 159, 10),
-        "notice": "Claude needs you",
-        "fallback": "waiting for your answer",
-        "sound": "Sosumi",
     },
     "stop": {
         "words": ["DONE"],
         "icon": "check",
         "accent": (48, 209, 88),
-        "notice": "Claude is done",
-        "fallback": "the turn is complete",
-        "sound": "Glass",
     },
     "prompt": {
         "words": ["WORKING"],
         "icon": "hourglass",
         "accent": (10, 132, 255),
-        "notice": None,
-        "fallback": "",
-        "sound": None,
     },
     "test": {
         "words": ["TEST"],
         "icon": "diamond",
         "accent": (191, 90, 242),
-        "notice": "Pixoo notify test",
-        "fallback": "the hook can reach the device",
-        "sound": "Tink",
     },
 }
 
@@ -464,45 +442,6 @@ def post(host, payload):
         return response.read().decode(errors="replace")
 
 
-def notifier():
-    """Find terminal-notifier. The hook can run with a short PATH."""
-    found = shutil.which("terminal-notifier")
-    if found:
-        return found
-    return next((path for path in NOTIFIER_PATHS if os.path.exists(path)), "")
-
-
-def notify(event, hook_input):
-    """Show a macOS notification and play a system sound."""
-    state = STATES[event]
-    if not state["notice"]:
-        return
-    path = notifier()
-    if not path:
-        print("no terminal-notifier: brew install terminal-notifier", file=sys.stderr)
-        return
-    cwd = hook_input.get("cwd") or os.getcwd()
-    project = project_name(cwd)
-    branch = git_branch(cwd)
-    command = [
-        path,
-        "-title",
-        state["notice"],
-        "-subtitle",
-        f"{project} · {branch}" if branch else project,
-        "-message",
-        detail_text(hook_input).strip() or state["fallback"],
-        "-sound",
-        state["sound"],
-        "-group",
-        f"pixoo-notify.{project}",
-    ]
-    try:
-        subprocess.Popen(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-    except OSError as error:
-        print(f"cannot notify: {error}", file=sys.stderr)
-
-
 def send(host, canvas):
     post(host, {"Command": "Draw/ResetHttpGifId"})
     post(
@@ -531,8 +470,6 @@ def main():
     if os.environ.get("PIXOO_NOTIFY_DISABLE") and not strict:
         return 0
     hook_input = read_hook_input()
-    if arguments.event != "end" and not arguments.dry_run:
-        notify(arguments.event, hook_input)
     if not arguments.host:
         print("no Pixoo host: set --host or PIXOO_HOST", file=sys.stderr)
         return 1 if strict else 0

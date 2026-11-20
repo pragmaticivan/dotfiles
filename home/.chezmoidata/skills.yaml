@@ -28,6 +28,18 @@ external_skills:
     repo: Leonxlnx/taste-skill
     sha: ccbc15639c97057cbfcf32ecebc38ef716e4bb37
     path: skills/taste-skill
+  grilling:
+    repo: mattpocock/skills
+    sha: abeeaf95660ba9e8b7c753eb38f441ca707a8823
+    path: skills/productivity/grilling
+  grill-me:
+    repo: mattpocock/skills
+    sha: abeeaf95660ba9e8b7c753eb38f441ca707a8823
+    path: skills/productivity/grill-me
+  grill-with-docs:
+    repo: mattpocock/skills
+    sha: abeeaf95660ba9e8b7c753eb38f441ca707a8823
+    path: skills/engineering/grill-with-docs
 
 agent_plugins:
   - name: worktrunk

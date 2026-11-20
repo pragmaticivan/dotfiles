@@ -1,6 +1,7 @@
 {{- /* chezmoi:modify-template */ -}}
-{{- /* Herdr writes zoom and other choices to this file. Set only the theme. */ -}}
+{{- /* Herdr writes zoom and other choices to this file. Set only the theme and sounds. */ -}}
 {{- $settings := dict -}}
 {{- if .chezmoi.stdin -}}{{- $settings = fromJson .chezmoi.stdin -}}{{- end -}}
 {{- $settings = setValueAtPath "theme" (dict "light" "catppuccin-latte" "dark" "catppuccin") $settings -}}
+{{- $settings = setValueAtPath "sounds.enabled" false $settings -}}
 {{ toPrettyJson $settings }}
